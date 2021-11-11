@@ -1,0 +1,7 @@
+name: Video
+description: Video allows you to embed Kaltura videos from the media center in various ways throughout a page.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/video
+status: stable
+type: component
+language: scss
+platform: web

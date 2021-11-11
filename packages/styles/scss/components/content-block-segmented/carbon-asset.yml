@@ -1,0 +1,7 @@
+name: Content block segmented
+description: Content block segmented is a variation of Content block simple with the added ability to add subsections.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section
+status: stable
+type: component
+language: scss
+platform: web

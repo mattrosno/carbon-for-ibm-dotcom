@@ -1,0 +1,7 @@
+name: Callout with media
+description: Callout with media is used to feature a high value media asset such as a customer story.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/callout-with-media
+status: stable
+type: component
+language: scss
+platform: web

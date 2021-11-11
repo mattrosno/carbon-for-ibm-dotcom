@@ -1,0 +1,7 @@
+name: Lead space
+description: Lead space sets the context and also helps users understand what type of content they are going to find on the page. It is always positioned at the top.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/leadspace
+status: stable
+type: component
+language: scss
+platform: web

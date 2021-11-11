@@ -1,0 +1,7 @@
+name: Carousel
+description: The carousel is an exploratory component, meaning it allows users to browse or explore multiple pieces of content within the same area of the page.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/carousel
+status: experimental
+type: component
+language: scss
+platform: web

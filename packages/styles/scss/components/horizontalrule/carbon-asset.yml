@@ -1,0 +1,7 @@
+name: Horizontal rule
+description: The horizontal rule component is utilized for thematic breaks within the content.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/horizontal-rule
+status: stable
+type: component
+language: scss
+platform: web

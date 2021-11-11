@@ -1,0 +1,7 @@
+name: Filter panel
+description: The filter panel is a component that can be customized to provide categorized filters to help users trim down large amounts of content, data and/or search results.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/filter-panel
+status: draft
+type: component
+language: scss
+platform: web

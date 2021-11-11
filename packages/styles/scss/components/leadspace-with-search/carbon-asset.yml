@@ -1,0 +1,7 @@
+name: Lead space search
+description: Lead space search provides a fast route to information discovery by including a prominent search option in the lead space. As the search is always positioned at the top, it is discoverable by users the moment they land on the page.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/lead-space-search
+status: stable
+type: component
+language: scss
+platform: web

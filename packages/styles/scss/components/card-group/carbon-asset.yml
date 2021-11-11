@@ -1,0 +1,7 @@
+name: Card group
+description: Card group arranges cards in a grid and offers useful features that are applied to the group as a whole.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-group
+status: stable
+type: component
+language: scss
+platform: web

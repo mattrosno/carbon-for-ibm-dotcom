@@ -1,0 +1,7 @@
+name: Lightbox media viewer
+description: https://www.ibm.com/standards/carbon/components/lightbox-media-viewer
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/lightbox-media-viewer
+status: stable
+type: component
+language: scss
+platform: web

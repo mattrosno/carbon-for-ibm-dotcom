@@ -1,0 +1,7 @@
+name: Card in card
+description: Card in card shares the same functionality and text content requirements of a standard card, but requires a large media element. Card in card is often used in a Card group to as a featured card.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-in-card
+status: stable
+type: component
+language: scss
+platform: web

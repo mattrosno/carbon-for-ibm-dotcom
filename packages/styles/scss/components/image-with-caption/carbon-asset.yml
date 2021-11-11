@@ -1,0 +1,7 @@
+name: Image with caption
+description: With the Image with caption component, an image can include a caption beneath to provide more context. In addition, the image can be clicked to open a larger version of the image, using the Lightbox media viewer overlay.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/images#image-with-caption
+status: stable
+type: component
+language: scss
+platform: web

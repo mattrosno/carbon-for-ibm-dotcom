@@ -1,0 +1,7 @@
+name: Card section offset
+description: Offset adds empty card slots to the beginning of the group, and can be used to achieve L shape card groups.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-group/#offset
+status: stable
+type: component
+language: scss
+platform: web

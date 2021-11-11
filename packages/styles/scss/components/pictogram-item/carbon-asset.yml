@@ -1,0 +1,7 @@
+name: Pictogram item
+description: Pictogram item is used to communicate messages at a glance, afford interactivity, and simplify complex ideas.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/pictogram-item
+status: stable
+type: component
+language: scss
+platform: web

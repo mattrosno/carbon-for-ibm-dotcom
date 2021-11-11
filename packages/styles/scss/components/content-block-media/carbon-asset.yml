@@ -1,0 +1,7 @@
+name: Content block media
+description: Content block media is used to present information with images in a group setting.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block-media
+status: stable
+type: component
+language: scss
+platform: web

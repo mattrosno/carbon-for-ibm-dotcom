@@ -1,0 +1,7 @@
+name: Locale modal
+description: Locale modal is triggered after selecting the locale button and allows users to change geographic regions and languages, if available.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/localemodal
+status: stable
+type: component
+language: scss
+platform: web
