@@ -1,0 +1,7 @@
+name: removeHtmlTagEntities
+description: Utility to remove HTML entities.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#removeHtmlTagEntities
+status: stable
+type: function
+framework: vanilla
+platform: web

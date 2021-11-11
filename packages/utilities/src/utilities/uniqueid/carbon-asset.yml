@@ -1,0 +1,7 @@
+name: uniqueid
+description: Creates a unique ID to use.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#uniqueid
+status: stable
+type: function
+framework: vanilla
+platform: web

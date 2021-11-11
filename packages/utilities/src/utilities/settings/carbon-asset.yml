@@ -1,0 +1,7 @@
+name: settings
+description: Global settings
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/ibmdotcom.module_settings.html
+status: stable
+type: function
+framework: vanilla
+platform: web

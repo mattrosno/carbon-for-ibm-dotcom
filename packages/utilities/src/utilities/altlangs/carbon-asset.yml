@@ -1,0 +1,7 @@
+name: altlangs
+description: Utility to grab all alternative languages on the page. This scrapes the page of all elements and returns as a readable object.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#altlangs
+status: stable
+type: function
+framework: vanilla
+platform: web

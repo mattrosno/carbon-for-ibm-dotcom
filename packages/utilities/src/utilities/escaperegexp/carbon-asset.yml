@@ -1,0 +1,7 @@
+name: escapeRegExp
+description: Utiltity function for escaping regex expressions.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#escapeRegExp
+status: stable
+type: function
+framework: vanilla
+platform: web

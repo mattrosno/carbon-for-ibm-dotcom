@@ -1,0 +1,7 @@
+name: smoothScroll
+description: Utility handles smoothScroll on the anchor element after onClick.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#smoothScroll
+status: stable
+type: function
+framework: vanilla
+platform: web

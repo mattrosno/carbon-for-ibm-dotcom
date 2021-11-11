@@ -1,0 +1,7 @@
+name: markdownToHtml
+description: Converts markdown syntaxes into html.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#markdownToHtml
+status: stable
+type: function
+framework: vanilla
+platform: web
