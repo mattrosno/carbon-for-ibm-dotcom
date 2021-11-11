@@ -1,5 +1,5 @@
 name: Lightbox media viewer
-description: https://www.ibm.com/standards/carbon/components/lightbox-media-viewer
+description: Lightbox media viewer allows the user to view an image or video at a larger size within a modal.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/lightbox-media-viewer
 status: stable
 type: component
