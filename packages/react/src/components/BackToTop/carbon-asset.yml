@@ -1,0 +1,12 @@
+id: back-to-top
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/back-to-top
+status: stable
+framework: react
+inherits:
+  asset: '@carbon/ibmdotcom-styles@latest/back-to-top'
+  properties:
+    - name
+    - description
+    - thumbnailPath
+    - type
+    - platform
