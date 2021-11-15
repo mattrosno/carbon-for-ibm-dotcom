@@ -6,3 +6,4 @@ status: stable
 type: component
 language: scss
 platform: web
+thumbnailPath: /docs/back-to-top-thumbnail.png
