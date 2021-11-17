@@ -1,3 +1,4 @@
+id: geolocation
 name: geolocation
 description: Utility to retrieve user's country code based on their IP address.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#geolocation
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true

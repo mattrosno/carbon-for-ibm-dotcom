@@ -1,3 +1,4 @@
+id: focuswrap
 name: focuswrap
 description: Fires the given event if focus goes out of the given element.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#focuswrap
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true

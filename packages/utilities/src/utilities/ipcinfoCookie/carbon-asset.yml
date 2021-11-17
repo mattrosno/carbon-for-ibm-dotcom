@@ -1,3 +1,4 @@
+id: ipcinfo-cookie
 name: ipcinfoCookie
 description: Utility to set and get the ipcInfo cookie needed to determine country and language code.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/ipcinfoCookie.html
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true

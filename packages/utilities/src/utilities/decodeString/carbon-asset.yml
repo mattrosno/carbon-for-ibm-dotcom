@@ -1,3 +1,4 @@
+id: decode-string
 name: decodeString
 description: Utility function to parse and decode text content. Strings can become encoded for various reasons. This utility decodes those strings.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#decodeString
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true

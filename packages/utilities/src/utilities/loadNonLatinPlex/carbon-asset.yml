@@ -1,3 +1,4 @@
+id: load-non-latin-plex
 name: loadNonLatinPlex
 description: Utility to load in the corresponding non-Latin Plex font if necessary.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#loadNonLatinPlex
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true

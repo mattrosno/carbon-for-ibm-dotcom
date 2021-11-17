@@ -1,3 +1,4 @@
+id: same-height
 name: sameHeight
 description: Utility that sets an array of elements to the same height.
 externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#sameHeight
@@ -5,3 +6,4 @@ status: stable
 type: function
 framework: vanilla
 platform: web
+private: true
