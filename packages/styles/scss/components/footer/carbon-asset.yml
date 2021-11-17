@@ -3,5 +3,5 @@ description: The footer component is a section that sits at the bottom of any IB
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/footer
 status: stable
 type: component
-language: scss
 platform: web
+private: true

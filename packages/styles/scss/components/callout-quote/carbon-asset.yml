@@ -3,5 +3,6 @@ description: Callout quote is a typographic layout that is used to highlight an 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/callout-quote
 status: stable
 type: component
-language: scss
 platform: web
+private: true
+thumbnailPath: /docs/callout_quote.svg

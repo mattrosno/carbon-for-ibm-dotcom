@@ -3,5 +3,5 @@ description: Content block horizontal is used to highlight a group of more impor
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block-horizontal
 status: stable
 type: component
-language: scss
 platform: web
+private: true

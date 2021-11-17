@@ -3,5 +3,5 @@ description: Tabs extended combines tabs and accordion to organize editorial con
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/tabs-extended
 status: stable
 type: component
-language: scss
 platform: web
+private: true

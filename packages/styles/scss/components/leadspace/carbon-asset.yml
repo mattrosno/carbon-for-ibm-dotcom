@@ -3,5 +3,5 @@ description: Lead space sets the context and also helps users understand what ty
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/leadspace
 status: stable
 type: component
-language: scss
 platform: web
+private: true

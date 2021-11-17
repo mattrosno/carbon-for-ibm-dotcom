@@ -3,5 +3,5 @@ description: Content item horizontal component displays information in a horizon
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-item-horizontal
 status: experimental
 type: component
-language: scss
 platform: web
+private: true

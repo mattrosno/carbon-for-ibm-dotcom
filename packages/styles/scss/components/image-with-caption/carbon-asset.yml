@@ -3,5 +3,5 @@ description: With the Image with caption component, an image can include a capti
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/images#image-with-caption
 status: stable
 type: component
-language: scss
 platform: web
+private: true

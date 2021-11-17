@@ -3,5 +3,5 @@ description: Link with icon is primarily used as a navigational element with an 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-with-icon
 status: stable
 type: component
-language: scss
 platform: web
+private: true

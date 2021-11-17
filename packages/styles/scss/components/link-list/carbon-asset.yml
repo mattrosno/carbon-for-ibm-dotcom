@@ -3,5 +3,5 @@ description: Link list is used for multiple CTAs, with options for vertical and 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-list
 status: stable
 type: component
-language: scss
 platform: web
+private: true

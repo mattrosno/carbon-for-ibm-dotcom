@@ -3,5 +3,5 @@ description: Lead space block is an alternative to the Lead space, enabling a mo
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/lead-space-block
 status: stable
 type: component
-language: scss
 platform: web
+private: true

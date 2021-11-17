@@ -3,5 +3,5 @@ description: Card section with images brings images into each card in the sectio
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section#card-section-with-images
 status: stable
 type: component
-language: scss
 platform: web
+private: true

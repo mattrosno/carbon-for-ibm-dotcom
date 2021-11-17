@@ -3,5 +3,6 @@ description: Callout with media is used to feature a high value media asset such
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/callout-with-media
 status: stable
 type: component
-language: scss
 platform: web
+private: true
+thumbnailPath: /docs/callout_with_media.svg

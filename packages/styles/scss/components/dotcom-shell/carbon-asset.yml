@@ -3,5 +3,5 @@ description: Dotcom shell includes the Masthead, and Footer components, all wrap
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/dotcom-shell
 status: stable
 type: component
-language: scss
 platform: web
+private: true

@@ -3,5 +3,5 @@ description: The horizontal rule component is utilized for thematic breaks withi
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/horizontal-rule
 status: stable
 type: component
-language: scss
 platform: web
+private: true

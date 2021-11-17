@@ -3,5 +3,5 @@ description: Unlike Card, which can be used as a standalone component, Card link
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-link
 status: stable
 type: component
-language: scss
 platform: web
+private: true

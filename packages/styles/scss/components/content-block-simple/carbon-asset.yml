@@ -3,5 +3,5 @@ description: Content block is a high-level layout component that acts as the mai
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block
 status: stable
 type: component
-language: scss
 platform: web
+private: true

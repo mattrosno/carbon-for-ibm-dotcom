@@ -3,5 +3,5 @@ description: Lightbox media viewer allows the user to view an image or video at 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/lightbox-media-viewer
 status: stable
 type: component
-language: scss
 platform: web
+private: true

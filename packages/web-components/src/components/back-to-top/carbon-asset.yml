@@ -1,6 +1,6 @@
 id: back-to-top
 status: stable
-framework: react
+framework: web-component
 inherits:
   asset: 'ibmdotcom-styles@latest/back-to-top'
   properties:

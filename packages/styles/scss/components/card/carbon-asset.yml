@@ -3,5 +3,5 @@ description: Cards are considered “workhorse” components because of their ve
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards
 status: stable
 type: component
-language: scss
 platform: web
+private: true

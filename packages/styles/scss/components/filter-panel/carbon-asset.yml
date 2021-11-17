@@ -3,5 +3,5 @@ description: The filter panel is a component that can be customized to provide c
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/filter-panel
 status: draft
 type: component
-language: scss
 platform: web
+private: true

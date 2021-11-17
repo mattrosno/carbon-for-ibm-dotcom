@@ -4,6 +4,6 @@ description: Back to top is a sticky button that appears on long form pages. Whe
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/back-to-top
 status: stable
 type: component
-language: scss
 platform: web
-thumbnailPath: /docs/back-to-top-thumbnail.png
+private: true
+thumbnailPath: /docs/back_to_top.svg

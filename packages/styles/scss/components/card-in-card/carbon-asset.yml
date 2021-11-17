@@ -3,5 +3,5 @@ description: Card in card shares the same functionality and text content require
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-in-card
 status: stable
 type: component
-language: scss
 platform: web
+private: true

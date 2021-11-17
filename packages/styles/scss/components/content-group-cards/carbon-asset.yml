@@ -3,5 +3,5 @@ description: Content group cards is used to present information through a group 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-group-cards
 status: stable
 type: component
-language: scss
 platform: web
+private: true

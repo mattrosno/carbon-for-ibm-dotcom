@@ -3,5 +3,5 @@ description: Card group arranges cards in a grid and offers useful features that
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-group
 status: stable
 type: component
-language: scss
 platform: web
+private: true

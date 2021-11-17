@@ -3,5 +3,5 @@ description: Tag link is a clickable tag that links the topic to another page wi
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/tag-link
 status: experimental
 type: component
-language: scss
 platform: web
+private: true

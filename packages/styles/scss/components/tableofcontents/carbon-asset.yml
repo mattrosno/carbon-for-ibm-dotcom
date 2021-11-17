@@ -3,5 +3,5 @@ description: The table of contents component allows users to quickly navigate th
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/table-of-contents
 status: stable
 type: component
-language: scss
 platform: web
+private: true

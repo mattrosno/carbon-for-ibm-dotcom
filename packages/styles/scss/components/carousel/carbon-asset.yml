@@ -3,5 +3,5 @@ description: The carousel is an exploratory component, meaning it allows users t
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/carousel
 status: experimental
 type: component
-language: scss
 platform: web
+private: true

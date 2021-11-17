@@ -3,5 +3,5 @@ description: Card section is a collection of cards presented in a full-width sec
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section
 status: stable
 type: component
-language: scss
 platform: web
+private: true

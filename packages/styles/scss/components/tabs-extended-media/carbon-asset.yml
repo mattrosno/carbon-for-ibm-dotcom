@@ -3,5 +3,5 @@ description: Tabs extended provides an option to include media. It uses Content 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/tabs-extended#tabs-extended-media
 status: stable
 type: component
-language: scss
 platform: web
+private: true

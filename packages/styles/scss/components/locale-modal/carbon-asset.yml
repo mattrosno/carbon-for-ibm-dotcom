@@ -3,5 +3,5 @@ description: Locale modal is triggered after selecting the locale button and all
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/localemodal
 status: stable
 type: component
-language: scss
 platform: web
+private: true

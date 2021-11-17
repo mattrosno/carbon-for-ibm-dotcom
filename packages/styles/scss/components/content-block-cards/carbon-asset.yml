@@ -3,5 +3,5 @@ description: Content block cards is used to present small self-contained pieces 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block-cards
 status: stable
 type: component
-language: scss
 platform: web
+private: true

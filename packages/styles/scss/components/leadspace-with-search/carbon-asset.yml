@@ -3,5 +3,5 @@ description: Lead space search provides a fast route to information discovery by
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/lead-space-search
 status: stable
 type: component
-language: scss
 platform: web
+private: true

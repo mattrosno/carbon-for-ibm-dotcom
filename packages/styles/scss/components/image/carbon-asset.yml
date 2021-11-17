@@ -3,5 +3,5 @@ description: The Image and the Image with caption components offer two ways to d
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/images
 status: stable
 type: component
-language: scss
 platform: web
+private: true

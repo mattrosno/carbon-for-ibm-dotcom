@@ -3,5 +3,5 @@ description: Video allows you to embed Kaltura videos from the media center in v
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/video
 status: stable
 type: component
-language: scss
 platform: web
+private: true

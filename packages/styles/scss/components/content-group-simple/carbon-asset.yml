@@ -3,5 +3,5 @@ description: Content group simple is an alternative form of a narrative layout w
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-group-simple
 status: stable
 type: component
-language: scss
 platform: web
+private: true

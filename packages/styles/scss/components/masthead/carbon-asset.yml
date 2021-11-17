@@ -3,5 +3,5 @@ description: Masthead is a fundamental navigational component for IBM.com that d
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/masthead
 status: stable
 type: component
-language: scss
 platform: web
+private: true

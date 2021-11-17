@@ -3,5 +3,5 @@ description: CTA stands for call to action. A CTA refers to the use of words or 
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cta
 status: stable
 type: component
-language: scss
 platform: web
+private: true

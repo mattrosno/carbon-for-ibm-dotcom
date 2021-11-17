@@ -3,5 +3,5 @@ description: CTA section is used to communicate actions that users can take alon
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cta-section
 status: stable
 type: component
-language: scss
 platform: web
+private: true
