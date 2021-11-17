@@ -5,3 +5,4 @@ status: stable
 type: component
 platform: web
 private: true
+thumbnailPath: /docs/card_section_images.svg

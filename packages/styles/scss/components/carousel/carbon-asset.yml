@@ -5,3 +5,4 @@ status: experimental
 type: component
 platform: web
 private: true
+thumbnailPath: /docs/carousel.svg

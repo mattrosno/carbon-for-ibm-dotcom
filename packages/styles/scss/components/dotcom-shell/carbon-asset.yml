@@ -5,3 +5,4 @@ status: stable
 type: component
 platform: web
 private: true
+thumbnailPath: /docs/dotcom_shell.svg

@@ -5,3 +5,4 @@ status: draft
 type: component
 platform: web
 private: true
+thumbnailPath: /docs/filter_panel.svg

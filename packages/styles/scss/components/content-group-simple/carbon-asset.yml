@@ -5,3 +5,4 @@ status: stable
 type: component
 platform: web
 private: true
+thumbnailPath: /docs/content_group_simple.svg
