@@ -1,0 +1,12 @@
+id: feature-section
+status: stable
+framework: react
+inherits:
+  asset: 'ibmdotcom-styles@latest/feature-section'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

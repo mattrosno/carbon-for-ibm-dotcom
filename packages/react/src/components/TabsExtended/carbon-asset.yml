@@ -1,0 +1,12 @@
+id: tag-extended
+status: stable
+framework: react
+inherits:
+  asset: 'ibmdotcom-styles@latest/tag-extended'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform
