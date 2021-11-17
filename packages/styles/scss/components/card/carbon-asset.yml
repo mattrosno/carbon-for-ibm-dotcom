@@ -1,4 +1,5 @@
-name: Cards
+id: card
+name: Card
 description: Cards are considered “workhorse” components because of their versatility. They provide effective calls to action, and the various designs available work with a wide range of content.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards
 status: stable

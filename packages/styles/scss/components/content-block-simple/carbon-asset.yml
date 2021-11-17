@@ -1,3 +1,4 @@
+id: content-block
 name: Content block
 description: Content block is a high-level layout component that acts as the main content unit used inside of a Content section to build web experiences on IBM dotcom. It encapsulates other content components (one or multiple content groups) and brings them together into a custom visual, which solves a specific problem for the user.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block

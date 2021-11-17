@@ -1,3 +1,4 @@
+id: footer
 name: Footer
 description: The footer component is a section that sits at the bottom of any IBM.com page, and acts as the catch-all section that helps users navigate and provides corporate level general and legal information. The footer is required on all pages on IBM.com.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/footer

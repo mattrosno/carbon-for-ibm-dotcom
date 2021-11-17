@@ -1,3 +1,4 @@
+id: card-section
 name: Card section
 description: Card section is a collection of cards presented in a full-width section with a left-column header that responds to the grid.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section

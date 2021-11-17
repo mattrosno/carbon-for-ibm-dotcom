@@ -1,3 +1,4 @@
+id: masthead
 name: Masthead
 description: Masthead is a fundamental navigational component for IBM.com that displays consistently at the top of each page. It also includes search and profile services for IBM.com.
 externalDocsUrl: https://www.ibm.com/standards/carbon/components/masthead
