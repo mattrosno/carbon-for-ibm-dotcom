@@ -1,8 +1,8 @@
-id: tabs-extended-media
+id: horizontal-rule
 status: stable
 framework: react
 inherits:
-  asset: 'ibmdotcom-styles@latest/tabs-extended-media'
+  asset: 'ibmdotcom-styles@latest/horizontal-rule'
   properties:
     - name
     - description

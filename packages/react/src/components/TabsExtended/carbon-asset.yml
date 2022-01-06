@@ -1,8 +1,8 @@
-id: tag-extended
+id: tabs-extended
 status: stable
 framework: react
 inherits:
-  asset: 'ibmdotcom-styles@latest/tag-extended'
+  asset: 'ibmdotcom-styles@latest/tabs-extended'
   properties:
     - name
     - description

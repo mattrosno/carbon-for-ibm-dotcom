@@ -1,8 +1,8 @@
-id: tabs-extended-media
+id: content-group-pictograms
 status: stable
 framework: react
 inherits:
-  asset: 'ibmdotcom-styles@latest/tabs-extended-media'
+  asset: 'ibmdotcom-styles@latest/content-group-pictograms'
   properties:
     - name
     - description
