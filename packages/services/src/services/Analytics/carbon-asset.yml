@@ -1,0 +1,8 @@
+id: analytics-api
+name: AnalyticsAPI
+description: Analytics API class with methods for firing analytics events on IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/AnalyticsAPI.html
+status: stable
+type: function
+platform: web
+private: true

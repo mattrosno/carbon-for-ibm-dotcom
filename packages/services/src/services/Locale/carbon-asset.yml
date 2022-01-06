@@ -1,0 +1,8 @@
+id: locale-api
+name: LocaleAPI
+description: Locale API class with method of fetching user's locale for IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/LocaleAPI.html
+status: stable
+type: function
+platform: web
+private: true

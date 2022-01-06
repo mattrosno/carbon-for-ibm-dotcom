@@ -1,0 +1,8 @@
+id: marketing-search-api
+name: MarketingSearchAPI
+description: MarketingSearch API class with methods of fetching search results for IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/MarketingSearchAPI.html
+status: stable
+type: function
+platform: web
+private: true

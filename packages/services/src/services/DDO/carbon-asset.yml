@@ -1,0 +1,8 @@
+id: ddo-api
+name: DDOAPI
+description: DDO API class with methods of fetching search results for IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/DDOAPI.html
+status: stable
+type: function
+platform: web
+private: true

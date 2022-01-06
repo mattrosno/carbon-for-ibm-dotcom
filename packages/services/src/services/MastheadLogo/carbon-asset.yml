@@ -1,0 +1,7 @@
+id: masthead-logo-api
+name: MastheadLogoAPI
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/MastheadLogoAPI.html
+status: stable
+type: function
+platform: web
+private: true

@@ -1,0 +1,8 @@
+id: translation-api
+name: TranslationAPI
+description: Translation API class with methods for fetching i18n data for IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/TranslationAPI.html
+status: stable
+type: function
+platform: web
+private: true
