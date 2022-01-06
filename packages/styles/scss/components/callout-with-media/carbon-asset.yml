@@ -6,4 +6,3 @@ status: stable
 type: component
 platform: web
 private: true
-thumbnailPath: /docs/callout_with_media.svg
