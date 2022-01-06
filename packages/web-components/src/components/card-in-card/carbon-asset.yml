@@ -1,0 +1,12 @@
+id: card-in-card
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/card-in-card'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

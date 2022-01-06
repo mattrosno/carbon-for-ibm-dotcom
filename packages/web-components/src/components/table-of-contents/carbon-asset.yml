@@ -1,0 +1,12 @@
+id: table-of-contents
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/table-of-contents'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

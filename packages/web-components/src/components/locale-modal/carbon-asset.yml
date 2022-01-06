@@ -1,0 +1,12 @@
+id: locale-modal
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/locale-modal'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

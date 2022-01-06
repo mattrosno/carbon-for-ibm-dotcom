@@ -1,0 +1,12 @@
+id: callout-with-media
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/callout-with-media'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

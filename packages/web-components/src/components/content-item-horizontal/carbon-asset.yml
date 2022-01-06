@@ -1,0 +1,12 @@
+id: content-item-horizontal
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/content-item-horizontal'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

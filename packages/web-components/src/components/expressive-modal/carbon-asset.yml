@@ -1,0 +1,12 @@
+id: expressive-modal
+status: stable
+framework: web-component
+inherits:
+  asset: 'ibmdotcom-styles@latest/expressive-modal'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform
