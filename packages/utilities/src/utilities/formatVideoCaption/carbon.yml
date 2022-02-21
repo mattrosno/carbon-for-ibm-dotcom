@@ -8,3 +8,14 @@ type: function
 framework: vanilla
 platform: web
 private: true
+---
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: format-video-duration
+name: formatVideoDuration
+description: The default g11n formatter for video duration. Components using this function should have a mechanism to allow translators to replace it with one accomodating the preferences of specific locale, or to replace it with general-purpose g11n formatting library. (e.g. moment, though it's too big for us to make it a hard dependency)
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#formatVideoDuration
+status: stable
+type: function
+framework: vanilla
+platform: web
+private: true
