@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: content-group-simple
+name: Content group simple
+description: Content group simple is an alternative form of a narrative layout where the content is broken up into smaller pieces to make it more digestible.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-group-simple
+status: stable
+type: component
+platform: web
+private: true

@@ -1,9 +1,0 @@
-id: format-video-caption
-name: formatVideoCaption
-description: The default g11n formatter for video caption, combining video name and video duration. Components using this function should have a mechanism to allow translators to replace it with one accomodating the preferences of specific locale.
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#formatVideoCaption
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true

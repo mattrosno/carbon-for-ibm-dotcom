@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: tag-link
+name: Tag link
+description: Tag link is a clickable tag that links the topic to another page with more information.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/tag-link
+status: stable
+type: component
+platform: web
+private: true

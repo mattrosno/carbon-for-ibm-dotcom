@@ -1,8 +1,0 @@
-id: content-block-horizontal
-name: Content block horizontal
-description: Content block horizontal is used to highlight a group of more important pieces of content, such as products or solutions, with more visual weight.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block-horizontal
-status: stable
-type: component
-platform: web
-private: true

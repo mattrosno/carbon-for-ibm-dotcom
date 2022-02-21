@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: video-player-api
+name: VideoPlayerAPI
+description: Deprecated in favor of KalturaPlayerAPI VideoPlayerAPI class with methods of checking script state and embed video meta data and api data.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/VideoPlayerAPI.html
+status: deprecated
+type: function
+platform: web
+private: true

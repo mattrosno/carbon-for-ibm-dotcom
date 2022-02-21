@@ -1,8 +1,0 @@
-id: kaltura-player-api
-name: KalturaPlayerAPI
-description: KalturaPlayerAPI class with methods of checking script state and embed media meta data and api data.
-externalDocsUrl: https://ibmdotcom-services.mybluemix.net/KalturaPlayerAPI.html
-status: stable
-type: function
-platform: web
-private: true

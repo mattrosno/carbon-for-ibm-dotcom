@@ -1,8 +1,0 @@
-id: image
-name: Image
-description: The Image and the Image with caption components offer two ways to display imagery on the page.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/images
-status: stable
-type: component
-platform: web
-private: true

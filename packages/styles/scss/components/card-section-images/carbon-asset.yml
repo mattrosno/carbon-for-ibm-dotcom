@@ -1,8 +1,0 @@
-id: card-section-with-images
-name: Card section with images
-description: Card section with images brings images into each card in the section. Like Card section, this component is used for presenting resources or links, but presents images instead of body copy in each card.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section#card-section-with-images
-status: stable
-type: component
-platform: web
-private: true

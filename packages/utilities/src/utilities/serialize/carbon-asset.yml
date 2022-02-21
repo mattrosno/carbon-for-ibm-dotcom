@@ -1,9 +1,0 @@
-id: serialize
-name: serialize
-description: Converts a JSON object to a serialized string.
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#serialize
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true

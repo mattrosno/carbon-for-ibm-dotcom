@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: feature-section
+name: Feature section
+description: Feature section is a dedicated section for a single story.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/feature-section
+status: stable
+type: component
+platform: web
+private: true

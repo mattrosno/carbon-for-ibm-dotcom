@@ -1,8 +1,0 @@
-id: content-block-cards
-name: Content block cards
-description: Content block cards is used to present small self-contained pieces of information as cards.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-block-cards
-status: stable
-type: component
-platform: web
-private: true

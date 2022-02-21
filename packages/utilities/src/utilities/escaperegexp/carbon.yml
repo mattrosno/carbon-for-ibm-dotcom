@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: escape-reg-exp
+name: escapeRegExp
+description: Utiltity function for escaping regex expressions.
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#escapeRegExp
+status: stable
+type: function
+framework: vanilla
+platform: web
+private: true

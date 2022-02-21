@@ -1,9 +1,0 @@
-id: calculate-total-width
-name: calculateTotalWidth
-description: Utility to calculate the total width of elements.
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#calculateTotalWidth
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true

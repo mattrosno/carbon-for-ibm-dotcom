@@ -1,8 +1,0 @@
-id: expressive-modal
-name: Expressive modal
-description: Expressive modal is based on the Carbon modal component with slight styling updates to increase the padding and uses fixed buttons.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/expressive-modal
-status: stable
-type: component
-platform: web
-private: true

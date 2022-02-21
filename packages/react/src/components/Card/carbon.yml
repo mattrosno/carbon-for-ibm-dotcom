@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: card
+status: stable
+framework: react
+inherits:
+  asset: 'ibmdotcom-styles@latest/card'
+  properties:
+    - name
+    - description
+    - externalDocsUrl
+    - thumbnailPath
+    - type
+    - platform

@@ -1,8 +1,0 @@
-id: dotcom-shell
-name: Dotcom shell
-description: Dotcom shell includes the Masthead, and Footer components, all wrapped in a UI shell using Carbon's grid.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/dotcom-shell
-status: stable
-type: component
-platform: web
-private: true

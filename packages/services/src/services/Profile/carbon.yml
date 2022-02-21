@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: profile-api
+name: ProfileAPI
+description: Profile API class with methods for checking user authentication for IBM.com.
+externalDocsUrl: https://ibmdotcom-services.mybluemix.net/ProfileAPI.html
+status: stable
+type: function
+platform: web
+private: true

@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-library.schema.json
+id: ibmdotcom-utilities
+name: IBM.com Utilities
+description: IBM.com ES6 utility classes
+externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net
+private: true

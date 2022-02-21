@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: quote
+name: Quote
+description: Quote is used to highlight an impactful client statement or user testimonial.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/quote
+status: stable
+type: component
+platform: web
+private: true

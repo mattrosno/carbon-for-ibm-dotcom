@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: image-with-caption
+name: Image with caption
+description: With the Image with caption component, an image can include a caption beneath to provide more context. In addition, the image can be clicked to open a larger version of the image, using the Lightbox media viewer overlay.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/images#image-with-caption
+status: stable
+type: component
+platform: web
+private: true

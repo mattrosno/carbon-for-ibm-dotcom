@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: callout-quote
+name: Callout quote
+description: Callout quote is a typographic layout that is used to highlight an impactful client statement or user testimonial.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/callout-quote
+status: stable
+type: component
+platform: web
+private: true

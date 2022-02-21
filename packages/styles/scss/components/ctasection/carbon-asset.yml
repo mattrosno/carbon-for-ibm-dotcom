@@ -1,8 +1,0 @@
-id: cta-section
-name: CTA Section
-description: CTA section is used to communicate actions that users can take along with some information that is relevant to the actions.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/cta-section
-status: stable
-type: component
-platform: web
-private: true

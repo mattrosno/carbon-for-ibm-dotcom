@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+id: logo-grid
+name: Logo grid
+description: Logo grid is used to present a group of client or partner logos. Currently the logos are not clickable.
+externalDocsUrl: https://www.ibm.com/standards/carbon/components/logo-grid
+status: stable
+type: component
+platform: web
+private: true

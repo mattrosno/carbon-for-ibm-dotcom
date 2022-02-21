@@ -1,8 +1,0 @@
-id: card-link
-name: Card link
-description: Unlike Card, which can be used as a standalone component, Card link should always be accompanied by contextual copy on the page. Card links contain a heading, an optional CTA (call-to-action), and optional body copy. The entire card is clickable.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-link
-status: stable
-type: component
-platform: web
-private: true

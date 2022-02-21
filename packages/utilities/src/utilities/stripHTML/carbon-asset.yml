@@ -1,9 +1,0 @@
-id: strip-html
-name: stripHTML
-description: Utility returns the text stripping all html tags from it.
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#stripHTML
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true

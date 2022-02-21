@@ -1,8 +1,0 @@
-id: content-item-horizontal
-name: Content item horizontal
-description: Content item horizontal component displays information in a horizontal orientation.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/content-item-horizontal
-status: stable
-type: component
-platform: web
-private: true
