@@ -1,10 +1,11 @@
 # yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
-id: settings
-name: settings
-description: Global settings
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/ibmdotcom.module_settings.html
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true
+assets:
+  settings:
+    name: settings
+    description: Global settings
+    externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/ibmdotcom.module_settings.html
+    status: stable
+    type: function
+    framework: vanilla
+    platform: web
+    private: true

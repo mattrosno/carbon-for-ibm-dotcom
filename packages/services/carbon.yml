@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
-id: ibmdotcom-services
-name: IBM.com Services
-description: IBM.com ES6 service classes
-private: true
+library:
+  id: ibmdotcom-services
+  name: IBM.com Services
+  description: IBM.com ES6 service classes
+  private: true

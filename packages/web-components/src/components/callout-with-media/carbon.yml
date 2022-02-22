@@ -1,13 +1,14 @@
 # yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
-id: callout-with-media
-status: stable
-framework: web-component
-inherits:
-  asset: 'ibmdotcom-styles@latest/callout-with-media'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+assets:
+  callout-with-media:
+    status: stable
+    framework: web-component
+    inherits:
+      asset: 'ibmdotcom-styles@latest/callout-with-media'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform
