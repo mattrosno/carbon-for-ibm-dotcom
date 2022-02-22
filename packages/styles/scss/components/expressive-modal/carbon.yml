@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: expressive-modal
-name: Expressive modal
-description: Expressive modal is based on the Carbon modal component with slight styling updates to increase the padding and uses fixed buttons.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/expressive-modal
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  expressive-modal:
+    name: Expressive modal
+    description: Expressive modal is based on the Carbon modal component with slight styling updates to increase the padding and uses fixed buttons.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/expressive-modal
+    status: stable
+    type: component
+    platform: web
+    private: true

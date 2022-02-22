@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
 id: smoothScroll
 name: smoothScroll
 description: Utility handles smoothScroll on the anchor element after onClick.

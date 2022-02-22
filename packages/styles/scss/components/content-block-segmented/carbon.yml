@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: content-block-segmented
-name: Content block segmented
-description: Content block segmented is a variation of Content block simple with the added ability to add subsections.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  content-block-segmented:
+    name: Content block segmented
+    description: Content block segmented is a variation of Content block simple with the added ability to add subsections.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-section
+    status: stable
+    type: component
+    platform: web
+    private: true

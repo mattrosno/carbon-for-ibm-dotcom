@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: lead-space-block
-name: Lead space block
-description: Lead space block is an alternative to the Lead space, enabling a more productive first site of viewer engagement. Lead space — block is positioned at the top of a web page, with a purpose to orient the user when they land on a page, inform them of the content, and guide them to the first key piece of content on the page, whether it’s a crucial piece of information or a call-to-action button.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/lead-space-block
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  lead-space-block:
+    name: Lead space block
+    description: Lead space block is an alternative to the Lead space, enabling a more productive first site of viewer engagement. Lead space — block is positioned at the top of a web page, with a purpose to orient the user when they land on a page, inform them of the content, and guide them to the first key piece of content on the page, whether it’s a crucial piece of information or a call-to-action button.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/lead-space-block
+    status: stable
+    type: component
+    platform: web
+    private: true

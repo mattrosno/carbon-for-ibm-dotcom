@@ -1,13 +1,14 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: card-section-with-images
-status: stable
-framework: react
-inherits:
-  asset: 'ibmdotcom-styles@latest/card-section-with-images'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  card-section-with-images:
+    status: stable
+    framework: react
+    inherits:
+      asset: 'ibmdotcom-styles@latest/card-section-with-images'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform

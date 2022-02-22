@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: link-with-icon
-name: Link with icon
-description: Link with icon is primarily used as a navigational element with an icon as an indicator to the destination or type of content being referenced. Link with icon should not be used within a paragraph.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-with-icon
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  link-with-icon:
+    name: Link with icon
+    description: Link with icon is primarily used as a navigational element with an icon as an indicator to the destination or type of content being referenced. Link with icon should not be used within a paragraph.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-with-icon
+    status: stable
+    type: component
+    platform: web
+    private: true

@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: footer
-name: Footer
-description: The footer component is a section that sits at the bottom of any IBM.com page, and acts as the catch-all section that helps users navigate and provides corporate level general and legal information. The footer is required on all pages on IBM.com.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/footer
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  footer:
+    name: Footer
+    description: The footer component is a section that sits at the bottom of any IBM.com page, and acts as the catch-all section that helps users navigate and provides corporate level general and legal information. The footer is required on all pages on IBM.com.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/footer
+    status: stable
+    type: component
+    platform: web
+    private: true

@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: cta
-name: CTA
-description: CTA stands for call to action. A CTA refers to the use of words or phrases that can compel an audience to act in a specific way.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/cta
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  cta:
+    name: CTA
+    description: CTA stands for call to action. A CTA refers to the use of words or phrases that can compel an audience to act in a specific way.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/cta
+    status: stable
+    type: component
+    platform: web
+    private: true

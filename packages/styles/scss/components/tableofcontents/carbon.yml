@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: table-of-contents
-name: Table of contents
-description: The table of contents component allows users to quickly navigate through long pages by providing jump links to different sections of the content within a single page.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/table-of-contents
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  table-of-contents:
+    name: Table of contents
+    description: The table of contents component allows users to quickly navigate through long pages by providing jump links to different sections of the content within a single page.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/table-of-contents
+    status: stable
+    type: component
+    platform: web
+    private: true

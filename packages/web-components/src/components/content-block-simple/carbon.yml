@@ -1,13 +1,14 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: content-block-simple
-status: stable
-framework: web-component
-inherits:
-  asset: 'ibmdotcom-styles@latest/content-block-simple'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  content-block-simple:
+    status: stable
+    framework: web-component
+    inherits:
+      asset: 'ibmdotcom-styles@latest/content-block-simple'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform

@@ -1,13 +1,14 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: content-group-pictograms
-status: stable
-framework: web-component
-inherits:
-  asset: 'ibmdotcom-styles@latest/content-group-pictograms'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  content-group-pictograms:
+    status: stable
+    framework: web-component
+    inherits:
+      asset: 'ibmdotcom-styles@latest/content-group-pictograms'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform

@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: back-to-top
-name: Back to top
-description: Back to top is a sticky button that appears on long form pages. When triggered it scrolls the the user back to the top of the page.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/back-to-top
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  back-to-top:
+    name: Back to top
+    description: Back to top is a sticky button that appears on long form pages. When triggered it scrolls the the user back to the top of the page.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/back-to-top
+    status: stable
+    type: component
+    platform: web
+    private: true

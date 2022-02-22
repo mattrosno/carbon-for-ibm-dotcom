@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: card-section-offset
-name: Card section offset
-description: Offset adds empty card slots to the beginning of the group, and can be used to achieve L shape card groups.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-group/#offset
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  card-section-offset:
+    name: Card section offset
+    description: Offset adds empty card slots to the beginning of the group, and can be used to achieve L shape card groups.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/card-group/#offset
+    status: stable
+    type: component
+    platform: web
+    private: true

@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: card-in-card
-name: Card in card
-description: Card in card shares the same functionality and text content requirements of a standard card, but requires a large media element. Card in card is often used in a Card group to as a featured card.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-in-card
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  card-in-card:
+    name: Card in card
+    description: Card in card shares the same functionality and text content requirements of a standard card, but requires a large media element. Card in card is often used in a Card group to as a featured card.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/cards/#card-in-card
+    status: stable
+    type: component
+    platform: web
+    private: true

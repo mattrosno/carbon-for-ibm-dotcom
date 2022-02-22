@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
 id: same-height
 name: sameHeight
 description: Utility that sets an array of elements to the same height.

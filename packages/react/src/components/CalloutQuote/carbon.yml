@@ -1,13 +1,14 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: callout-quote
-status: stable
-framework: react
-inherits:
-  asset: 'ibmdotcom-styles@latest/callout-quote'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  callout-quote:
+    status: stable
+    framework: react
+    inherits:
+      asset: 'ibmdotcom-styles@latest/callout-quote'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform

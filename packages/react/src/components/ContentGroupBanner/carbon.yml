@@ -1,13 +1,14 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: content-group-banner
-status: stable
-framework: react
-inherits:
-  asset: 'ibmdotcom-styles@latest/content-group-banner'
-  properties:
-    - name
-    - description
-    - externalDocsUrl
-    - thumbnailPath
-    - type
-    - platform
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  content-group-banner:
+    status: stable
+    framework: react
+    inherits:
+      asset: 'ibmdotcom-styles@latest/content-group-banner'
+      properties:
+        - name
+        - description
+        - externalDocsUrl
+        - thumbnailPath
+        - type
+        - platform

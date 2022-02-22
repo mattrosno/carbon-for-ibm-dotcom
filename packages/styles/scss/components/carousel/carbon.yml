@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: carousel
-name: Carousel
-description: The carousel is an exploratory component, meaning it allows users to browse or explore multiple pieces of content within the same area of the page.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/carousel
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  carousel:
+    name: Carousel
+    description: The carousel is an exploratory component, meaning it allows users to browse or explore multiple pieces of content within the same area of the page.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/carousel
+    status: stable
+    type: component
+    platform: web
+    private: true

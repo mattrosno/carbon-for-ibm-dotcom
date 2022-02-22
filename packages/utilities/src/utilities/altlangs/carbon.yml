@@ -1,10 +1,11 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: altlangs
-name: altlangs
-description: Utility to grab all alternative languages on the page. This scrapes the page of all elements and returns as a readable object.
-externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#altlangs
-status: stable
-type: function
-framework: vanilla
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  altlangs:
+    name: altlangs
+    description: Utility to grab all alternative languages on the page. This scrapes the page of all elements and returns as a readable object.
+    externalDocsUrl: https://ibmdotcom-utilities.mybluemix.net/global.html#altlangs
+    status: stable
+    type: function
+    framework: vanilla
+    platform: web
+    private: true

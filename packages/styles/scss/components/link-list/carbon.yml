@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-asset.schema.json
-id: link-list
-name: Link list
-description: Link list is used for multiple CTAs, with options for vertical and horizontal lists and varying CTA styling.
-externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-list
-status: stable
-type: component
-platform: web
-private: true
+# yaml-language-server: $schema=https://unpkg.com/@carbon-platform/schemas/carbon-resources.schema.json
+assets:
+  link-list:
+    name: Link list
+    description: Link list is used for multiple CTAs, with options for vertical and horizontal lists and varying CTA styling.
+    externalDocsUrl: https://www.ibm.com/standards/carbon/components/link-list
+    status: stable
+    type: component
+    platform: web
+    private: true
