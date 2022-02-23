@@ -3,12 +3,3 @@ assets:
   lightbox-media-viewer:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/lightbox-media-viewer'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

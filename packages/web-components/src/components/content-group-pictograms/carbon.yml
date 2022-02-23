@@ -3,12 +3,3 @@ assets:
   content-group-pictograms:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-group-pictograms'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

@@ -3,12 +3,3 @@ assets:
   quote:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/quote'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

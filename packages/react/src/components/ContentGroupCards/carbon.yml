@@ -3,12 +3,3 @@ assets:
   content-group-cards:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-group-cards'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

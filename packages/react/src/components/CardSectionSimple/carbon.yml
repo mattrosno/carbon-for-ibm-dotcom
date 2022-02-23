@@ -3,12 +3,3 @@ assets:
   card-section:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/card-section'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

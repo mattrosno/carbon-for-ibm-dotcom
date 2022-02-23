@@ -3,12 +3,3 @@ assets:
   card-link:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/card-link'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

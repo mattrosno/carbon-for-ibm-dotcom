@@ -3,12 +3,3 @@ assets:
   video:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/video'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

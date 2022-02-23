@@ -3,12 +3,3 @@ assets:
   lead-space-block:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/lead-space-block'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

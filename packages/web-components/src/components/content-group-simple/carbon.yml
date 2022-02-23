@@ -3,12 +3,3 @@ assets:
   content-group-simple:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-group-simple'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

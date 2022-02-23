@@ -3,12 +3,3 @@ assets:
   content-block-segmented:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-block-segmented'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

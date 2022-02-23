@@ -3,12 +3,3 @@ assets:
   callout-quote:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/callout-quote'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

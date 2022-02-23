@@ -7,4 +7,4 @@ assets:
     status: stable
     type: component
     platform: web
-    private: true
+    noIndex: true

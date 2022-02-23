@@ -3,12 +3,3 @@ assets:
   content-item-horizontal:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-item-horizontal'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

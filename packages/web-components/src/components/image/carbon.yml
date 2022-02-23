@@ -3,12 +3,3 @@ assets:
   image:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/image'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

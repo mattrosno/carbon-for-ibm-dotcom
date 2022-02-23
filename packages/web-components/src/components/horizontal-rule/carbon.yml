@@ -3,12 +3,3 @@ assets:
   horizontal-rule:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/horizontal-rule'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

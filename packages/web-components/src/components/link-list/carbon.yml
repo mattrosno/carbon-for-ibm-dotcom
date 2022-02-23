@@ -3,12 +3,3 @@ assets:
   link-list:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/link-list'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

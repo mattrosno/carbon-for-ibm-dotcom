@@ -3,12 +3,3 @@ assets:
   filter-panel:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/filter-panel'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

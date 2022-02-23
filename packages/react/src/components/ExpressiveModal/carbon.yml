@@ -3,12 +3,3 @@ assets:
   expressive-modal:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/expressive-modal'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

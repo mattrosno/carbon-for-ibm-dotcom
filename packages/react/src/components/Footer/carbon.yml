@@ -3,12 +3,3 @@ assets:
   footer:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/footer'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

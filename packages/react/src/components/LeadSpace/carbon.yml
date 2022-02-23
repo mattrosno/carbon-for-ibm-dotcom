@@ -3,12 +3,3 @@ assets:
   lead-space:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/lead-space'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform
