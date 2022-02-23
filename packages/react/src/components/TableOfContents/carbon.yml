@@ -3,12 +3,3 @@ assets:
   table-of-contents:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/table-of-contents'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

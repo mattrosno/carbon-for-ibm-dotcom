@@ -3,12 +3,3 @@ assets:
   content-block-horizontal:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-block-horizontal'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

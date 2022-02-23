@@ -6,4 +6,4 @@ assets:
     status: stable
     type: function
     platform: web
-    private: true
+    noIndex: true

@@ -3,12 +3,3 @@ assets:
   dotcom-shell:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/dotcom-shell'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

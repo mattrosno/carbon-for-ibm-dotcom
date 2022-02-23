@@ -3,12 +3,3 @@ assets:
   card-section-offset:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/card-section-offset'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

@@ -3,4 +3,4 @@ library:
   id: ibmdotcom-styles
   name: IBM.com Styles
   description: IBM.com framework agnostic component styles
-  private: true
+  noIndex: true

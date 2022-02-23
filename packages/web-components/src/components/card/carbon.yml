@@ -3,12 +3,3 @@ assets:
   card:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/card'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

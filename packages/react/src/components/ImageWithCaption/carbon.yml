@@ -3,12 +3,3 @@ assets:
   image-with-caption:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/image-with-caption'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

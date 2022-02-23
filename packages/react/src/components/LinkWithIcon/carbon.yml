@@ -3,12 +3,3 @@ assets:
   link-with-icon:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/link-with-icon'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

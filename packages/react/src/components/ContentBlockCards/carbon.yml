@@ -3,12 +3,3 @@ assets:
   content-block-cards:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-block-cards'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

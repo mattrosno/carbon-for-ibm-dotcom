@@ -3,12 +3,3 @@ assets:
   back-to-top:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/back-to-top'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

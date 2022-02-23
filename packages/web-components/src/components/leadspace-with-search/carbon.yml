@@ -3,12 +3,3 @@ assets:
   lead-space-search:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/lead-space-search'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

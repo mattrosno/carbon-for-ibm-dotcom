@@ -3,12 +3,3 @@ assets:
   carousel:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/carousel'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

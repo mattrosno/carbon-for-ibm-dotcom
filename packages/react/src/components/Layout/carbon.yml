@@ -3,12 +3,3 @@ assets:
   layout:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/layout'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

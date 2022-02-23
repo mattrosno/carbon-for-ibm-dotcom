@@ -3,4 +3,4 @@ library:
   id: ibmdotcom-services
   name: IBM.com Services
   description: IBM.com ES6 service classes
-  private: true
+  noIndex: true

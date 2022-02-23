@@ -3,12 +3,3 @@ assets:
   content-block-simple:
     status: stable
     framework: react
-    inherits:
-      asset: 'ibmdotcom-styles@latest/content-block-simple'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform

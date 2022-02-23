@@ -3,12 +3,3 @@ assets:
   tabs-extended-media:
     status: stable
     framework: web-component
-    inherits:
-      asset: 'ibmdotcom-styles@latest/tabs-extended-media'
-      properties:
-        - name
-        - description
-        - externalDocsUrl
-        - thumbnailPath
-        - type
-        - platform
