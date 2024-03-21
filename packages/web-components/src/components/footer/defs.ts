@@ -1,13 +1,13 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-export { FORM_ELEMENT_COLOR_SCHEME as DROPDOWN_COLOR_SCHEME } from 'carbon-web-components/es/globals/shared-enums.js';
+export { FORM_ELEMENT_COLOR_SCHEME as DROPDOWN_COLOR_SCHEME } from '../../internal/vendor/@carbon/web-components/globals/shared-enums.js';
 
 /**
  * Footer size.
@@ -48,41 +48,6 @@ export enum LANGUAGE_SELECTOR_STYLE_SCHEME {
 }
 
 /**
- * Navigation direction, associated with key symbols.
- */
-export const NAVIGATION_DIRECTION = {
-  Up: -1,
-  ArrowUp: -1,
-  Down: 1,
-  ArrowDown: 1,
-};
-
-/**
- * The keyboard action categories for dropdown.
- */
-export enum DROPDOWN_KEYBOARD_ACTION {
-  /**
-   * Not doing any action.
-   */
-  NONE = 'none',
-
-  /**
-   * Keyboard action to close menu.
-   */
-  CLOSING = 'closing',
-
-  /**
-   * Keyboard action to navigate back/forward.
-   */
-  NAVIGATING = 'navigating',
-
-  /**
-   * Keyboard action to open/close menu on the trigger button or select/deselect a menu item.
-   */
-  TRIGGERING = 'triggering',
-}
-
-/**
  * Dropdown size.
  */
 export enum DROPDOWN_SIZE {
@@ -97,22 +62,12 @@ export enum DROPDOWN_SIZE {
   SMALL = 'sm',
 
   /**
-   * Extra large size.
+   * Large size.
    */
-  EXTRA_LARGE = 'xl',
-}
-
-/**
- * Dropdown types.
- */
-export enum DROPDOWN_TYPE {
-  /**
-   * Regular type.
-   */
-  REGULAR = '',
+  LARGE = 'lg',
 
   /**
-   * Inline type.
+   * Micro size.
    */
-  INLINE = 'inline',
+  MICRO = 'micro',
 }

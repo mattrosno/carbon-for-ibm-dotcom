@@ -1,36 +1,35 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import Filter20 from 'carbon-web-components/es/icons/filter/20.js';
-import { property, customElement, html } from 'lit-element';
-import BXSelect from 'carbon-web-components/es/components/select/select.js';
-import { INPUT_SIZE } from 'carbon-web-components/es/components/input/input.js';
-import { classMap } from 'lit-html/directives/class-map.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import Filter20 from '../../internal/vendor/@carbon/web-components/icons/filter/20.js';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import CDSSelect from '../../internal/vendor/@carbon/web-components/components/select/select.js';
+import { INPUT_SIZE } from '../../internal/vendor/@carbon/web-components/components/text-input/text-input.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import { filter } from '../../globals/internal/collection-helpers';
 import styles from './search-with-typeahead.scss';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
-const { prefix } = settings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Scoped search dropdown - mobile version.
  * The dropdown to scope the search suggestions in mobile
  *
- * @element dds-scoped-search-dropdown-mobile
+ * @element c4d-scoped-search-dropdown-mobile
  * @internal
  */
-@customElement(`${ddsPrefix}-scoped-search-dropdown-mobile`)
-class DDSScopedSearchDropdownMobile extends BXSelect {
+@customElement(`${c4dPrefix}-scoped-search-dropdown-mobile`)
+class C4DScopedSearchDropdownMobile extends CDSSelect {
   /**
    * The `value` for placeholder `<option>`.
    */
@@ -42,17 +41,18 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
    * Handles `oninput` event on the `<input>`
    *
    * @param event The event.
+   * @param event.target The event target.
    */
   private _handleInputMobile({ target }: Event) {
     const { value } = target as HTMLSelectElement;
     this.value = value;
-    const { eventSelect } = this.constructor as typeof BXSelect;
+    const { eventSelect } = this.constructor as typeof CDSSelect;
     this.dispatchEvent(
       new CustomEvent(eventSelect, {
         bubbles: true,
         composed: true,
         detail: {
-          value,
+          appId: value,
         },
       })
     );
@@ -63,37 +63,43 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
    * @returns The template containing child `<optgroup>`/`<option>` that will be rendered to shadow DOM.
    */
   private _renderItemsMobile(element) {
-    const { selectorItem, selectorLeafItem } = this.constructor as typeof BXSelect;
-    // Harvests attributes from `<bx-select-item>` and `<bx-select-item-group>`.
+    const { selectorItem, selectorLeafItem } = this
+      .constructor as typeof CDSSelect;
+    // Harvests attributes from `<cds-select-item>` and `<cds-select-item-group>`.
     // Does not use properties to avoid delay in attribute to property mapping, which runs in custom element reaction cycle:
     // https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-reactions
     return html`
-      ${filter(element.childNodes, item => item.nodeType === Node.ELEMENT_NODE && (item as Element).matches(selectorItem)).map(
-        item => {
-          const disabled = item.hasAttribute('disabled');
-          const label = item.getAttribute('label');
-          const selected = item.hasAttribute('selected');
-          const value = item.getAttribute('value');
-          const { textContent } = item;
-          return item.matches(selectorLeafItem)
-            ? html`
-                <option
-                  class="${prefix}--select-option"
-                  ?disabled="${disabled}"
-                  label="${ifNonNull(label ?? textContent)}"
-                  ?selected="${selected}"
-                  value="${ifNonNull(value)}"
-                >
-                  ${textContent}
-                </option>
-              `
-            : html`
-                <optgroup class="${prefix}--select-optgroup" ?disabled="${disabled}" label="${ifNonNull(label)}">
-                  ${this._renderItemsMobile(item)}
-                </optgroup>
-              `;
-        }
-      )}
+      ${filter(
+        element.childNodes,
+        (item) =>
+          item.nodeType === Node.ELEMENT_NODE &&
+          (item as Element).matches(selectorItem)
+      ).map((item) => {
+        const disabled = item.hasAttribute('disabled');
+        const label = item.getAttribute('label');
+        const selected = item.hasAttribute('selected');
+        const value = item.getAttribute('value');
+        const { textContent } = item;
+        return item.matches(selectorLeafItem)
+          ? html`
+              <option
+                class="${prefix}--select-option"
+                ?disabled="${disabled}"
+                label="${ifDefined(label ?? textContent)}"
+                ?selected="${selected}"
+                value="${ifDefined(value)}">
+                ${textContent}
+              </option>
+            `
+          : html`
+              <optgroup
+                class="${prefix}--select-optgroup"
+                ?disabled="${disabled}"
+                label="${ifDefined(label)}">
+                ${this._renderItemsMobile(item)}
+              </optgroup>
+            `;
+      })}
     `;
   }
 
@@ -113,7 +119,7 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
       labelText,
       placeholder,
       size,
-      validityMessage,
+      invalidText,
       value,
       _placeholderItemValueMobile: placeholderItemValue,
       _handleInputMobile: handleInput,
@@ -142,7 +148,7 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
         `
       : html`
           <div class="${prefix}--form-requirement" id="validity-message">
-            <slot name="validity-message"> ${validityMessage} </slot>
+            <slot name="validity-message"> ${invalidText} </slot>
           </div>
         `;
 
@@ -156,13 +162,19 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
           class="${inputClasses}"
           ?disabled="${disabled}"
           aria-invalid="${String(Boolean(invalid))}"
-          aria-describedby="${ifDefined(!invalid ? undefined : 'validity-message')}"
-          @input="${handleInput}"
-        >
+          aria-describedby="${ifDefined(
+            !invalid ? undefined : 'validity-message'
+          )}"
+          @input="${handleInput}">
           ${!placeholder || value
             ? undefined
             : html`
-                <option disabled hidden class="${prefix}--select-option" value="${placeholderItemValue}" selected>
+                <option
+                  disabled
+                  hidden
+                  class="${prefix}--select-option"
+                  value="${placeholderItemValue}"
+                  selected>
                   ${placeholder}
                 </option>
               `}
@@ -178,4 +190,4 @@ class DDSScopedSearchDropdownMobile extends BXSelect {
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSScopedSearchDropdownMobile;
+export default C4DScopedSearchDropdownMobile;

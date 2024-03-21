@@ -1,0 +1,270 @@
+/**
+ * Copyright IBM Corp. 2016, 2023
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+@use '@carbon/styles/scss/breakpoint' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/type' as *;
+@use '@carbon/styles/scss/utilities' as *;
+@use '../../globals/utils/flex-grid' as *;
+@use '../../globals/vars' as *;
+@use '../link-list';
+
+@mixin content-item-row {
+  :host(#{$c4d-prefix}-content-item-row) {
+    @include make-row;
+
+    margin: 0;
+
+    border-block-start: 1px solid $layer-accent-01;
+
+    @include breakpoint(sm) {
+      padding-block: $spacing-07 $spacing-10;
+    }
+
+    @include breakpoint(lg) {
+      padding-block: $spacing-07 $spacing-10;
+    }
+  }
+
+  .#{$prefix}--content-item-row__row {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    min-block-size: $spacing-13;
+    @include breakpoint(md) {
+      flex-direction: row;
+    }
+
+    :host(#{$c4d-prefix}-content-item-row)[thumbnail] & {
+      justify-content: space-between;
+      min-block-size: auto;
+    }
+  }
+
+  .#{$prefix}--content-item-row__col {
+    // Web component layout styles - accommodating the thumbnail variation
+    &--1,
+    &--2 {
+      @include make-col-ready;
+    }
+
+    &--1 {
+      @include make-col(4, 4);
+
+      @include breakpoint(md) {
+        @include make-row;
+
+        padding: 0;
+
+        margin: 0;
+
+        inline-size: auto;
+      }
+
+      :host(#{$c4d-prefix}-content-item-row)[thumbnail] & {
+        @include breakpoint(md) {
+          @include make-col(4, 8);
+        }
+
+        @include breakpoint(lg) {
+          @include make-col(8, 12);
+
+          display: flex;
+        }
+      }
+    }
+
+    &--2 {
+      grid-column: 1 / span 4;
+      padding-inline: 0;
+      @include breakpoint(md) {
+        grid-column: 5 / span 4;
+        grid-row: 1 / span 2;
+      }
+      @include breakpoint(lg) {
+        grid-column: 9 / span 4;
+        grid-row: 1 / span 1;
+      }
+      :host(#{$c4d-prefix}-content-item-row)[thumbnail] & {
+        @include breakpoint(md) {
+          @include make-col(3, 8);
+        }
+
+        @include breakpoint(lg) {
+          @include make-col(3, 12);
+        }
+      }
+    }
+  }
+
+  .#{$prefix}--content-item-row__heading-wrapper,
+  .#{$prefix}--content-item-row__content-wrapper {
+    :host(#{$c4d-prefix}-content-item-row)[thumbnail] & {
+      @include make-col(4, 4);
+
+      @include breakpoint(lg) {
+        @include make-col(4, 8);
+      }
+    }
+  }
+
+  .#{$prefix}--content-item-row__heading-wrapper {
+    grid-column: 1 / span 4;
+    padding-inline: 0;
+
+    @include breakpoint(md) {
+      @include make-col(6, 12);
+    }
+    @include breakpoint(lg) {
+      @include make-col(4, 12);
+    }
+  }
+
+  .#{$prefix}--content-item-row__content-wrapper {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    grid-column: 1 / span 4;
+    inline-size: 100%;
+
+    @include breakpoint(lg) {
+      @include make-col(8, 12);
+
+      display: flex;
+      grid-column: 5 / span 4;
+      padding-inline-start: $spacing-04;
+    }
+  }
+
+  .#{$prefix}--content-item-row__content-wrapper_with-media {
+    inline-size: 100%;
+    @include breakpoint(lg) {
+      @include make-col(8, 12);
+
+      padding-inline-start: $spacing-04;
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row) ::slotted([slot='media']) {
+    display: block;
+    padding-block-start: $spacing-07;
+    @include breakpoint(md) {
+      padding-block-start: $spacing-09;
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row-copy) ::slotted(:not([slot])) {
+    max-inline-size: to-rem(640px);
+  }
+
+  :host(#{$c4d-prefix}-content-item-row-eyebrow) {
+    display: block;
+    color: $text-helper;
+    padding-block-end: $spacing-03;
+    @include type-style('label-02');
+  }
+
+  :host(#{$c4d-prefix}-content-item-row) ::slotted([slot='heading']) {
+    display: block;
+    color: $text-primary;
+    margin-block-end: $spacing-07;
+
+    @include type-style('fluid-heading-03', true);
+  }
+
+  ::slotted([slot='heading']) {
+    margin-block-end: $spacing-07;
+    max-inline-size: 100%;
+    @include breakpoint(lg) {
+      padding-inline-start: 0;
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row)[thumbnail] {
+    display: grid;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(4, 1fr);
+
+    @include breakpoint(md) {
+      column-gap: $spacing-07;
+      grid-template-columns: repeat(8, 1fr);
+      min-block-size: to-rem(306px);
+    }
+
+    @include breakpoint(lg) {
+      grid-template-columns: repeat(12, 1fr);
+      min-block-size: to-rem(272px);
+    }
+
+    @include breakpoint(xlg) {
+      min-block-size: to-rem(252px);
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row[thumbnail])
+    .#{$prefix}--content-item-row__heading-wrapper {
+    max-inline-size: 100%;
+  }
+
+  :host(#{$c4d-prefix}-content-item-row[thumbnail])
+    .#{$prefix}--content-item-row__content-wrapper {
+    @include breakpoint-down(md) {
+      margin-block-end: $spacing-07;
+    }
+
+    max-inline-size: 100%;
+    padding-inline-start: 0;
+  }
+
+  :host(#{$c4d-prefix}-content-item-row[thumbnail]) {
+    .#{$prefix}--content-item-row__body-wrapper {
+      grid-column: 1 / span 4;
+      max-inline-size: 100%;
+
+      @include breakpoint(lg) {
+        display: contents;
+        grid-column: 1 / span 8;
+      }
+    }
+    .#{$prefix}--content-item-row__col--2 {
+      grid-column: 1 / span 4;
+      max-inline-size: 100%;
+      @include breakpoint(md) {
+        grid-column: 5 / span 4;
+      }
+      @include breakpoint(lg) {
+        grid-column: 9 / span 4;
+      }
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row) .#{$prefix}--content-item__cta {
+    .#{$prefix}--link-list {
+      padding: 0;
+
+      &:first-of-type {
+        padding: 0;
+      }
+    }
+
+    .#{$prefix}--link-list li:last-of-type {
+      margin-block-end: 0;
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item-row) ::slotted([slot='thumbnail']) {
+    @include breakpoint(md) {
+      @include make-col(3, 3);
+
+      margin-block-start: 0;
+
+      padding-inline-end: 0;
+    }
+  }
+}

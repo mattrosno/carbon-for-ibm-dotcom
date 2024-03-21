@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,9 +23,12 @@ export const decorators = [
    * @param story The original story factory.
    * @param context The story context.
    */
-  function decoratorKnobs(story, { args, parameters: { knobs } }: StoryContext) {
+  function decoratorKnobs(
+    story,
+    { args, parameters: { knobs } }: StoryContext
+  ) {
     if (Object(knobs) === knobs) {
-      Object.keys(knobs).forEach(name => {
+      Object.keys(knobs).forEach((name) => {
         const { [name]: knobsForComponent } = knobs as KnobParameters;
         if (typeof knobsForComponent === 'function') {
           args[name] = knobsForComponent();

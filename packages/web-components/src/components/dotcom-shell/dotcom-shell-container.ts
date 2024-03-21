@@ -1,15 +1,14 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import { ActionCreatorsMapObject, Dispatch, Store } from 'redux';
-import { customElement } from 'lit-element';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import ConnectMixin from '../../globals/mixins/connect';
 import store from '../../internal/vendor/@carbon/ibmdotcom-services-store/store';
 import { LocaleAPIActions } from '../../internal/vendor/@carbon/ibmdotcom-services-store/actions/localeAPI.d';
@@ -30,35 +29,44 @@ import {
   mapStateToProps as mapStateToPropsMasthead,
   mapDispatchToProps as mapDispatchToPropsMasthead,
 } from '../masthead/masthead-container';
-import DDSDotcomShellComposite from './dotcom-shell-composite';
+import C4DMastheadComposite from '../masthead/masthead-composite';
+import C4DDotcomShellComposite from './dotcom-shell-composite';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
-
-/**
- * The Redux state used for `<dds-dotcom-shell-container>`.
- */
-export interface DotcomShellContainerState extends MastheadContainerState, FooterContainerState {}
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
- * The properties for `<dds-dotcom-shell-container>` from Redux state.
+ * The Redux state used for `<c4d-dotcom-shell-container>`.
  */
-export interface DotcomShellContainerStateProps extends MastheadContainerStateProps, FooterContainerStateProps {}
+export interface DotcomShellContainerState
+  extends MastheadContainerState,
+    FooterContainerState {}
 
 /**
- * The Redux actions used for `<dds-dotcom-shell-container>`.
+ * The properties for `<c4d-dotcom-shell-container>` from Redux state.
  */
-export type DotcomShellContainerActions = MastheadContainerActions | FooterContainerActions;
+export interface DotcomShellContainerStateProps
+  extends MastheadContainerStateProps,
+    FooterContainerStateProps {}
+
+/**
+ * The Redux actions used for `<c4d-dotcom-shell-container>`.
+ */
+export type DotcomShellContainerActions =
+  | MastheadContainerActions
+  | FooterContainerActions;
 
 /**
  * @param state The Redux state for dotcom shell.
- * @returns The converted version of the given state, tailored for `<dds-dotcomshell-container>`.
+ * @returns The converted version of the given state, tailored for `<c4d-dotcomshell-container>`.
  */
 export function mapStateToProps(
-  state: MastheadContainerState & FooterContainerState
+  state: MastheadContainerState & FooterContainerState,
+  self: C4DMastheadComposite
 ): MastheadContainerStateProps & FooterContainerStateProps {
   const footerProps = mapStateToPropsFooter(state);
   return {
-    ...mapStateToPropsMasthead(state),
+    ...mapStateToPropsMasthead(state, self),
     ...Object.keys(footerProps).reduce((acc, key) => {
       acc[key !== 'links' ? key : 'footerLinks'] = footerProps[key];
       return acc;
@@ -68,9 +76,11 @@ export function mapStateToProps(
 
 /**
  * @param dispatch The Redux `dispatch()` API.
- * @returns The methods in `<dds-dotcomshell-container>` to dispatch Redux actions.
+ * @returns The methods in `<c4d-dotcomshell-container>` to dispatch Redux actions.
  */
-export function mapDispatchToProps(dispatch: Dispatch<LocaleAPIActions | TranslateAPIActions | ProfileAPIActions>) {
+export function mapDispatchToProps(
+  dispatch: Dispatch<LocaleAPIActions | TranslateAPIActions | ProfileAPIActions>
+) {
   return {
     ...mapDispatchToPropsMasthead(dispatch),
     ...mapDispatchToPropsFooter(dispatch),
@@ -80,19 +90,25 @@ export function mapDispatchToProps(dispatch: Dispatch<LocaleAPIActions | Transla
 /**
  * Container component for dotcom shell.
  *
- * @element dds-dotcom-shell-container
+ * @element c4d-dotcom-shell-container
  */
-@customElement(`${ddsPrefix}-dotcom-shell-container`)
-class DDSDotcomShellContainer extends ConnectMixin<
+@customElement(`${c4dPrefix}-dotcom-shell-container`)
+class C4DDotcomShellContainer extends ConnectMixin<
   DotcomShellContainerState,
   LocaleAPIActions | TranslateAPIActions | ProfileAPIActions | SearchAPIActions,
   DotcomShellContainerStateProps,
   ActionCreatorsMapObject<DotcomShellContainerActions>
 >(
-  store as Store<MastheadContainerState, LocaleAPIActions | TranslateAPIActions | ProfileAPIActions | SearchAPIActions>,
+  store as Store<
+    MastheadContainerState,
+    | LocaleAPIActions
+    | TranslateAPIActions
+    | ProfileAPIActions
+    | SearchAPIActions
+  >,
   mapStateToProps,
   mapDispatchToProps
-)(DDSDotcomShellComposite) {}
+)(C4DDotcomShellComposite) {}
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSDotcomShellContainer;
+export default C4DDotcomShellContainer;

@@ -8,10 +8,9 @@
 <dds-content-block-card-static>
   <dds-card-group-item
     color-scheme=""
-    cta-type=""
     data-autoid="dds--card-group-item"
     pictogram-placement=""
-    size=""
+    size="md"
   >
   </dds-card-group-item>
   <dds-card-group
@@ -33,23 +32,31 @@
   <dds-button-group
     data-autoid="dds--button-group"
     role="list"
-    style="--dds--button-group--item-count:2;"
+    style="--dds--button-group--item-count: 2;"
   >
     <dds-button-group-item
+      cta-type=""
       data-autoid="dds--button-group-item"
-      icon-layout=""
-      kind="tertiary"
+      isexpressive=""
+      kind="primary"
       role="listitem"
-      size=""
+      size="lg"
+      tooltip-alignment=""
+      tooltip-position="top"
+      type="button"
     >
       Button 1
     </dds-button-group-item>
     <dds-button-group-item
+      cta-type=""
       data-autoid="dds--button-group-item"
-      icon-layout=""
-      kind="primary"
+      isexpressive=""
+      kind="tertiary"
       role="listitem"
-      size=""
+      size="lg"
+      tooltip-alignment=""
+      tooltip-position="top"
+      type="button"
     >
       Buuton 2
     </dds-button-group-item>
@@ -64,25 +71,23 @@
 <dds-content-block-card-static>
   <dds-card-group-item
     color-scheme=""
-    cta-type=""
     data-autoid="dds--card-group-item"
     pictogram-placement=""
-    size=""
+    size="md"
   >
     heading-foo
   </dds-card-group-item>
   <dds-card-group
     data-autoid="dds--card-group"
     grid-mode="collapsed"
-    style="--dds--card-group--cards-in-row:3;"
+    style="--dds--card-group--cards-in-row: 3;"
   >
     <dds-card-group-item
       color-scheme=""
-      cta-type=""
       data-autoid="dds--card-group-item"
       href="https://example.com"
       pictogram-placement=""
-      size=""
+      size="md"
     >
       <dds-card-heading
         aria-level="3"
@@ -93,16 +98,16 @@
         Nunc convallis lobortis
       </dds-card-heading>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est. Mauris iaculis eget dolor nec
-                hendrerit. Phasellus at elit sollicitudin, sodales nulla quis, consequat libero.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+                et ultricies est. Mauris iaculis eget dolor nec hendrerit.
+                Phasellus at elit sollicitudin, sodales nulla quis, consequat
+                libero.
       </p>
       <dds-card-cta-footer
         color-scheme=""
         cta-type=""
         data-autoid="dds--card-cta-footer"
-        href="https://example.com"
         icon-placement="right"
-        parent-href="https://example.com"
         slot="footer"
       >
       </dds-card-cta-footer>
@@ -126,23 +131,31 @@
   <dds-button-group
     data-autoid="dds--button-group"
     role="list"
-    style="--dds--button-group--item-count:2;"
+    style="--dds--button-group--item-count: 2;"
   >
     <dds-button-group-item
+      cta-type=""
       data-autoid="dds--button-group-item"
-      icon-layout=""
-      kind="tertiary"
+      isexpressive=""
+      kind="primary"
       role="listitem"
-      size=""
+      size="lg"
+      tooltip-alignment=""
+      tooltip-position="top"
+      type="button"
     >
       Button 1
     </dds-button-group-item>
     <dds-button-group-item
+      cta-type=""
       data-autoid="dds--button-group-item"
-      icon-layout=""
-      kind="primary"
+      isexpressive=""
+      kind="tertiary"
       role="listitem"
-      size=""
+      size="lg"
+      tooltip-alignment=""
+      tooltip-position="top"
+      type="button"
     >
       Buuton 2
     </dds-button-group-item>

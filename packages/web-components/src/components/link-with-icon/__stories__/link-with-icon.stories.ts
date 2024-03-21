@@ -1,27 +1,43 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { action } from '@storybook/addon-actions';
 import { boolean, select } from '@storybook/addon-knobs';
-import ArrowRight20 from 'carbon-web-components/es/icons/arrow--right/20.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
 import textNullable from '../../../../.storybook/knob-text-nullable';
 import readme from './README.stories.mdx';
+import { CTA_TYPE } from '../../cta/defs';
+
 import { ICON_PLACEMENT } from '../link-with-icon';
 
-export const Default = args => {
-  const { children, disabled, href, onClick, iconPlacement } = args?.LinkWithIcon ?? {};
+import {
+  hrefsForType,
+  knobNamesForType,
+  typeOptions,
+  types,
+} from '../../cta/__stories__/ctaTypeConfig';
+
+export const Default = (args) => {
+  const { copy, ctaType, disabled, download, href, onClick, iconPlacement } =
+    args?.LinkWithIcon ?? {};
   return html`
-    <dds-link-with-icon icon-placement="${iconPlacement}" ?disabled="${disabled}" href="${ifNonNull(href)}" @click="${onClick}">
-      ${children}${ArrowRight20({ slot: 'icon' })}
-    </dds-link-with-icon>
+    <c4d-video-cta-container>
+      <c4d-link-with-icon
+        icon-placement="${iconPlacement}"
+        ?disabled="${disabled}"
+        href="${href}"
+        download=${download}
+        cta-type="${ctaType}"
+        @click="${onClick}">
+        ${copy}
+      </c4d-link-with-icon>
+    </c4d-video-cta-container>
   `;
 };
 
@@ -32,24 +48,44 @@ const placementTypes = {
 
 export default {
   title: 'Components/Link with icon',
-  decorators: [
-    story => html`
-      <div class="bx--grid">
-        ${story()}
-      </div>
-    `,
-  ],
+  decorators: [(story) => html` <div class="cds--grid">${story()}</div> `],
   parameters: {
     ...readme.parameters,
     hasStoryPadding: true,
     knobs: {
-      LinkWithIcon: () => ({
-        children: textNullable('Link text (unnamed slot)', 'Link text'),
-        disabled: boolean('Disabled (disabled)', false),
-        href: textNullable('Link href (href)', 'https://github.com/carbon-design-system/carbon-web-components'),
-        onClick: action('click'),
-        iconPlacement: select('Icon Position (icon-placement):', placementTypes, placementTypes[`${ICON_PLACEMENT.RIGHT}`]),
-      }),
+      LinkWithIcon: () => {
+        const ctaType = select(
+          'CTA type (cta-type)',
+          typeOptions,
+          types[CTA_TYPE.LOCAL]
+        );
+        const copy =
+          ctaType === CTA_TYPE.VIDEO
+            ? undefined
+            : textNullable('Link text (unnamed slot)', 'Link text');
+        const download = ![CTA_TYPE.DOWNLOAD, CTA_TYPE.PDF].includes(ctaType)
+          ? undefined
+          : textNullable(
+              'Download target (download)',
+              'IBM_Annual_Report_2019.pdf'
+            );
+        return {
+          ctaType,
+          copy,
+          disabled: boolean('Disabled (disabled)', false),
+          download,
+          href: textNullable(
+            knobNamesForType[ctaType ?? CTA_TYPE.REGULAR],
+            hrefsForType[ctaType ?? CTA_TYPE.REGULAR]
+          ),
+          onClick: action('click'),
+          iconPlacement: select(
+            'Icon Position (icon-placement):',
+            placementTypes,
+            placementTypes[`${ICON_PLACEMENT.RIGHT}`]
+          ),
+        };
+      },
     },
     propsSet: {
       default: {

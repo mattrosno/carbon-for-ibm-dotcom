@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,7 +29,7 @@ const _paths = {
  * @type {string}
  * @private
  */
-const _selectorBase = `[data-autoid="dds--carousel"]`;
+const _selectorBase = `[data-autoid="cds--carousel"]`;
 
 /**
  * Defines the carousel element selectors.
@@ -49,14 +49,14 @@ const _selectorBase = `[data-autoid="dds--carousel"]`;
  * @private
  */
 const _selectors = {
-  card: `${_selectorBase} [data-autoid="dds--card"]`,
-  videoCard: `${_selectorBase} dds-video-cta-container`,
-  heading: `[data-autoid="dds--card-heading"]`,
+  card: `${_selectorBase} [data-autoid="cds--card"]`,
+  videoCard: `${_selectorBase} cds-video-cta-container`,
+  heading: `[data-autoid="cds--card-heading"]`,
   copy: `.bx--card__copy`,
-  footer: `[data-autoid="dds--card-footer"]`,
-  videoFooter: `[data-autoid="dds--card-cta-footer"]`,
-  image: `${_selectorBase} [data-autoid="dds--image"]`,
-  video: `dds-card-cta-image`,
+  footer: `[data-autoid="cds--card-footer"]`,
+  videoFooter: `[data-autoid="cds--card-cta-footer"]`,
+  image: `${_selectorBase} [data-autoid="cds--image"]`,
+  video: `cds-card-cta-image`,
   buttonNext: `button[part="next-button"]`,
   buttonPrevious: `button[part="prev-button"]`,
 };
@@ -203,6 +203,64 @@ const _tests = {
       });
     });
   },
+  checkInertAriaHidden: () => {
+    it('should check visible and hidden cards for expected aria-hidden and inert attributes', () => {
+      cy.get(_selectorBase).then($carousel => {
+        // Take note of the page size, for later comparison.
+        const pageSize = $carousel[0]?.pageSize;
+
+        cy.wrap($carousel)
+          .children(':not([slot="title"])')
+          .then($carouselItems => {
+            // Verify that the carousel items have the expected aria-hidden
+            // and inert attributes.
+            cy.wrap($carouselItems)
+              .filter(`[aria-hidden="false"]`)
+              .should('have.length', pageSize);
+            cy.wrap($carouselItems)
+              .filter(':not([inert])')
+              .should('have.length', pageSize);
+
+            // Verify that the first carousel items has the correct
+            // aria-hidden and inert attributes, and that those attributes
+            // change accordingly after we advance the slider.
+            cy.wrap($carouselItems)
+              .first()
+              .then($firstChild => {
+                cy.wrap($firstChild)
+                  .should('have.attr', 'aria-hidden')
+                  .and('equal', 'false');
+                cy.wrap($firstChild).should('not.have.attr', 'inert');
+
+                // Scroll carousel forward.
+                cy.get(_selectors.buttonNext)
+                  .click()
+                  // Wait a second for the carousel to finish moving
+                  .wait(1000);
+
+                // Verify that the aria-hidden and inert attributes of the
+                // first item toggled as expected. We just check the first,
+                // so that we don't have to consider the current viewport
+                // size. Checking the first should suffice, given this
+                // behavior is triggered via IntersectionObserver, and the
+                // first item being exposed is representative of any arbitrary
+                // item being exposed.
+                cy.wrap($firstChild)
+                  .should('have.attr', 'aria-hidden')
+                  .and('equal', 'true');
+                cy.wrap($firstChild).should('have.attr', 'inert');
+
+                // Scroll carousel backward to set it back to its initial
+                // position.
+                cy.get(_selectors.buttonPrevious)
+                  .click()
+                  // Wait a second for the carousel to finish moving
+                  .wait(1000);
+              });
+          });
+      });
+    });
+  },
   checkScroll: () => {
     it('should scroll forward when Next button is clicked and back when the Previous button is clicked', () => {
       cy.get(_selectors.buttonNext)
@@ -220,7 +278,7 @@ const _tests = {
   },
 };
 
-describe('dds-carousel | default (desktop)', () => {
+describe('cds-carousel | default (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     cy.visit(`${_paths.default}`);
@@ -232,10 +290,11 @@ describe('dds-carousel | default (desktop)', () => {
   _tests.checkTextRenders();
   _tests.checkSameHeight();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | default (mobile)', () => {
+describe('cds-carousel | default (mobile)', () => {
   beforeEach(() => {
     cy.viewport(320, 720);
     cy.visit(`${_paths.default}`);
@@ -246,10 +305,11 @@ describe('dds-carousel | default (mobile)', () => {
   _tests.screenshotThemes();
   _tests.checkTextRenders();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with images (desktop)', () => {
+describe('cds-carousel | with images (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     cy.visit(`${_paths.withImages}`);
@@ -265,7 +325,7 @@ describe('dds-carousel | with images (desktop)', () => {
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with images (mobile)', () => {
+describe('cds-carousel | with images (mobile)', () => {
   beforeEach(() => {
     cy.viewport(320, 720);
     cy.visit(`${_paths.withImages}`);
@@ -277,10 +337,11 @@ describe('dds-carousel | with images (mobile)', () => {
   _tests.checkTextRenders();
   _tests.checkImageRenders();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with videos (desktop)', () => {
+describe('cds-carousel | with videos (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     cy.visit(`${_paths.withVideos}`);
@@ -294,10 +355,11 @@ describe('dds-carousel | with videos (desktop)', () => {
   _tests.checkVideoDurationText();
   _tests.checkSameHeight();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with videos (mobile)', () => {
+describe('cds-carousel | with videos (mobile)', () => {
   beforeEach(() => {
     cy.viewport(320, 720);
     cy.visit(`${_paths.withVideos}`);
@@ -310,10 +372,11 @@ describe('dds-carousel | with videos (mobile)', () => {
   _tests.checkVideoRenders();
   _tests.checkVideoDurationText();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with media (desktop)', () => {
+describe('cds-carousel | with media (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     cy.visit(`${_paths.withMedia}`);
@@ -328,10 +391,11 @@ describe('dds-carousel | with media (desktop)', () => {
   _tests.checkVideoDurationText();
   _tests.checkSameHeight();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });
 
-describe('dds-carousel | with media (mobile)', () => {
+describe('cds-carousel | with media (mobile)', () => {
   beforeEach(() => {
     cy.viewport(320, 720);
     cy.visit(`${_paths.withMedia}`);
@@ -345,5 +409,6 @@ describe('dds-carousel | with media (mobile)', () => {
   _tests.checkVideoRenders();
   _tests.checkVideoDurationText();
   _tests.checkClickableCard();
+  _tests.checkInertAriaHidden();
   _tests.checkScroll();
 });

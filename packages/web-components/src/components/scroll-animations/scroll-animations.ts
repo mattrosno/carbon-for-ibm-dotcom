@@ -1,22 +1,22 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement } from 'lit-element';
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
 import { breakpoints } from '@carbon/layout';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
 import { forEach } from '../../globals/internal/collection-helpers';
 import { ANIMATION_TYPE } from './defs';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Amount of columns used for calculation.
@@ -28,7 +28,7 @@ const colSpan = 3;
  * Function component that handles fade or slide transition for selected elements.
  *
  * @example
- * import '@carbon/ibmdotcom-styles/scss/components/scroll-into-view/_scroll-into-view.scss';
+ * import '@carbon/ibmdotcom-styles/scss/components/scroll-into-view/_index.scss';
  * import '@carbon/ibmdotcom-web-components/es/components/scroll-animations/scroll-animations.js';
  *
  * As an example, the function can be called to target all instances of the
@@ -37,25 +37,24 @@ const colSpan = 3;
  * const list = '${prefix}--content-block, ${prefix}--content-group';
  *
  * For default values of 400ms and 'one and done' play:
- * <dds-scroll-animations selectorTargets="${selectorTargets}">
+ * <c4d-scroll-animations selectorTargets="${selectorTargets}">
  *  // some content
- * </dds-scroll-animations>
+ * </c4d-scroll-animations>
  *
  * With 'continuous play' option:
- * <dds-scroll-animations selector-targets="${selectorTargets}" keep-animation="true">
+ * <c4d-scroll-animations selector-targets="${selectorTargets}" keep-animation="true">
  *   // some content
- * </dds-scroll-animations>
+ * </c4d-scroll-animations>
  *
  * For custom delay time, set within targeted class in the application's CSS code as such:
  *
  * .${prefix}--content-block {
- *   --#{$dds-prefix}--scroll-animations-delay: 250ms;
+ *   --#{$c4d-prefix}--scroll-animations-delay: 250ms;
  * }
- *
- * @element dds-scroll-animations
+ * @element c4d-scroll-animations
  */
-@customElement(`${ddsPrefix}-scroll-animations`)
-class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
+@customElement(`${c4dPrefix}-scroll-animations`)
+class C4DScrollAnimations extends StableSelectorMixin(LitElement) {
   /**
    * Intersection Observer that watches outer viewport.
    *
@@ -108,7 +107,7 @@ class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
 
       const { selectorTargets } = this;
       if (selectorTargets) {
-        forEach(this.querySelectorAll(selectorTargets), item => {
+        forEach(this.querySelectorAll(selectorTargets), (item) => {
           this._rootObserver?.observe(item);
         });
       }
@@ -129,7 +128,9 @@ class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
     }
 
     if (create) {
-      this._rootObserver = new IntersectionObserver(this._handleExit.bind(this));
+      this._rootObserver = new IntersectionObserver(
+        this._handleExit.bind(this)
+      );
     }
   }
 
@@ -140,17 +141,23 @@ class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
    * @param [options.create] `true` to create the new intersection observer.
    * @param [options.viewportMargin] recalculated margin value for the observer
    */
-  private _cleanAndCreateInnerObserver({ create, viewportMargin }: { create?: boolean; viewportMargin?: string } = {}) {
+  private _cleanAndCreateInnerObserver({
+    create,
+    viewportMargin,
+  }: { create?: boolean; viewportMargin?: string } = {}) {
     if (this._innerObserver) {
       this._innerObserver.disconnect();
       this._innerObserver = null;
     }
 
     if (create) {
-      this._innerObserver = new IntersectionObserver(this._handleEntrance.bind(this), { rootMargin: viewportMargin });
+      this._innerObserver = new IntersectionObserver(
+        this._handleEntrance.bind(this),
+        { rootMargin: viewportMargin }
+      );
       const { selectorTargets } = this;
       if (selectorTargets) {
-        forEach(this.querySelectorAll(selectorTargets), item => {
+        forEach(this.querySelectorAll(selectorTargets), (item) => {
           this._innerObserver?.observe(item);
         });
       }
@@ -223,7 +230,6 @@ class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
    * Handler to remove element from view
    *
    * @param {*} records observed elements
-   *
    * @private
    */
   // eslint-disable-next-line class-methods-use-this
@@ -319,14 +325,12 @@ class DDSScrollAnimations extends StableSelectorMixin(LitElement) {
   }
 
   render() {
-    return html`
-      <slot></slot>
-    `;
+    return html` <slot></slot> `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--scroll-animations`;
+    return `${c4dPrefix}--scroll-animations`;
   }
 }
 
-export default DDSScrollAnimations;
+export default C4DScrollAnimations;

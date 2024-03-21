@@ -1,13 +1,13 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { render, TemplateResult } from 'lit-html';
+import { render, TemplateResult } from 'lit';
 import { Constructor } from '../defs';
 
 /**
@@ -53,7 +53,7 @@ const ModalRenderMixin = <T extends Constructor<HTMLElement>>(Base: T) => {
       }
       const { modalRenderRoot } = this;
       if (modalRenderRoot) {
-        render(this.renderModal(), modalRenderRoot);
+        render(this.renderModal(), modalRenderRoot as HTMLElement);
       }
     }
 
@@ -68,11 +68,20 @@ const ModalRenderMixin = <T extends Constructor<HTMLElement>>(Base: T) => {
     modalRenderRoot: Element | null | void = null;
 
     /**
+     * Defines properties which should trigger modal renders. If none are specified,
+     * modal renders on any property update.
+     */
+    modalTriggerProps: string[] = [];
+
+    /**
      * The DOM element to put the modal into.
      */
     get container() {
-      const { selectorContainer } = this.constructor as typeof ModalRenderMixinImpl;
-      return closestComposed(this, selectorContainer) || this.ownerDocument!.body;
+      const { selectorContainer } = this
+        .constructor as typeof ModalRenderMixinImpl;
+      return (
+        closestComposed(this, selectorContainer) || this.ownerDocument!.body
+      );
     }
 
     /**
@@ -108,11 +117,26 @@ const ModalRenderMixin = <T extends Constructor<HTMLElement>>(Base: T) => {
     }
 
     update(changedProperties) {
+      const { modalTriggerProps } = this;
       // TODO: Figure out how to inherit `LitElement` for this mix-in class
       // @ts-ignore
       super.update(changedProperties);
       if (!this._disconnectedAfterCreation) {
-        this._createAndRenderModal();
+        if (modalTriggerProps.length > 0) {
+          // React only on updates to specified properties.
+          const changedPropNames = Array.from(
+            changedProperties.keys() as string[]
+          );
+          const matches = modalTriggerProps.filter((prop) =>
+            changedPropNames.includes(prop)
+          );
+          if (matches.length > 0) {
+            this._createAndRenderModal();
+          }
+        } else {
+          // React on every property update.
+          this._createAndRenderModal();
+        }
       }
     }
 

@@ -1,23 +1,26 @@
-import { Preview, Props, Description, Story } from '@storybook/addon-docs/blocks';
+import {
+  Preview,
+  Props,
+  Description,
+  Story,
+} from '@storybook/addon-docs/blocks';
 import contributing from '../../../../../../docs/contributing-license.md';
 import { cdnJs, cdnCss } from '../../../globals/internal/storybook-cdn';
-
-
-
 
 # Dotcom Shell
 
 > 💡 Check our
-> [CodeSandbox](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/dotcom-shell)
+> [Stackblitz](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/dotcom-shell)
 > example implementation.
 
-[![Edit @carbon/ibmdotcom-web-components](https://codesandbox.io/static/img/play-codesandbox.svg)](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/dotcom-shell)
+[![Edit @carbon/ibmdotcom-web-components](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/dotcom-shell)
 
 ## Getting started
 
 ### Quick start
 
-`<dds-dotcom-shell-container>` automatically renders contents of dotcom shell from default service data.
+`<c4d-dotcom-shell-container>` automatically renders contents of dotcom shell
+from default service data.
 
 ### JS (via import)
 
@@ -32,23 +35,25 @@ import '@carbon/ibmdotcom-web-components/es/components/dotcom-shell/index.js';
 ### HTML
 
 ```html
-<dds-dotcom-shell-container>
+<c4d-dotcom-shell-container>
   <main>(The main content)</main>
-</dds-dotcom-shell-container>
+</c4d-dotcom-shell-container>
 ```
 
 ## Props
 
-### `<dds-dotcom-shell-container>`/`<dds-dotcom-shell-composite>`
+### `<c4d-dotcom-shell-container>`/`<c4d-dotcom-shell-composite>`
 
-<Props of="dds-dotcom-shell-composite" />
+<Props of="c4d-dotcom-shell-composite" />
 
 ## Stable selectors
 
-See [our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components) to see how Web Components selector and `data-autoid` should be used.
+See
+[our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components)
+to see how Web Components selector and `data-autoid` should be used.
 
 | Web Components selector | Compatibility selector            | Description |
 | ----------------------- | --------------------------------- | ----------- |
-| `<dds-dotcom-shell>`    | `data-autoid="dds--dotcom-shell"` | Component   |
+| `<c4d-dotcom-shell>`    | `data-autoid="c4d--dotcom-shell"` | Component   |
 
 <Description markdown={contributing} />

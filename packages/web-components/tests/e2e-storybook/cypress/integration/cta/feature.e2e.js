@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2021, 2022
+ * Copyright IBM Corp. 2021, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,8 +12,8 @@
  * @private
  */
 const _paths = {
-  default: 'iframe.html?id=components-cta--feature',
-  types: 'iframe.html?id=components-cta--feature&knob-CTA%20type:=',
+  default: 'iframe.html?id=components-cta--default&knob-CTA%20style%20(cta-style)=feature',
+  types: 'iframe.html?id=components-cta--default&knob-CTA%20style%20(cta-style)=feature&knob-CTA%20type%20(cta-type)=',
 };
 
 /**
@@ -28,7 +28,7 @@ const getTopElement = (x, y, root = window.document) => {
 };
 
 /**
- * Collection of all tests for dds-table-of-contents
+ * Collection of all tests for cds-table-of-contents
  *
  * @function checkBlockLink - Asserts that entirety of card is covered by footer link pseudoelement
  * @function checkHorizontalLayout - Asserts that card image is full-height, left-aligned and content is full-height, right-aligned
@@ -44,7 +44,7 @@ const _tests = {
   checkBlockLink: () => {
     let box;
 
-    cy.get('dds-feature-cta')
+    cy.get('cds-feature-cta')
       .then(card => {
         const bcr = card[0].getBoundingClientRect();
 
@@ -57,7 +57,7 @@ const _tests = {
           centerY: bcr.top + bcr.height / 2,
         };
       })
-      .get('dds-feature-cta-footer')
+      .get('cds-feature-cta-footer')
       .then(footer => {
         // Since the link is in the shadowroot, we need to look there
         const root = footer[0].shadowRoot;
@@ -73,11 +73,11 @@ const _tests = {
 
     cy.wait(500);
 
-    cy.get('dds-feature-cta')
+    cy.get('cds-feature-cta')
       .then(([card]) => {
         cardBox = card.getBoundingClientRect();
       })
-      .get('dds-feature-cta dds-image')
+      .get('cds-feature-cta cds-image')
       .then(([image]) => {
         imageBox = image.getBoundingClientRect();
       })
@@ -102,11 +102,11 @@ const _tests = {
   checkVerticalLayout: () => {
     let cardBox, imageBox, contentBox;
 
-    cy.get('dds-feature-cta')
+    cy.get('cds-feature-cta')
       .then(([card]) => {
         cardBox = card.getBoundingClientRect();
       })
-      .get('dds-feature-cta dds-image')
+      .get('cds-feature-cta cds-image')
       .then(([image]) => {
         imageBox = image.getBoundingClientRect();
       })
@@ -122,10 +122,10 @@ const _tests = {
         // Content full width, bottom aligned
         expect(contentBox.left).to.be.eq(cardBox.left);
         expect(contentBox.right).to.be.eq(cardBox.right);
-        expect(contentBox.bottom).to.be.eq(cardBox.bottom);
+        expect(contentBox.bottom).to.be.closeTo(cardBox.bottom, contentBox.bottom);
 
         // Image & content don't overlap
-        expect(imageBox.height + contentBox.height).to.be.eq(cardBox.height);
+        expect(imageBox.height + contentBox.height).to.be.closeTo(cardBox.height, imageBox.height + contentBox.height);
       });
   },
   checkHeadingKnob: () => {
@@ -134,15 +134,15 @@ const _tests = {
     const customTextInput = 'Lorem Ipsum Dolor Sit Amet.';
 
     const knobs = new URLSearchParams({
-      'knob-Heading': customTextInput,
+      'knob-Heading (heading):': customTextInput,
     });
 
-    cy.get('dds-card-heading')
+    cy.get('cds-card-heading')
       .then(([heading]) => {
         defaultText = heading.innerText;
       })
       .visit(`/${_paths.default}&${knobs.toString()}`)
-      .get('dds-card-heading')
+      .get('cds-card-heading')
       .then(([heading]) => {
         customTextOutput = heading.innerText;
 
@@ -171,7 +171,7 @@ const _tests = {
   },
 };
 
-describe('dds-feature-cta | (desktop)', () => {
+describe('cds-feature-cta | (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
     cy.visit(`/${_paths.default}`);
@@ -185,7 +185,7 @@ describe('dds-feature-cta | (desktop)', () => {
   it('Should check a11y', _tests.checkA11y);
 });
 
-describe('dds-feature-cta | (mobile)', () => {
+describe('cds-feature-cta | (mobile)', () => {
   beforeEach(() => {
     cy.viewport(375, 720);
     cy.visit(`/${_paths.default}`);

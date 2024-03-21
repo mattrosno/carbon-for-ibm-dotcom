@@ -1,31 +1,38 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ActionCreatorsMapObject, Dispatch, Store, bindActionCreators } from 'redux';
-import { customElement } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
+import {
+  ActionCreatorsMapObject,
+  Dispatch,
+  Store,
+  bindActionCreators,
+} from 'redux';
+import {} from 'lit';
 import KalturaPlayerAPI from '@carbon/ibmdotcom-services/es/services/KalturaPlayer/KalturaPlayer.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import store from '../../internal/vendor/@carbon/ibmdotcom-services-store/store';
-import { MediaData, MediaPlayerAPIState } from '../../internal/vendor/@carbon/ibmdotcom-services-store/types/kalturaPlayerAPI.d';
+import {
+  MediaData,
+  MediaPlayerAPIState,
+} from '../../internal/vendor/@carbon/ibmdotcom-services-store/types/kalturaPlayerAPI.d';
 import { loadMediaData } from '../../internal/vendor/@carbon/ibmdotcom-services-store/actions/kalturaPlayerAPI';
 import { MediaPlayerAPIActions } from '../../internal/vendor/@carbon/ibmdotcom-services-store/actions/kalturaPlayerAPI.d';
 import { Constructor } from '../../globals/defs';
 import ConnectMixin from '../../globals/mixins/connect';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import DDSVideoPlayerComposite from './video-player-composite';
+import C4DVideoPlayerComposite from './video-player-composite';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
- * The Redux state used for `<dds-video-player-container>`.
+ * The Redux state used for `<c4d-video-player-container>`.
  */
 export interface VideoPlayerContainerState {
   /**
@@ -35,7 +42,7 @@ export interface VideoPlayerContainerState {
 }
 
 /**
- * The properties for `<dds-video-player-container>` from Redux state.
+ * The properties for `<c4d-video-player-container>` from Redux state.
  */
 export interface VideoPlayerContainerStateProps {
   /**
@@ -48,9 +55,11 @@ export type VideoPlayerActions = ReturnType<typeof loadMediaData>;
 
 /**
  * @param state The Redux state for video player.
- * @returns The converted version of the given state, tailored for `<dds-video-player-container>`.
+ * @returns The converted version of the given state, tailored for `<c4d-video-player-container>`.
  */
-export function mapStateToProps(state: VideoPlayerContainerState): VideoPlayerContainerStateProps {
+export function mapStateToProps(
+  state: VideoPlayerContainerState
+): VideoPlayerContainerStateProps {
   const { kalturaPlayerAPI } = state;
   const { mediaData } = kalturaPlayerAPI ?? {};
   return !mediaData ? {} : { mediaData };
@@ -58,10 +67,13 @@ export function mapStateToProps(state: VideoPlayerContainerState): VideoPlayerCo
 
 /**
  * @param dispatch The Redux `dispatch()` API.
- * @returns The methods in `<dds-video-player-container>` to dispatch Redux actions.
+ * @returns The methods in `<c4d-video-player-container>` to dispatch Redux actions.
  */
 export function mapDispatchToProps(dispatch: Dispatch<MediaPlayerAPIActions>) {
-  return bindActionCreators<VideoPlayerActions, ActionCreatorsMapObject<VideoPlayerActions>>(
+  return bindActionCreators<
+    VideoPlayerActions,
+    ActionCreatorsMapObject<VideoPlayerActions>
+  >(
     {
       _loadVideoData: loadMediaData,
     },
@@ -73,11 +85,17 @@ export function mapDispatchToProps(dispatch: Dispatch<MediaPlayerAPIActions>) {
  * @param Base The base class.
  * @returns A mix-in that implements video embedding API calls.
  */
-export const DDSVideoPlayerContainerMixin = <T extends Constructor<HTMLElement>>(Base: T) => {
+export const C4DVideoPlayerContainerMixin = <
+  T extends Constructor<HTMLElement>
+>(
+  Base: T
+) => {
   /**
    * A mix-in class that sets up and cleans up event listeners defined by `@HostListener` decorator.
    */
-  abstract class DDSVideoPlayerContainerMixinImpl extends StableSelectorMixin(Base) {
+  abstract class C4DVideoPlayerContainerMixinImpl extends StableSelectorMixin(
+    Base
+  ) {
     /**
      * The video player.
      */
@@ -141,15 +159,57 @@ export const DDSVideoPlayerContainerMixin = <T extends Constructor<HTMLElement>>
       };
     }
 
-    _setAutoplayPreference(preference: Boolean) {
+    _setAutoplayPreference(preference: boolean) {
       const updatedValue = preference ? '1' : '0';
       localStorage.setItem(`${this.prefersAutoplayStorageKey}`, updatedValue);
     }
 
     _getAutoplayPreference() {
-      const storedValue = localStorage.getItem(`${this.prefersAutoplayStorageKey}`);
-      const returnValue = storedValue === null ? null : Boolean(parseInt(storedValue, 10));
+      const storedValue = localStorage.getItem(
+        `${this.prefersAutoplayStorageKey}`
+      );
+      const returnValue =
+        storedValue === null ? null : Boolean(parseInt(storedValue, 10));
       return returnValue;
+    }
+
+    _getPlayerOptions(backgroundMode = false) {
+      let playerOptions = {};
+
+      if (backgroundMode) {
+        const storedMotionPreference: boolean | null =
+          this._getAutoplayPreference();
+
+        let autoplayPreference: boolean | undefined;
+
+        if (storedMotionPreference === null) {
+          autoplayPreference = !window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+          ).matches;
+        } else {
+          autoplayPreference = storedMotionPreference;
+        }
+        playerOptions = {
+          'topBarContainer.plugin': false,
+          'controlBarContainer.plugin': false,
+          'largePlayBtn.plugin': false,
+          'loadingSpinner.plugin': false,
+          'unMuteOverlayButton.plugin': false,
+          'EmbedPlayer.DisableVideoTagSupport': false,
+          loop: true,
+          autoMute: true,
+          autoPlay: autoplayPreference,
+          // Turn off CTA's including mid-roll card and end cards.
+          'ibm.callToActions': false,
+          // Turn off captions display, background/ambient videos have no
+          // audio.
+          closedCaptions: {
+            plugin: false,
+          },
+        };
+      }
+
+      return playerOptions;
     }
 
     /**
@@ -160,46 +220,36 @@ export const DDSVideoPlayerContainerMixin = <T extends Constructor<HTMLElement>>
      */
     // Not using TypeScript `private` due to: microsoft/TypeScript#17744
     async _embedVideoImpl(videoId: string, backgroundMode = false) {
-      const { ownerDocument: doc } = this;
+      const doc = Object.prototype.hasOwnProperty.call(this, 'getRootNode')
+        ? (this.getRootNode() as Document | ShadowRoot)
+        : this.ownerDocument;
       // Given Kaltura replaces the `<div>` here with `<iframe>` with the video player,
       // rendering this `<div>` in `renderLightDOM()` will cause the video player being clobbered
-      const playerId = Math.random()
-        .toString(36)
-        .slice(2);
-      const div = doc!.createElement('div');
+      const playerId = Math.random().toString(36).slice(2);
+      const div = document.createElement('div');
       div.id = playerId;
-      div.className = `${prefix}--video-player__video`;
+      div.className = `${c4dPrefix}--video-player__video`;
       const { _videoPlayer: videoPlayer } = this;
       if (!videoPlayer) {
-        throw new TypeError('Cannot find the video player component to put the video content into.');
+        throw new TypeError(
+          'Cannot find the video player component to put the video content into.'
+        );
       }
       videoPlayer.appendChild(div);
 
-      let additionalPlayerOptions = {};
+      const embedVideoHandle = await KalturaPlayerAPI.embedMedia(
+        videoId,
+        playerId,
+        this._getPlayerOptions(backgroundMode)
+      );
+      const { width, height } = await KalturaPlayerAPI.api(videoId);
+      videoPlayer.style.setProperty('--native-file-width', `${width}px`);
+      videoPlayer.style.setProperty('--native-file-height', `${height}px`);
+      videoPlayer.style.setProperty(
+        '--native-file-aspect-ratio',
+        `${width} / ${height}`
+      );
 
-      if (backgroundMode) {
-        const storedMotionPreference: boolean | null = this._getAutoplayPreference();
-
-        let autoplayPreference: boolean | undefined;
-
-        if (storedMotionPreference === null) {
-          autoplayPreference = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        } else {
-          autoplayPreference = storedMotionPreference;
-        }
-        additionalPlayerOptions = {
-          'topBarContainer.plugin': false,
-          'controlBarContainer.plugin': false,
-          'largePlayBtn.plugin': false,
-          'loadingSpinner.plugin': false,
-          'unMuteOverlayButton.plugin': false,
-          'EmbedPlayer.DisableVideoTagSupport': false,
-          loop: true,
-          autoMute: true,
-          autoPlay: autoplayPreference,
-        };
-      }
-      const embedVideoHandle = await KalturaPlayerAPI.embedMedia(videoId, playerId, additionalPlayerOptions);
       doc!.getElementById(playerId)!.dataset.videoId = videoId;
       const videoEmbed = doc!.getElementById(playerId)?.firstElementChild;
       if (videoEmbed) {
@@ -234,31 +284,37 @@ export const DDSVideoPlayerContainerMixin = <T extends Constructor<HTMLElement>>
     };
 
     /**
-     * Calls the data-* attribute transpose function to target `dds-video-player`'s button element.
+     * Calls the data-* attribute transpose function to target `c4d-video-player`'s button element.
      */
     firstUpdated() {
       window.requestAnimationFrame(() => {
-        const button = this.querySelector('dds-video-player')?.shadowRoot?.querySelector('button');
+        const button =
+          this.querySelector('c4d-video-player')?.shadowRoot?.querySelector(
+            'button'
+          );
         if (!this.getAttribute('href') && this.getAttribute('video-id')) {
-          this.setAttribute('href', `https://mediacenter.ibm.com/id/${this.getAttribute('video-id')}`);
+          this.setAttribute(
+            'href',
+            `https://mediacenter.ibm.com/id/${this.getAttribute('video-id')}`
+          );
         }
         this.transposeAttributes(button, ['href']);
       });
     }
 
-    prefersAutoplayStorageKey: String = `${ddsPrefix}-background-video-prefers-autoplay`;
+    prefersAutoplayStorageKey = `${c4dPrefix}-background-video-prefers-autoplay`;
   }
 
-  return DDSVideoPlayerContainerMixinImpl;
+  return C4DVideoPlayerContainerMixinImpl;
 };
 
 /**
  * Container component for video player.
  *
- * @element dds-video-player-container
+ * @element c4d-video-player-container
  */
-@customElement(`${ddsPrefix}-video-player-container`)
-class DDSVideoPlayerContainer extends ConnectMixin<
+@customElement(`${c4dPrefix}-video-player-container`)
+class C4DVideoPlayerContainer extends ConnectMixin<
   VideoPlayerContainerState,
   MediaPlayerAPIActions,
   VideoPlayerContainerStateProps,
@@ -267,7 +323,7 @@ class DDSVideoPlayerContainer extends ConnectMixin<
   store as Store<VideoPlayerContainerState, MediaPlayerAPIActions>,
   mapStateToProps,
   mapDispatchToProps
-)(DDSVideoPlayerContainerMixin(DDSVideoPlayerComposite)) {}
+)(C4DVideoPlayerContainerMixin(C4DVideoPlayerComposite)) {}
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSVideoPlayerContainer;
+export default C4DVideoPlayerContainer;

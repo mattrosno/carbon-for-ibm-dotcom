@@ -1,59 +1,192 @@
 /**
- * Copyright IBM Corp. 2016, 2022
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import '../../globals/vars';
-@import '../../globals/imports';
-@import '../../globals/utils/ratio-base';
+@use '../../globals/vars' as *;
+@use '../../globals/utils/ratio-base' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/breakpoint' as *;
+@use '@carbon/styles/scss/motion' as *;
+@use '@carbon/styles/scss/type' as *;
+@use '@carbon/colors' as *;
+@use '../lightbox-media-viewer/lightbox-media-viewer';
 
 @mixin image {
-  .#{$prefix}--image {
+  :host(#{$c4d-prefix}-global-banner-image),
+  :host(#{$c4d-prefix}-card-cta-image),
+  :host(#{$c4d-prefix}-image) {
     position: relative;
-  }
-
-  .#{$prefix}--image__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: block;
+
+    .#{$c4d-prefix}--image__img {
+      display: block;
+      block-size: 100%;
+      inline-size: 100%;
+      object-fit: cover;
+    }
+
+    .#{$c4d-prefix}--image__img--border {
+      outline: 1px solid $border-subtle-02;
+    }
   }
 
-  .#{$prefix}--image__img--border {
-    outline: 1px solid $decorative-01;
-  }
-
-  .#{$prefix}--image__longdescription {
+  :host(#{$c4d-prefix}-card-cta-image::slotted(svg[slot='icon'])),
+  :host(#{$c4d-prefix}-image::slotted(svg[slot='icon'])) {
     position: absolute;
-    width: 1px;
-    height: 1px;
-    left: -10000px;
-    top: auto;
+    inset-block-start: calc(50% - #{$spacing-07});
+    inset-inline-end: calc(50% - #{$spacing-07});
+  }
+
+  :host(#{$c4d-prefix}-image-item) {
+    display: none;
+  }
+
+  :host(#{$c4d-prefix}-image)[card-group-item],
+  :host(#{$c4d-prefix}-image) {
+    @include ratio-base(4, 3, true);
+
     overflow: hidden;
+    block-size: 0;
+
+    padding-block-start: 75%;
+
+    .#{$c4d-prefix}--image__img {
+      position: absolute;
+      block-size: 100%;
+      inset-block-start: 0;
+    }
   }
 
-  .#{$prefix}--image__icon {
+  .#{$c4d-prefix}--image__longdescription {
     position: absolute;
-    top: calc(50% - #{$carbon--spacing-07});
-    right: calc(50% - #{$carbon--spacing-07});
+    overflow: hidden;
+    block-size: 1px;
+    inline-size: 1px;
+    inset-block-start: auto;
+    inset-inline-start: -10000px;
   }
 
-  // dds-image-logo style.
-  :host(#{$dds-prefix}-image-logo) {
-    background-color: $ui-02;
+  :host(#{$c4d-prefix}-image)[heading] {
+    display: block;
+    margin-block: $spacing-07;
+    max-inline-size: carbon--mini-units(80);
+
+    @include breakpoint(md) {
+      margin-block: $spacing-07;
+    }
+  }
+
+  .#{$c4d-prefix}--image-with-caption__image {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: 1px solid $border-tile-01;
+    background-color: transparent;
+    inline-size: 100%;
+    pointer-events: none;
+
+    &:hover {
+      // only have lightbox functionality on bigger breakpoints
+      @include breakpoint(md) {
+        cursor: zoom-in;
+
+        .#{$c4d-prefix}--image__img {
+          filter: brightness(80%);
+        }
+
+        .#{$c4d-prefix}--image-with-caption__zoom-button {
+          background-color: rgba($gray-100, 1);
+        }
+      }
+    }
+
+    &:focus {
+      // only have lightbox functionality on bigger breakpoints
+      @include breakpoint(md) {
+        border: 1px solid $focus-inset;
+        outline: $spacing-01 solid $focus;
+      }
+    }
+  }
+
+  .#{$c4d-prefix}--image-with-caption__zoom-button {
+    display: none;
+
+    // only have lightbox functionality on bigger breakpoints
+    @include breakpoint(md) {
+      position: absolute;
+      display: flex;
+      background-color: rgba($gray-100, 0.85);
+      block-size: $spacing-09;
+      inline-size: $spacing-09;
+      inset-block-end: 0;
+      inset-inline-end: 0;
+
+      svg {
+        margin: auto;
+        fill: $white;
+      }
+    }
+  }
+
+  .#{$c4d-prefix}--image-with-caption__image,
+  .#{$c4d-prefix}--image-with-caption__zoom-button {
+    // only have lightbox functionality on bigger breakpoints
+    @include breakpoint(md) {
+      pointer-events: auto;
+      transition: $duration-moderate-01 motion(standard, productive);
+    }
+  }
+
+  .#{$c4d-prefix}--image__caption {
+    @include type-style('body-01');
+
+    color: $text-helper;
+
+    margin-block-start: $spacing-03;
+  }
+
+  :host(#{$c4d-prefix}-image[lightbox-contrast='dark']) {
+    .#{$c4d-prefix}--image-with-caption__zoom-button {
+      background-color: rgba($white, 0.85);
+
+      svg {
+        fill: $gray-90;
+      }
+    }
+    .#{$c4d-prefix}--image-with-caption__image {
+      &:hover {
+        // only have lightbox functionality on bigger breakpoints
+        @include breakpoint(md) {
+          .#{$c4d-prefix}--image__img {
+            filter: brightness(120%);
+          }
+
+          .#{$c4d-prefix}--image-with-caption__zoom-button {
+            background-color: rgba($white, 1);
+          }
+        }
+      }
+    }
+  }
+
+  // c4d-image-logo style.
+  :host(#{$c4d-prefix}-image-logo) {
     margin: $spacing-05 $spacing-05 $spacing-03 $spacing-05;
-    max-width: carbon--rem(160px);
+    background-color: $layer-02;
+    max-inline-size: $spacing-13;
 
     @include ratio-base(2, 1, false);
 
-    .#{$prefix}--image__img {
+    .#{$c4d-prefix}--image__img {
+      block-size: 100%;
+      inline-size: 100%;
       object-fit: contain;
     }
   }
-}
-
-@include exports('image') {
-  @include image;
 }

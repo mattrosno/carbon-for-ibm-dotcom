@@ -1,43 +1,48 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement, state } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import on from 'carbon-components/es/globals/js/misc/on.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import FocusMixin from 'carbon-web-components/es/globals/mixins/focus.js';
+import { LitElement, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import on from '../../internal/vendor/@carbon/web-components/globals/mixins/on.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import FocusMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/focus.js';
 import '../expressive-modal/expressive-modal';
 import '../expressive-modal/expressive-modal-close-button';
 import '../lightbox-media-viewer/lightbox-image-viewer';
 import '../button/button';
-import ZoomIn20 from 'carbon-web-components/es/icons/zoom--in/20.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { LIGHTBOX_CONTRAST } from './defs';
+import Maximize20 from '../../internal/vendor/@carbon/web-components/icons/maximize/20.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import styles from './image.scss';
 import ModalRenderMixin from '../../globals/mixins/modal-render';
 import Handle from '../../globals/internal/handle';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
+
+export { LIGHTBOX_CONTRAST };
 
 /**
  * Image.
  *
- * @element dds-image
+ * @element c4d-image
  * @slot long-description - The long description content.
  * @slot icon - The icon content.
  */
-@customElement(`${ddsPrefix}-image`)
-class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElement))) {
+@customElement(`${c4dPrefix}-image`)
+class C4DImage extends StableSelectorMixin(
+  ModalRenderMixin(FocusMixin(LitElement))
+) {
   /**
-   * The image data, harvested from `<dds-image-item>`.
+   * The image data, harvested from `<c4d-image-item>`.
    */
   @state()
   private _images: HTMLElement[] = [];
@@ -46,10 +51,10 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
    * Handles `slotchange` event.
    */
   private _handleSlotChange({ target }: Event) {
-    const { selectorItem } = this.constructor as typeof DDSImage;
+    const { selectorItem } = this.constructor as typeof C4DImage;
     this._images = (target as HTMLSlotElement)
       .assignedNodes()
-      // Supports `<dds-image><slot></slot></dds-image>` rendered in shadow DOM
+      // Supports `<c4d-image><slot></slot></c4d-image>` rendered in shadow DOM
       .reduce((acc, node) => {
         if ((node as Element).tagName === 'SLOT') {
           acc.push(...(node as HTMLSlotElement).assignedNodes());
@@ -58,7 +63,11 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
         }
         return acc;
       }, [] as Node[])
-      .filter(node => node.nodeType === Node.ELEMENT_NODE && (node as Element).matches(selectorItem)) as HTMLElement[];
+      .filter(
+        (node) =>
+          node.nodeType === Node.ELEMENT_NODE &&
+          (node as Element).matches(selectorItem)
+      ) as HTMLElement[];
   }
 
   /**
@@ -71,14 +80,14 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
   }
 
   /**
-   * The handler of `${ddsPrefix}-expressive-modal-closed` event from `<dds-expressive-modal>`.
+   * The handler of `${c4dPrefix}-expressive-modal-closed` event from `<c4d-expressive-modal>`.
    */
   private _handleCloseModal = () => {
     this.open = false;
   };
 
   /**
-   * The handle for the listener of `${ddsPrefix}-expressive-modal-closed` event.
+   * The handle for the listener of `${c4dPrefix}-expressive-modal-closed` event.
    */
   private _hCloseModal: Handle | null = null;
 
@@ -99,6 +108,18 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
    */
   @property({ type: Boolean, reflect: true })
   border = false;
+
+  /**
+   * Whether or not it's a video thumbnail in a card group item.
+   */
+  @property({ type: Boolean, reflect: true, attribute: 'card-group-item' })
+  cardGroupItem = false;
+
+  /**
+   * The lightbox contrast option.
+   */
+  @property({ attribute: 'lightbox-contrast' })
+  lightboxContrast = LIGHTBOX_CONTRAST.LIGHT;
 
   /**
    * The lightbox.
@@ -127,20 +148,13 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
   @property({ type: Boolean, reflect: true })
   open = false;
 
-  createRenderRoot() {
-    return this.attachShadow({
-      mode: 'open',
-      delegatesFocus: Number((/Safari\/(\d+)/.exec(navigator.userAgent) ?? ['', 0])[1]) <= 537,
-    });
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this.modalRenderRoot = this.createModalRenderRoot(); // Creates modal render root up-front to hook the event listener
     // Manually hooks the event listeners on the modal render root to make the event names configurable
     this._hCloseModal = on(
       this.modalRenderRoot,
-      (this.constructor as typeof DDSImage).eventCloseModal,
+      (this.constructor as typeof C4DImage).eventCloseModal,
       this._handleCloseModal as EventListener
     );
   }
@@ -153,21 +167,37 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
   }
 
   renderImage() {
-    const { alt, border, defaultSrc, _images: images, _handleSlotChange: handleSlotChange } = this;
+    const {
+      alt,
+      border,
+      defaultSrc,
+      lightbox,
+      _images: images,
+      _handleSlotChange: handleSlotChange,
+    } = this;
     const imgClasses = classMap({
-      [`${prefix}--image__img`]: true,
-      [`${prefix}--image__img--border`]: border,
+      [`${c4dPrefix}--image__img`]: true,
+      [`${c4dPrefix}--image__img--border`]: border && !lightbox,
     });
 
     return html`
       <slot @slotchange="${handleSlotChange}"></slot>
       <picture>
         ${images.map(
-          image => html`<source media="${image.getAttribute('media')}" srcset="${image.getAttribute('srcset')}"></source>`
+          (image) =>
+            html`<source media="${image.getAttribute(
+              'media'
+            )}" srcset="${image.getAttribute('srcset')}"></source>`
         )}
-        <img class="${imgClasses}" src="${defaultSrc}" alt="${alt}" aria-describedby="long-description" loading="lazy" />
+        <img
+          class="${imgClasses}"
+          src="${defaultSrc}"
+          alt="${alt}"
+          aria-describedby="image-caption long-description"
+          part="image"
+          loading="lazy" />
       </picture>
-      <div id="long-description" class="${prefix}--image__longdescription">
+      <div id="long-description" class="${c4dPrefix}--image__longdescription">
         <slot name="long-description"></slot>
       </div>
       <slot name="icon"></slot>
@@ -179,41 +209,42 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
     return !lightbox
       ? undefined
       : html`
-          <dds-expressive-modal ?open="${open}" expressive-size="full-width">
-            <dds-expressive-modal-close-button></dds-expressive-modal-close-button>
-            <dds-lightbox-image-viewer
-              alt="${ifNonNull(alt)}"
-              default-src="${ifNonNull(defaultSrc)}"
-              description="${ifNonNull(copy)}"
-              title="${ifNonNull(heading)}"
-            >
-            </dds-lightbox-image-viewer>
-          </dds-expressive-modal>
+          <c4d-expressive-modal ?open="${open}" expressive-size="full-width">
+            <c4d-expressive-modal-close-button></c4d-expressive-modal-close-button>
+            <c4d-lightbox-image-viewer
+              alt="${ifDefined(alt)}"
+              default-src="${ifDefined(defaultSrc)}"
+              description="${ifDefined(copy)}"
+              title="${ifDefined(heading)}">
+            </c4d-lightbox-image-viewer>
+          </c4d-expressive-modal>
         `;
   }
 
   render() {
-    const { heading, launchLightboxButtonAssistiveText, lightbox, _handleClick: handleClick } = this;
+    const {
+      heading,
+      launchLightboxButtonAssistiveText,
+      lightbox,
+      _handleClick: handleClick,
+    } = this;
     return html`
       ${lightbox
         ? html`
             <button
-              class="${prefix}--image-with-caption__image"
-              aria-label="${ifNonNull(launchLightboxButtonAssistiveText)}"
-              @click="${handleClick}"
-            >
+              class="${c4dPrefix}--image-with-caption__image"
+              aria-label="${ifDefined(launchLightboxButtonAssistiveText)}"
+              @click="${handleClick}">
               ${this.renderImage()}
-              <div class="${prefix}--image-with-caption__zoom-button">
-                ${ZoomIn20()}
+              <div class="${c4dPrefix}--image-with-caption__zoom-button">
+                ${Maximize20()}
               </div>
             </button>
           `
-        : html`
-            ${this.renderImage()}
-          `}
+        : html` ${this.renderImage()} `}
       ${heading
         ? html`
-            <p class="${prefix}--image__caption">
+            <p id="image-caption" class="${c4dPrefix}--image__caption">
               ${heading}
             </p>
           `
@@ -225,22 +256,26 @@ class DDSImage extends StableSelectorMixin(ModalRenderMixin(FocusMixin(LitElemen
    * The name of the custom event fired after the modal is closed upon a user gesture.
    */
   static get eventCloseModal() {
-    return `${ddsPrefix}-expressive-modal-closed`;
+    return `${c4dPrefix}-expressive-modal-closed`;
   }
 
   /**
    * A selector that will return image items.
    */
   static get selectorItem() {
-    return `${ddsPrefix}-image-item`;
+    return `${c4dPrefix}-image-item`;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--image`;
+    return `${c4dPrefix}--image`;
   }
 
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSImage;
+export default C4DImage;

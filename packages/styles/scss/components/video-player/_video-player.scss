@@ -1,82 +1,102 @@
 /**
- * Copyright IBM Corp. 2016, 2021
+ * Copyright IBM Corp. 2016, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import '../../globals/vars';
-@import '../../globals/imports';
-@import '../../globals/utils/ratio-base';
-
+@use '../../globals/vars' as *;
+@use '../../globals/utils/ratio-base' as *;
+@use '@carbon/styles/scss/colors' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/motion' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/type' as *;
 $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
 
 @mixin video-player {
-  :host(#{$dds-prefix}-video-player),
-  .#{$prefix}--video-player {
-    color: var(--#{$dds-prefix}--video-caption--color, $text-02);
+  :host(#{$c4d-prefix}-video-player),
+  .#{$c4d-prefix}--video-player {
+    color: var(--#{$c4d-prefix}--video-caption--color, $text-secondary);
 
-    .#{$prefix}--image__img {
-      width: 100%;
-      height: 100%;
+    .#{$c4d-prefix}--image__img {
+      block-size: 100%;
+      inline-size: 100%;
     }
 
     &:focus {
       outline: none;
-      .#{$prefix}--video-player__video-container {
+      .#{$c4d-prefix}--video-player__video-container {
         &::before {
-          content: ' ';
           position: absolute;
-          top: rem(2px);
-          left: rem(2px);
-          right: rem(2px);
-          bottom: rem(2px);
           z-index: 1;
-          border: 1px solid $inverse-focus-ui;
-          outline: 2px solid $focus;
+          border: 1px solid $focus-inverse;
+          content: ' ';
+          inset: $spacing-01;
+          outline: $spacing-01 solid $focus;
         }
       }
     }
-  }
-
-  :host(#{$dds-prefix}-video-player[background-mode='true']),
-  .#{$prefix}--video-player[background-mode='true'] {
-    .#{$prefix}--video-player__video-container {
-      height: 100%;
-      padding: 0;
+    #{$c4d-prefix}-image {
+      padding-block-start: 0;
     }
   }
 
-  .#{$prefix}--video-player
-    .#{$prefix}--video-player__image-overlay:focus::before {
-    content: ' ';
-    position: absolute;
-    top: rem(2px);
-    left: rem(2px);
-    right: rem(2px);
-    bottom: rem(2px);
-    z-index: 1;
-    border: 1px solid $inverse-focus-ui;
-    outline: 2px solid $focus;
+  :host(#{$c4d-prefix}-video-player[background-mode='true']),
+  .#{$c4d-prefix}--video-player[background-mode='true'] {
+    .#{$c4d-prefix}--video-player__video-container {
+      padding: 0;
+      block-size: 100%;
+    }
+
+    /**
+     * These styles mock `object-fit: cover;` and `object-position: center`.
+     *   - Aspect ratio forces the shape of the element.
+     *   - Min-width/height force the element to cover the entire parent footprint.
+     *   - inset/translate combine to ensure the element is centered over the parent footprint.
+     */
+    ::slotted(.#{$c4d-prefix}--video-player__video),
+    .#{$c4d-prefix}--video-player__video {
+      aspect-ratio: var(--native-file-aspect-ratio, 16 / 9);
+      inset: 50% 0 0 50%;
+      min-block-size: 100%;
+      min-inline-size: 100%;
+      translate: -50% -50%;
+    }
   }
 
-  :host(#{$dds-prefix}-video-player) #{$dds-prefix}-image,
-  .#{$prefix}--video-player .#{$prefix}--image {
+  .#{$c4d-prefix}--video-player
+    .#{$c4d-prefix}--video-player__image-overlay:focus::before {
+    position: absolute;
+    z-index: 1;
+    border: 1px solid $focus-inverse;
+    content: ' ';
+    inset: $spacing-01;
+    outline: $spacing-01 solid $focus;
+  }
+
+  :host(#{$c4d-prefix}-video-player) #{$c4d-prefix}-image,
+  .#{$c4d-prefix}--video-player .#{$c4d-prefix}--image {
     position: relative;
-    width: 100%;
-    height: 100%;
+    block-size: 100%;
+    inline-size: 100%;
 
     &::before {
-      content: '';
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      opacity: 0;
       z-index: 1;
-      background-color: $ui-05;
-      transition: opacity $duration--moderate-01 motion(standard, productive);
+      background-color: $border-inverse;
+      block-size: 100%;
+      content: '';
+      inline-size: 100%;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      opacity: 0;
+      transition: opacity $duration-moderate-01 motion(standard, productive);
+
+      @media screen and (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
     }
 
     &:hover::before {
@@ -84,22 +104,19 @@ $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
     }
   }
 
-  .#{$prefix}--video-player__video-container {
-    width: 100%;
+  .#{$c4d-prefix}--video-player__video-container {
     position: relative;
     display: inline-block;
+    inline-size: 100%;
 
     &:focus {
       outline: none;
     }
 
-    ::slotted(.#{$prefix}--video-player__video),
-    .#{$prefix}--video-player__video {
+    ::slotted(.#{$c4d-prefix}--video-player__video),
+    .#{$c4d-prefix}--video-player__video {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
     }
 
     @include ratio-base(16, 9, true);
@@ -108,7 +125,7 @@ $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
       $width: nth($aspect-ratio, 1);
       $height: nth($aspect-ratio, 2);
 
-      &.#{$prefix}--video-player__aspect-ratio {
+      &.#{$c4d-prefix}--video-player__aspect-ratio {
         &--#{$width}x#{$height} {
           @include ratio-base($width, $height, true);
         }
@@ -116,19 +133,23 @@ $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
     }
   }
 
-  .#{$prefix}--video-player__video-caption {
-    @include carbon--type-style('caption-02');
+  .#{$c4d-prefix}--video-player__video-caption {
+    @include type-style('caption-02');
 
-    padding-top: var(--#{$dds-prefix}--video-caption--padding, $spacing-03);
-    max-width: 90%;
+    max-inline-size: 90%;
+
+    padding-block-start: var(
+      --#{$c4d-prefix}--video-caption--padding,
+      $spacing-03
+    );
   }
 
-  .#{$prefix}--video-player__image-overlay {
-    border: none;
+  .#{$c4d-prefix}--video-player__image-overlay {
     padding: 0;
+    border: none;
+    block-size: 100%;
     cursor: pointer;
-    width: 100%;
-    height: 100%;
+    inline-size: 100%;
 
     &:focus {
       outline: 3px solid $focus;
@@ -139,21 +160,29 @@ $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
     &:active {
       svg {
         circle {
-          opacity: 0.9;
           fill: $gray-100;
+          opacity: 0.9;
         }
 
         path {
-          fill: $icon-03;
+          fill: $icon-on-color;
         }
       }
     }
 
     svg {
+      position: absolute;
+      inset-block-start: calc(50% - #{$spacing-07});
+      inset-inline-end: calc(50% - #{$spacing-07});
+
       circle,
       path {
-        transition: fill $duration--moderate-01 motion(standard, productive),
-          opacity $duration--moderate-01 motion(standard, productive);
+        transition: fill $duration-moderate-01 motion(standard, productive),
+          opacity $duration-moderate-01 motion(standard, productive);
+
+        @media screen and (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
       }
 
       circle {
@@ -162,17 +191,14 @@ $aspect-ratios: ((16, 9), (9, 16), (2, 1), (1, 2), (4, 3), (3, 4), (1, 1));
     }
   }
 
-  :host(#{$dds-prefix}-video-player) .#{$prefix}--video-player__image-overlay,
-  .#{$prefix}--video-player .#{$prefix}--video-player__image-overlay {
+  :host(#{$c4d-prefix}-video-player)
+    .#{$c4d-prefix}--video-player__image-overlay,
+  .#{$c4d-prefix}--video-player .#{$c4d-prefix}--video-player__image-overlay {
     &:active {
-      #{$dds-prefix}-image::before,
-      .#{$prefix}--image::before {
+      #{$c4d-prefix}-image::before,
+      .#{$c4d-prefix}--image::before {
         opacity: 0.12;
       }
     }
   }
-}
-
-@include exports('video-player') {
-  @include video-player;
 }

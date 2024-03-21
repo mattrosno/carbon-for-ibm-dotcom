@@ -1,30 +1,36 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, query, state } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
-import { forEach } from '../../globals/internal/collection-helpers';
-import DDSTopNavMenu from './top-nav-menu';
-import DDSMegaMenuOverlay from './megamenu-overlay';
+import { query, state, property } from 'lit/decorators.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import C4DMegaMenu from './megamenu';
+import C4DTopNav from './top-nav';
+import C4DTopNavMenu from './top-nav-menu';
+import C4DMegaMenuOverlay from './megamenu-overlay';
 import styles from './masthead.scss';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Megamenu top nav menu.
  *
- * @element dds-megamenu-top-nav-menu
+ * @element c4d-megamenu-top-nav-menu
  */
-@customElement(`${ddsPrefix}-megamenu-top-nav-menu`)
-class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
+@customElement(`${c4dPrefix}-megamenu-top-nav-menu`)
+class C4DMegaMenuTopNavMenu extends C4DTopNavMenu {
+  /**
+   * The megamenu component
+   */
+  @property()
+  megaMenu!: C4DMegaMenu;
+
   /**
    * The menu ul node.
    */
@@ -32,26 +38,17 @@ class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
   private _menuNode!: HTMLElement;
 
   /**
-   * The trigger button.
-   */
-  @query('[part="trigger"]')
-  private _topMenuItem!: HTMLAnchorElement;
-
-  /**
    * scrollbar width.
    */
   @state()
-  private _scrollBarWidth = this.ownerDocument!.defaultView!.innerWidth - this.ownerDocument!.body.offsetWidth;
+  private _scrollBarWidth =
+    this.ownerDocument!.defaultView!.innerWidth -
+    this.ownerDocument!.body.offsetWidth;
 
   /**
-   * Removes inherited _handleBlur method from BXHeaderMenu
+   * Identifier for this menu's position in a series.
    */
-  private _handleKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      this.expanded = false;
-      this._topMenuItem.focus();
-    }
-  };
+  menuIndex: number | undefined;
 
   /**
    * The observer for the resize of the viewport.
@@ -80,18 +77,65 @@ class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
   /**
    * The observer for the resize of the viewport.
    */
-  private _observeResizeRoot = records => {
+  private _observeResizeRoot = (records) => {
     const { contentRect } = records[records.length - 1];
     // A workaround for Safari bug where `100vw` in Shadow DOM causes delayed rendering
     // https://github.com/carbon-design-system/carbon-for-ibm-dotcom/issues/4493
-    const { customPropertyViewportWidth } = this.constructor as typeof DDSMegaMenuTopNavMenu;
-    this.style.setProperty(customPropertyViewportWidth, `${contentRect.width}px`);
+    const { customPropertyViewportWidth } = this
+      .constructor as typeof C4DMegaMenuTopNavMenu;
+
+    this.style.setProperty(
+      customPropertyViewportWidth,
+      `${contentRect.width}px`
+    );
   };
+
+  private async _requestMegaMenuRenderUpdate() {
+    return new Promise((resolve: Function): void => {
+      const { eventMegaMenuToggled } = this
+        .constructor as typeof C4DMegaMenuTopNavMenu;
+      this.dispatchEvent(
+        new CustomEvent(eventMegaMenuToggled, {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          detail: {
+            active: this.expanded,
+            index: this.menuIndex,
+            resolveFn: resolve,
+          },
+        })
+      );
+
+      setTimeout(() => {
+        resolve();
+      }, 5000);
+    });
+  }
+
+  private _setAnalyticsAttributes() {
+    const { _topMenuItem: trigger } = this;
+
+    trigger!.setAttribute('data-attribute1', 'headerNav');
+    trigger!.setAttribute('data-attribute2', 'L0');
+    trigger!.setAttribute('data-attribute3', this.menuLabel);
+  }
+
+  /**
+   * Sets inline styles on an element to accommodate any scrollbars that push it
+   * out of Carbon grid alignment.
+   *
+   * @private
+   */
+  private _handleScrollbarOffset(element: HTMLElement) {
+    element.style.marginInlineEnd = this.expanded
+      ? `${this._scrollBarWidth}px`
+      : `0px`;
+  }
 
   connectedCallback() {
     super.connectedCallback();
     this._cleanAndCreateObserverResize({ create: true });
-    this.addEventListener('keydown', this._handleKeydown);
   }
 
   disconnectedCallback() {
@@ -102,56 +146,64 @@ class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
   firstUpdated() {
     this._menuNode.removeAttribute('role');
     this._cleanAndCreateObserverResize({ create: true });
+    this._setAnalyticsAttributes();
 
     if (this.hasAttribute('role') && this.getAttribute('role') === 'listitem') {
       this.removeAttribute('role');
     }
   }
 
-  updated(changedProperties) {
+  async updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has('expanded')) {
-      const doc = this.getRootNode() as Document;
-      forEach(doc.querySelectorAll((this.constructor as typeof DDSMegaMenuTopNavMenu).selectorOverlay), item => {
-        (item as DDSMegaMenuOverlay).active = this.expanded;
+      const doc = this.ownerDocument;
+      const rootNode = this.getRootNode() as ShadowRoot;
+      const masthead = rootNode.querySelector('c4d-masthead');
+
+      // Find overlay and update its state.
+      const overlays = rootNode.querySelectorAll(
+        (this.constructor as typeof C4DMegaMenuTopNavMenu).selectorOverlay
+      );
+      overlays.forEach((item) => {
+        (item as C4DMegaMenuOverlay).active = this.expanded;
       });
 
-      // add the scrollbar width as right-margin to prevent content from shifting when
-      // scrollbar disappears on megamenu expand
-      const masthead: HTMLElement | null | undefined = doc
-        .querySelector('dds-masthead')
-        ?.shadowRoot?.querySelector('.bx--masthead__l0');
-
-      // determine whether to apply margin-right on expand as HC has extra masthead styling
-      const cloudMasthead: HTMLElement | null | undefined = doc
-        .querySelector('dds-cloud-masthead-container')
-        ?.querySelector('dds-masthead')
-        ?.shadowRoot?.querySelector('.bx--masthead__l0');
+      // Collect elements that should have offsets applied to accommodate any
+      // scrollbars when they appear in the layout.
+      const elementsToAdjust = [
+        doc.body,
+        masthead?.shadowRoot?.querySelector(`.${prefix}--masthead__l0`),
+        masthead?.querySelector(`${c4dPrefix}-masthead-l1`),
+      ].filter((element) => element instanceof HTMLElement) as HTMLElement[];
 
       if (this.expanded) {
-        doc.body.style.marginRight = `${this._scrollBarWidth}px`;
-        doc.body.style.overflow = `hidden`;
-        forEach(doc.querySelectorAll((this.constructor as typeof DDSMegaMenuTopNavMenu).selectorOverlay), item => {
-          (item as DDSMegaMenuOverlay).active = this.expanded;
-        });
-        if (cloudMasthead) {
-          if (doc.body.classList.contains('ibm-masthead-sticky') && doc.body.classList.contains('ibm-masthead-sticky-showing')) {
-            cloudMasthead.style.marginRight = `${this._scrollBarWidth}px`;
-          }
-        } else if (masthead) {
-          masthead.style.marginRight = `${this._scrollBarWidth}px`;
-        }
-      } else {
-        doc.body.style.marginRight = '0px';
-        doc.body.style.overflow = ``;
-        if (cloudMasthead) {
-          if (doc.body.classList.contains('ibm-masthead-sticky') && doc.body.classList.contains('ibm-masthead-sticky-showing')) {
-            cloudMasthead.style.marginRight = '0px';
-          }
-        } else if (masthead) {
-          masthead.style.marginRight = '0px';
+        // Import needed subcomponents on first expansion
+        if (!(this.parentElement as C4DTopNav)?.importedMegamenu) {
+          await import('./megamenu-left-navigation');
+          await import('./megamenu-category-link');
+          await import('./megamenu-category-link-group');
+          await import('./megamenu-category-group');
+          await import('./megamenu-category-group-copy');
+          await import('./megamenu-category-heading');
+          await import('./megamenu-link-with-icon');
+          await import('./megamenu-overlay');
+          await import('./megamenu-tab');
+          await import('./megamenu-tabs');
+          (this.parentElement as C4DTopNav).importedMegamenu = true;
         }
 
+        // Ask masthead-composite to render megamenu.
+        // Pause further execution until the render is complete.
+        await this._requestMegaMenuRenderUpdate();
+
+        // Lock document to prevent scrolling while menu is open.
+        doc.body.style.overflow = `hidden`;
+
+        // Set scrollbar adjustments.
+        elementsToAdjust.forEach((element) =>
+          this._handleScrollbarOffset(element)
+        );
+      } else {
         /**
          * Return focus to topMenuItem only when expanded explicitly equals false.
          * On load, when expanded is undefined, avoid taking control of focus.
@@ -161,12 +213,33 @@ class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
         if (changedProperties.get('expanded') === false) {
           setTimeout(() => {
             const { activeElement } = document;
-            if (activeElement === null || activeElement.tagName.toLowerCase() === 'body') {
+            if (
+              activeElement === null ||
+              activeElement.tagName.toLowerCase() === 'body'
+            ) {
               this._topMenuItem.focus();
             }
           }, 0);
         }
+
+        // Ask masthead-composite to un-render megamenu.
+        // Wait long enough for the transition to end.
+        setTimeout(() => {
+          this._requestMegaMenuRenderUpdate();
+        }, 500);
+
+        // Unlock document to enable scrolling once menu is closed.
+        doc.body.style.overflow = '';
+
+        // Unset scrollbar adjustments.
+        elementsToAdjust.forEach((element) =>
+          this._handleScrollbarOffset(element)
+        );
       }
+    }
+
+    if (changedProperties.has('menuLabel')) {
+      this._setAnalyticsAttributes();
     }
   }
 
@@ -174,17 +247,24 @@ class DDSMegaMenuTopNavMenu extends DDSTopNavMenu {
    * The CSS custom property name for the live viewport width.
    */
   static get customPropertyViewportWidth() {
-    return `--${ddsPrefix}-ce--viewport-width`;
+    return `--${c4dPrefix}-ce--viewport-width`;
   }
 
   /**
    * A selector that will return the overlays.
    */
   static get selectorOverlay() {
-    return `${ddsPrefix}-megamenu-overlay`;
+    return `${c4dPrefix}-megamenu-overlay`;
+  }
+
+  /**
+   * The custom event name for when a megamenu is toggled.
+   */
+  static get eventMegaMenuToggled() {
+    return `${c4dPrefix}-megamenu-top-nav-menu-toggle`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
-export default DDSMegaMenuTopNavMenu;
+export default C4DMegaMenuTopNavMenu;

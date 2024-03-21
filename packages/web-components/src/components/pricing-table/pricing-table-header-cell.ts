@@ -1,31 +1,35 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html, property } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import DDSStructuredListHeaderCell from '../structured-list/structured-list-header-cell';
+import C4DStructuredListHeaderCell from '../structured-list/structured-list-header-cell';
 import styles from './pricing-table.scss';
 import { PRICING_TABLE_HEADER_CELL_TYPES } from './defs';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
-@customElement(`${ddsPrefix}-pricing-table-header-cell`)
-class DDSPricingTableHeaderCell extends StableSelectorMixin(DDSStructuredListHeaderCell) {
+@customElement(`${c4dPrefix}-pricing-table-header-cell`)
+class C4DPricingTableHeaderCell extends StableSelectorMixin(
+  C4DStructuredListHeaderCell
+) {
   @property({ reflect: true })
-  type: PRICING_TABLE_HEADER_CELL_TYPES = PRICING_TABLE_HEADER_CELL_TYPES.COMPLEX;
+  type: PRICING_TABLE_HEADER_CELL_TYPES =
+    PRICING_TABLE_HEADER_CELL_TYPES.COMPLEX;
 
   render() {
     const { type } = this;
-    const { tagWrapperSelector } = this.constructor as typeof DDSPricingTableHeaderCell;
+    const { tagWrapperSelector } = this
+      .constructor as typeof C4DPricingTableHeaderCell;
 
     return type === PRICING_TABLE_HEADER_CELL_TYPES.COMPLEX
       ? html`
@@ -63,10 +67,10 @@ class DDSPricingTableHeaderCell extends StableSelectorMixin(DDSStructuredListHea
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--pricing-table-header-cell`;
+    return `${c4dPrefix}--pricing-table-header-cell`;
   }
 
   static styles = styles;
 }
 
-export default DDSPricingTableHeaderCell;
+export default C4DPricingTableHeaderCell;

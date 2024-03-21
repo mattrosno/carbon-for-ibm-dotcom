@@ -1,0 +1,130 @@
+import { Props, Description } from '@storybook/addon-docs/blocks';
+import contributing from '../../../../../../docs/contributing-license.md';
+import { cdnJs, cdnCss } from '../../../globals/internal/storybook-cdn';
+import '../index';
+
+# Global banner
+
+A Global banner is the only component allowed to show up above the Masthead,
+and should be used exclusively for global and critical announcements (e.g. THINK
+global event, COVID 19 messages etc).
+
+> 💡 Check our
+> [Stackblitz](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/global-banner)
+> example implementation.
+
+[![Edit @carbon/ibmdotcom-web-components](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/global-banner)
+
+## Getting started
+
+Here's a quick example to get you started.
+
+## Example using imports
+
+### JS
+
+```javascript
+import '@carbon/ibmdotcom-web-components/es/components/global-banner/index.js';
+```
+
+<Description markdown={`${cdnJs({ components: ['global-banner'] })}`} />
+
+<Description markdown={`${cdnCss()}`} />
+
+## Example HTML
+
+This will render a basic global banner containing a heading, copy text, and a
+button CTA at the top of the page, sitting above the masthead.
+
+The component should be placed before the Dotcom shell, but in case it is placed
+within, it can move itself to the proper place automatically.
+
+```html
+<c4d-global-banner>
+  <c4d-global-banner-heading
+    >Hybrid cloud and AI for smarter business</c4d-global-banner-heading
+  >
+  <c4d-global-banner-copy
+    >Las Vegas, June 15-18, 2025</c4d-global-banner-copy
+  >
+  <c4d-button
+    slot="cta"
+    cta-type="local"
+    kind="tertiary"
+    href="https://www.example.com">
+    Register for Think. Free
+  </c4d-button>
+</c4d-global-banner>
+```
+
+## Example HTML - With image
+
+This example renders the banner with the aforementioned elements and an image.
+
+Add the `image-width` attribute into the global banner and set it to either
+`4-col` or `8-col`. Note that if an image is added without the attribute being
+manually added, it will default to `4-col`.
+
+It is important to create an image asset that best fits the component to ensure
+a proper aspect ratio.
+
+```html
+<c4d-global-banner image-width="4-col">
+  <c4d-global-banner-image
+    slot="image"
+    default-src="https://fpoimg.com/672x336?text=2:1&bg_color=ee5396&text_color=161616"></c4d-global-banner-image>
+  <c4d-global-banner-heading slot="heading"
+    >Hybrid cloud and AI for smarter business</c4d-global-banner-heading
+  >
+  <c4d-global-banner-copy slot="copy"
+    >Las Vegas, June 15-18, 2025</c4d-global-banner-copy
+  >
+  <c4d-button-cta
+    slot="cta"
+    cta-type="local"
+    kind="tertiary"
+    href="https://www.example.com">
+    Register for Think. Free
+  </c4d-button-cta>
+</c4d-global-banner>
+```
+
+In case you'd like to change images depending on the breakpoint, you can use the
+`cds-image-item` component as such:
+
+```html
+<c4d-global-banner-image
+  default-src="https://fpoimg.com/672x336?text=2:1&bg_color=ee5396&text_color=161616">
+  <c4d-image-item
+    media="(min-width:672px)"
+    srcset="https://fpoimg.com/672x336?text=2:1&bg_color=ee5396&text_color=161616">
+  </c4d-image-item>
+  <c4d-image-item
+    media="(min-width:400px)"
+    srcset="https://fpoimg.com/672x336?text=2:1&bg_color=ee5396&text_color=161616">
+  </c4d-image-item>
+  <c4d-image-item
+    media="(min-width:320px)"
+    srcset="https://fpoimg.com/672x336?text=2:1&bg_color=ee5396&text_color=161616">
+  </c4d-image-item>
+</c4d-global-banner-image>
+```
+
+## Props
+
+<Props of="c4d-global-banner" />
+
+## Stable selectors
+
+See
+[our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components)
+to see how Web Components selector and `data-autoid` should be used.
+
+| Web Components selector          | Compatibility selector                        | Description |
+| -------------------------------- | --------------------------------------------- | ----------- |
+| `<c4d-global-banner>`         | `data-autoid="c4d--global-banner"`         | Component   |
+| `<c4d-global-banner-heading>` | `data-autoid="c4d--global-banner-heading"` | Component   |
+| `<c4d-global-banner-copy>`    | `data-autoid="c4d--global-banner-copy"`    | Component   |
+| `<c4d-global-banner-image>`   | `data-autoid="c4d--global-banner-image"`   | Component   |
+
+<Description markdown={contributing} />

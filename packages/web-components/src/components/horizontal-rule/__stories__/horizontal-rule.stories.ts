@@ -1,23 +1,27 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import { select } from '@storybook/addon-knobs';
-import { html } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import '../horizontal-rule';
 import readme from './README.stories.mdx';
 
-export const Default = args => {
+export const Default = (args) => {
   const { type, size, contrast, weight } = args?.HorizontalRule ?? {};
   return html`
-    <dds-hr type="${ifNonNull(type)}" size="${ifNonNull(size)}" contrast="${ifNonNull(contrast)}" weight="${ifNonNull(weight)}">
-    </dds-hr>
+    <c4d-hr
+      type="${ifDefined(type)}"
+      size="${ifDefined(size)}"
+      contrast="${ifDefined(contrast)}"
+      weight="${ifDefined(weight)}">
+    </c4d-hr>
   `;
 };
 
@@ -34,9 +38,8 @@ const sizes = {
 };
 
 const contrasts = {
-  'low-contrast': 'low-contrast',
-  'medium-contrast': undefined,
-  'high-contrast': 'high-contrast',
+  strong: 'strong',
+  subtle: 'subtle',
 };
 
 const weights = {
@@ -47,10 +50,10 @@ const weights = {
 export default {
   title: 'Components/Horizontal rule',
   decorators: [
-    story => html`
-      <div class="bx--grid bx--grid--condensed">
-        <div class="bx--row">
-          <div class="bx--col-lg-12">
+    (story) => html`
+      <div class="cds--grid">
+        <div class="cds--row">
+          <div class="cds--col-lg-12">
             <h2>Horizontal Rule</h2>
             ${story()}
           </div>
@@ -65,7 +68,11 @@ export default {
       HorizontalRule: () => ({
         type: select('Type (type):', types, types.solid),
         size: select('Size (size):', sizes, sizes.fluid),
-        contrast: select('Contrast (contrast):', contrasts, contrasts['medium-contrast']),
+        contrast: select(
+          'Contrast (contrast):',
+          contrasts,
+          contrasts['strong']
+        ),
         weight: select('Weight (weight):', weights, weights.thin),
       }),
     },
@@ -74,7 +81,7 @@ export default {
         HorizontalRule: {
           type: types.solid,
           size: sizes.fluid,
-          contrast: contrasts['medium-contrast'],
+          contrast: contrasts['strong'],
           weight: weights.thin,
         },
       },

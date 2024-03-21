@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Copyright IBM Corp. 2020
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 const { promisify } = require('util');
-const commander = require('commander');
+const { program } = require('commander');
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -30,9 +30,9 @@ const packs = [
  *
  * @param {string[]} files The files.
  */
-const replace = async files => {
+const replace = async (files) => {
   await Promise.all(
-    files.map(async file => {
+    files.map(async (file) => {
       const contents = JSON.parse(await readFile(file));
       for (const dep of deps) {
         const item = contents[dep];
@@ -49,13 +49,13 @@ const replace = async files => {
   );
 };
 
-const { args } = commander.parse(process.argv);
+const { args } = program.parse(process.argv);
 
 replace(args).then(
   () => {
     process.exit(0);
   },
-  error => {
+  (error) => {
     console.error(error); // eslint-disable-line no-console
     process.exit(1);
   }

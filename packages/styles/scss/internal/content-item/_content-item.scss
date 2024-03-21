@@ -1,80 +1,107 @@
 /**
- * Copyright IBM Corp. 2016, 2021
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import '../../globals/vars';
-@import '../../globals/imports';
-@import '../../globals/utils/content-width';
-@import '../../components/list/list';
-@import '../../components/link-with-icon/link-with-icon';
-@import '../../components/buttongroup/buttongroup';
+@use '@carbon/styles/scss/breakpoint' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/type' as *;
+@use '@carbon/styles/scss/utilities' as *;
+@use '../../globals/vars' as *;
+@use '../../globals/utils/content-width' as *;
+@use '../../components/list/list';
+@use '../../components/link-with-icon';
+@use '../../components/button-group';
 
 @mixin content-item {
-  .#{$prefix}--content-item--inverse {
-    background-color: $inverse-02;
-
-    .#{$prefix}--content-item__heading {
-      color: $text-04;
-    }
-
-    .#{$prefix}--content-item__copy p {
-      color: $text-04;
-    }
-  }
-
-  :host(#{$dds-prefix}-content-item),
-  .#{$prefix}--content-item {
+  :host(#{$c4d-prefix}-content-item) {
     display: block;
-    margin-top: $carbon--spacing-07;
-    margin-bottom: $carbon--spacing-07;
-  }
+    margin-block: $spacing-07;
+    margin-block-end: $spacing-07;
+    max-inline-size: to-rem(640px);
 
-  :host(#{$dds-prefix}-content-item)
-    ::slotted(#{$dds-prefix}-video-player-container),
-  .#{$prefix}--content-item .#{$prefix}--video-player {
-    margin-top: $spacing-05;
-    margin-bottom: $carbon--spacing-07;
-    max-width: 40rem;
-  }
+    @include breakpoint(md) {
+      padding-inline-end: $spacing-05;
+    }
 
-  .#{$prefix}--content-item .#{$prefix}--image-with-caption {
-    margin-top: $spacing-05;
-  }
+    .#{$c4d-prefix}--content-item__horizontal {
+      @include breakpoint(md) {
+        display: flex;
+      }
+      .#{$c4d-prefix}--content-item__media {
+        margin-inline-end: $spacing-07;
+      }
+    }
 
-  :host(#{$dds-prefix}-content-item-heading),
-  :host(#{$dds-prefix}-content-item-copy),
-  .#{$prefix}--content-item__heading,
-  .#{$prefix}--content-item__copy {
-    @include carbon--breakpoint(md) {
-      @include content-width;
+    .#{$c4d-prefix}--content-item__statitics {
+      @include type-style('fluid-display-01', true);
 
-      display: block;
+      margin-block-end: $spacing-05;
+    }
+
+    .#{$c4d-prefix}--content-item__media {
+      margin-block-end: $spacing-05;
+    }
+
+    ::slotted(#{$c4d-prefix}-image-logo) {
+      margin: 0;
+      /* stylelint-disable */
+      aspect-ratio: var(--logo-ratio);
+      /* stylelint-enable */
+      margin-block-end: $spacing-06;
+    }
+
+    ::slotted(svg) {
+      block-size: $spacing-10;
+      inline-size: $spacing-10;
     }
   }
 
-  :host(#{$dds-prefix}-content-item-heading),
-  .#{$prefix}--content-item__heading {
-    @include carbon--type-style('expressive-heading-02');
-
-    color: $text-01;
+  :host(#{$c4d-prefix}-content-item)
+    ::slotted(#{$c4d-prefix}-video-player-container) {
+    margin-block: $spacing-05;
+    margin-block-end: $spacing-07;
+    max-inline-size: 40rem;
   }
 
-  :host(#{$dds-prefix}-content-item-paragraph),
-  .#{$prefix}--content-item__copy p {
-    @include carbon--type-style('body-long-02');
-
-    color: $text-01;
-    margin-bottom: $carbon--spacing-06;
+  :host(#{$c4d-prefix}-content-item-heading),
+  :host(#{$c4d-prefix}-content-item-copy),
+  :host(#{$c4d-prefix}-content-item-paragraph) {
+    display: block;
   }
 
-  .#{$prefix}--content-item__cta {
-    margin-top: $carbon--spacing-05;
+  :host(#{$c4d-prefix}-content-item-copy) {
+    @include breakpoint(md) {
+      @include content-width;
+    }
   }
-}
 
-@include exports('content-item') {
-  @include content-item;
+  :host(#{$c4d-prefix}-content-item-heading) {
+    @include type-style('heading-02');
+
+    color: $text-primary;
+  }
+
+  :host(#{$c4d-prefix}-content-item-paragraph) {
+    @include type-style('body-02');
+
+    color: $text-primary;
+    margin-block-end: $spacing-05;
+  }
+
+  :host(#{$c4d-prefix}-content-item[horizontal])
+    ::slotted(#{$c4d-prefix}-image) {
+    inline-size: 100%;
+    @include breakpoint(md) {
+      inline-size: to-rem(128px);
+    }
+  }
+
+  :host(#{$c4d-prefix}-content-item) ::slotted([slot='footer']) {
+    margin-inline-start: 0;
+  }
 }

@@ -1,25 +1,24 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Part } from 'lit-html';
-import { classMap } from 'lit-html/directives/class-map.js';
-import { html, customElement, property, state, LitElement, TemplateResult } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { classMap } from 'lit/directives/class-map.js';
+import { html, LitElement, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import { CONTENT_BLOCK_COMPLEMENTARY_STYLE_SCHEME } from './defs';
 import styles from './content-block.scss';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
 export { CONTENT_BLOCK_COMPLEMENTARY_STYLE_SCHEME };
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
-const { prefix } = settings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * The table mapping slot name with the private property name that indicates the existence of the slot content.
@@ -43,8 +42,8 @@ const slotExistencePropertyNames = {
  * @slot complementary - The complementary (aside) content.
  * @abstract
  */
-@customElement(`${ddsPrefix}-content-block`)
-class DDSContentBlock extends StableSelectorMixin(LitElement) {
+@customElement(`${c4dPrefix}-content-block`)
+class C4DContentBlock extends StableSelectorMixin(LitElement) {
   /**
    * `true` if there is complementary content.
    */
@@ -84,12 +83,15 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
   /**
    * The CSS class list for the container (grid) node.
    */
-  protected _getContainerClasses(): string | ((part: Part) => void) {
-    const { complementaryStyleScheme, _hasComplementary: hasComplementary } = this;
+  protected _getContainerClasses() {
+    const { complementaryStyleScheme, _hasComplementary: hasComplementary } =
+      this;
     return classMap({
       [`${prefix}--content-layout`]: true,
       [`${prefix}--content-layout--with-complementary`]: hasComplementary,
-      [`${prefix}--layout--border`]: complementaryStyleScheme === CONTENT_BLOCK_COMPLEMENTARY_STYLE_SCHEME.WITH_BORDER,
+      [`${prefix}--layout--border`]:
+        complementaryStyleScheme ===
+        CONTENT_BLOCK_COMPLEMENTARY_STYLE_SCHEME.WITH_BORDER,
     });
   }
 
@@ -97,7 +99,12 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    * Returns whether or not there is content to render in the body markup.
    */
   protected _hasBodyContent(): boolean {
-    const { _hasContent: hasContent, _hasCopy: hasCopy, _hasMedia: hasMedia, _hasFooter: hasFooter } = this;
+    const {
+      _hasContent: hasContent,
+      _hasCopy: hasCopy,
+      _hasMedia: hasMedia,
+      _hasFooter: hasFooter,
+    } = this;
     return hasContent || hasCopy || hasMedia || hasFooter;
   }
 
@@ -105,12 +112,15 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    * Handles `slotchange` event.
    *
    * @param event The event.
+   * @param event.target The event target.
    */
   protected _handleSlotChange({ target }: Event) {
     const { name } = target as HTMLSlotElement;
     const hasContent = (target as HTMLSlotElement)
       .assignedNodes()
-      .some(node => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim());
+      .some(
+        (node) => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim()
+      );
     this[slotExistencePropertyNames[name] || '_hasContent'] = hasContent;
   }
 
@@ -119,7 +129,9 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    */
   protected _renderBody(): TemplateResult | string | void {
     return html`
-      <div ?hidden="${!this._hasBodyContent()}" class="${prefix}--content-layout__body">
+      <div
+        ?hidden="${!this._hasBodyContent()}"
+        class="${prefix}--content-layout__body">
         ${this._renderCopy()}${this._renderInnerBody()}${this._renderFooter()}
       </div>
     `;
@@ -130,9 +142,7 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    */
   protected _renderContent(): TemplateResult | string | void {
     const { _handleSlotChange: handleSlotChange } = this;
-    return html`
-      <slot @slotchange="${handleSlotChange}"></slot>
-    `;
+    return html` <slot @slotchange="${handleSlotChange}"></slot> `;
   }
 
   /**
@@ -140,9 +150,7 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    */
   protected _renderCopy(): TemplateResult | string | void {
     const { _handleSlotChange: handleSlotChange } = this;
-    return html`
-      <slot name="copy" @slotchange="${handleSlotChange}"></slot>
-    `;
+    return html` <slot name="copy" @slotchange="${handleSlotChange}"></slot> `;
   }
 
   /**
@@ -150,9 +158,20 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    */
   protected _renderFooter(): TemplateResult | string | void {
     const { _hasFooter: hasFooter, _handleSlotChange: handleSlotChange } = this;
-    // TODO: See if we can remove the surrounding `<div>`
+
+    // if card-group exists, ensure the card link footer item matches width of card-group-item
+    const cardGroup = this.querySelector(
+      (this.constructor as typeof C4DContentBlock).selectorCardGroup
+    );
+    const cardGroupStyle = cardGroup?.getAttribute('style');
+
     return html`
-      <div ?hidden="${!hasFooter}">
+      <div
+        ?hidden="${!hasFooter}"
+        class="${cardGroup &&
+        hasFooter &&
+        `${c4dPrefix}--content-block-footer`}"
+        style="${cardGroupStyle}">
         <slot name="footer" @slotchange="${handleSlotChange}"></slot>
       </div>
     `;
@@ -172,9 +191,7 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    * @returns The main/media content.
    */
   protected _renderInnerBody(): TemplateResult | string | void {
-    return html`
-      ${this._renderContent()}${this._renderMedia()}
-    `;
+    return html` ${this._renderContent()}${this._renderMedia()} `;
   }
 
   /**
@@ -182,9 +199,7 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
    */
   protected _renderMedia(): TemplateResult | string | void {
     const { _handleSlotChange: handleSlotChange } = this;
-    return html`
-      <slot name="media" @slotchange="${handleSlotChange}"></slot>
-    `;
+    return html` <slot name="media" @slotchange="${handleSlotChange}"></slot> `;
   }
 
   /**
@@ -211,8 +226,15 @@ class DDSContentBlock extends StableSelectorMixin(LitElement) {
     `;
   }
 
+  /**
+   * A selector that will return the card-group element
+   */
+  static get selectorCardGroup() {
+    return `${c4dPrefix}-card-group`;
+  }
+
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSContentBlock;
+export default C4DContentBlock;

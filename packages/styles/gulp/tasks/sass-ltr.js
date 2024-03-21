@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020, 2021
+ * Copyright IBM Corp. 2020, 2022
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,8 +11,7 @@ const gulp = require('gulp'),
   prefix = require('gulp-autoprefixer'),
   cleanCSS = require('gulp-clean-css'),
   rename = require('gulp-rename'),
-  // This can be changed to `dart-sass` once Carbon V11 is used require('sass')
-  sass = require('gulp-sass')(require('node-sass')),
+  sass = require('gulp-sass')(require('sass')),
   path = require('path');
 
 /**
@@ -21,7 +20,6 @@ const gulp = require('gulp'),
  * @description
  * Compile .scss files into build css directory with autoprefixer,
  * then live reload the browser
- *
  * @returns {object} The gulp task stream
  * @private
  */
@@ -31,8 +29,8 @@ function _sass() {
     .src(global.config.scssEntry)
     .pipe(sass({
       includePaths: [
-        path.resolve(__dirname, '../../', 'node_modules'),
-        path.resolve(__dirname, '../../../../', 'node_modules'),
+        path.resolve(__dirname, '../../', 'node_modules'), // styles
+        path.resolve(__dirname, '../../../../', 'node_modules'), // styles
       ]
     }).on('error', sass.logError))
     .pipe(
@@ -47,7 +45,6 @@ function _sass() {
  * @function
  * @description
  * Compile the regular versions of the css directory into the dist folder
- *
  * @returns {object} the gulp task stream
  * @private
  */

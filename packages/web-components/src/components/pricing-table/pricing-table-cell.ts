@@ -1,29 +1,32 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
+import { html } from 'lit';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import DDSStructuredListCell from '../structured-list/structured-list-cell';
-import DDSPricingTableGroup from './pricing-table-group';
+import C4DStructuredListCell from '../structured-list/structured-list-cell';
+import C4DPricingTableGroup from './pricing-table-group';
 import styles from './pricing-table.scss';
-import DDSPricingTableCellAnnotation from './pricing-table-cell-annotation';
+import C4DPricingTableCellAnnotation from './pricing-table-cell-annotation';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
-@customElement(`${ddsPrefix}-pricing-table-cell`)
-class DDSPricingTableCell extends StableSelectorMixin(HostListenerMixin(DDSStructuredListCell)) {
-  _parentGroup: DDSPricingTableGroup | null = this.closest(`${ddsPrefix}-pricing-table-group`);
+@customElement(`${c4dPrefix}-pricing-table-cell`)
+class C4DPricingTableCell extends StableSelectorMixin(
+  HostListenerMixin(C4DStructuredListCell)
+) {
+  _parentGroup: C4DPricingTableGroup | null = this.closest(
+    `${c4dPrefix}-pricing-table-group`
+  );
 
   @HostListener('document:event-toggle-annotations')
   protected _handleAnnotationToggle = ({ detail }) => {
@@ -43,7 +46,7 @@ class DDSPricingTableCell extends StableSelectorMixin(HostListenerMixin(DDSStruc
 
     // Get default slot
     let defaultSlot;
-    slots?.forEach(slot => {
+    slots?.forEach((slot) => {
       if (!slot.hasAttribute('name')) {
         defaultSlot = slot;
       }
@@ -52,8 +55,8 @@ class DDSPricingTableCell extends StableSelectorMixin(HostListenerMixin(DDSStruc
     // Filter out annotations, which should be in the "annotation" slot but
     // sometimes appear as inside the default slot. Also filter out empty
     // text nodes.
-    const slotContents = (defaultSlot?.assignedNodes() || []).filter(node => {
-      const isAnnotation = node instanceof DDSPricingTableCellAnnotation;
+    const slotContents = (defaultSlot?.assignedNodes() || []).filter((node) => {
+      const isAnnotation = node instanceof C4DPricingTableCellAnnotation;
       const isEmpty = node.textContent?.trim() === '';
 
       return !isAnnotation && !isEmpty;
@@ -77,10 +80,10 @@ class DDSPricingTableCell extends StableSelectorMixin(HostListenerMixin(DDSStruc
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--pricing-table-cell`;
+    return `${c4dPrefix}--pricing-table-cell`;
   }
 
   static styles = styles;
 }
 
-export default DDSPricingTableCell;
+export default C4DPricingTableCell;

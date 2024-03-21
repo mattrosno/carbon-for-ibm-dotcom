@@ -1,24 +1,30 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { boolean, select, object } from '@storybook/addon-knobs';
-import on from 'carbon-components/es/globals/js/misc/on.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import on from '../../../internal/vendor/@carbon/web-components/globals/mixins/on.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import inPercy from '@percy-io/in-percy';
 import textNullable from '../../../../.storybook/knob-text-nullable';
-import DDSLeftNav from '../../masthead/left-nav';
+import c4dLeftNav from '../../masthead/left-nav';
 import '../dotcom-shell-container';
-import { authenticatedProfileItems, unauthenticatedProfileItems } from '../../masthead/__stories__/profile-items';
+import {
+  authenticatedProfileItems,
+  unauthenticatedProfileItems,
+} from '../../masthead/__stories__/profile-items';
 import mastheadStyles from '../../masthead/__stories__/masthead.stories.scss';
 import { FOOTER_SIZE } from '../../footer/footer';
-import mastheadLinks, { l1Data } from '../../masthead/__stories__/links';
+import {
+  mastheadL0Data as l0Data,
+  mastheadL1Data as l1Data,
+} from '../../masthead/__stories__/links';
 import mockLangList from '../../footer/__stories__/language-list';
 import mockFooterLinks from '../../footer/__stories__/links';
 import mockLegalLinks from '../../footer/__stories__/legal-links';
@@ -27,7 +33,7 @@ import readme from './README.stories.mdx';
 import {
   StoryContent,
   StoryContentNoToC,
-  universalBanner as StoryUniversalBanner,
+  globalBanner as StoryGlobalBanner,
   tocContent,
   contentLeadspaceSearch,
 } from './data/content';
@@ -35,8 +41,8 @@ import { UNAUTHENTICATED_STATUS } from '../../../internal/vendor/@carbon/ibmdotc
 import { TOC_TYPES } from '../../table-of-contents/defs';
 
 // eslint-disable-next-line sort-imports
-import img4Col from '../../../../../storybook-images/assets/universal-banner/universal-banner-4-col-image.jpg';
-import img8Col from '../../../../../storybook-images/assets/universal-banner/universal-banner-8-col-image.jpg';
+import img4Col from '../../../../.storybook/storybook-images/assets/global-banner/global-banner-4-col-image.jpg';
+import img8Col from '../../../../.storybook/storybook-images/assets/global-banner/global-banner-8-col-image.jpg';
 
 const userStatuses = {
   authenticated: 'test.user@ibm.com',
@@ -71,9 +77,14 @@ const images = {
 /**
  * Menu items knob data
  */
-const menuItems = ['Products & Solutions', 'Services & Consulting', 'Learn & Support', 'Explore more'];
+const menuItems = [
+  'Products & Solutions',
+  'Services & Consulting',
+  'Learn & Support',
+  'Explore more',
+];
 
-export const Default = args => {
+export const Default = (args) => {
   const {
     platform,
     hasProfile,
@@ -97,53 +108,52 @@ export const Default = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
 
-export const DefaultFooterLanguageOnly = args => {
+export const DefaultFooterLanguageOnly = (args) => {
   const {
     platform,
     hasProfile,
@@ -166,54 +176,53 @@ export const DefaultFooterLanguageOnly = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            user-status="${ifNonNull(userStatus)}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            user-status="${ifDefined(userStatus)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            user-status="${ifNonNull(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            user-status="${ifDefined(userStatus)}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -222,7 +231,10 @@ DefaultFooterLanguageOnly.story = {
   parameters: {
     knobs: {
       FooterComposite: () => ({
-        disableLocaleButton: boolean('hide the locale button (disable-locale-button)', false),
+        disableLocaleButton: boolean(
+          'hide the locale button (disable-locale-button)',
+          false
+        ),
         langList: object('langlist', mockLangList),
       }),
     },
@@ -237,7 +249,7 @@ DefaultFooterLanguageOnly.story = {
   },
 };
 
-export const searchOpenOnload = args => {
+export const searchOpenOnload = (args) => {
   const {
     platform,
     hasProfile,
@@ -260,52 +272,51 @@ export const searchOpenOnload = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
+          <c4d-dotcom-shell-composite
             activate-search="true"
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            user-status="${ifNonNull(userStatus)}"
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
+          <c4d-dotcom-shell-container
             activate-search="true"
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
             .langList="${mockLangList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -314,7 +325,7 @@ searchOpenOnload.story = {
   name: 'Search open onload',
 };
 
-export const withPlatform = args => {
+export const withPlatform = (args) => {
   const {
     hasProfile,
     userStatus,
@@ -336,46 +347,45 @@ export const withPlatform = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
+          <c4d-dotcom-shell-composite
             platform=${platformData.name}
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            user-status="${ifNonNull(userStatus)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
+          <c4d-dotcom-shell-container
             platform=${platformData.name}
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            user-status="${ifNonNull(userStatus)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -387,9 +397,19 @@ withPlatform.story = {
       MastheadComposite: () => ({
         hasProfile: boolean('show the profile functionality (profile)', true),
         hasSearch: boolean('show the search functionality (search)', true),
-        searchPlaceholder: textNullable('search placeholder (searchPlaceholder)', inPercy() ? ' ' : 'Search all of IBM'),
-        selectedMenuItem: textNullable('selected menu item (selected-menu-item)', 'Services & Consulting'),
-        userStatus: select('The user authenticated status (user-status)', userStatuses, userStatuses.unauthenticated),
+        searchPlaceholder: textNullable(
+          'search placeholder (searchPlaceholder)',
+          inPercy() ? ' ' : 'Search all of IBM'
+        ),
+        selectedMenuItem: textNullable(
+          'selected menu item (selected-menu-item)',
+          'Services & Consulting'
+        ),
+        userStatus: select(
+          'The user authenticated status (user-status)',
+          userStatuses,
+          userStatuses.unauthenticated
+        ),
       }),
     },
     propsSet: {
@@ -406,7 +426,7 @@ withPlatform.story = {
   },
 };
 
-export const withShortFooter = args => {
+export const withShortFooter = (args) => {
   const {
     platform,
     hasProfile,
@@ -429,48 +449,47 @@ export const withShortFooter = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="short"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="short"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -479,7 +498,7 @@ withShortFooter.story = {
   name: 'With short footer',
 };
 
-export const withShortFooterLanguageOnly = args => {
+export const withShortFooterLanguageOnly = (args) => {
   const {
     platform,
     hasProfile,
@@ -504,56 +523,55 @@ export const withShortFooterLanguageOnly = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="short"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="short"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -562,7 +580,10 @@ withShortFooterLanguageOnly.story = {
   parameters: {
     knobs: {
       FooterComposite: () => ({
-        disableLocaleButton: boolean('hide the locale button (disable-locale-button)', false),
+        disableLocaleButton: boolean(
+          'hide the locale button (disable-locale-button)',
+          false
+        ),
         langList: object('langlist', mockLangList),
       }),
     },
@@ -577,7 +598,7 @@ withShortFooterLanguageOnly.story = {
   },
 };
 
-export const withMicroFooter = args => {
+export const withMicroFooter = (args) => {
   const {
     platform,
     hasProfile,
@@ -600,55 +621,54 @@ export const withMicroFooter = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="micro"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="micro"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
 
 withMicroFooter.story = { name: 'With micro footer' };
 
-export const withMicroFooterLanguageOnly = args => {
+export const withMicroFooterLanguageOnly = (args) => {
   const {
     platform,
     hasProfile,
@@ -672,56 +692,55 @@ export const withMicroFooterLanguageOnly = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="micro"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
             footer-size="micro"
             language-selector-label="Choose a language"
             clear-selection-label="Clear language selection"
             selected-language="English"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            user-status="${ifNonNull(userStatus)}"
+            user-status="${ifDefined(userStatus)}"
             .langList="${langList}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -731,7 +750,10 @@ withMicroFooterLanguageOnly.story = {
   parameters: {
     knobs: {
       FooterComposite: () => ({
-        disableLocaleButton: boolean('hide the locale button (disable-locale-button)', false),
+        disableLocaleButton: boolean(
+          'hide the locale button (disable-locale-button)',
+          false
+        ),
         langList: object('langlist', mockLangList),
       }),
     },
@@ -746,7 +768,7 @@ withMicroFooterLanguageOnly.story = {
   },
 };
 
-export const withL1 = args => {
+export const withL1 = (args) => {
   const {
     hasProfile,
     userStatus,
@@ -773,44 +795,43 @@ export const withL1 = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            user-status="${ifNonNull(userStatus)}"
+          <c4d-dotcom-shell-composite
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .l1Data="${l1Data}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent(contentConfig)}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            user-status="${ifNonNull(userStatus)}"
+          <c4d-dotcom-shell-container
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            user-status="${ifDefined(userStatus)}"
             searchPlaceHolder="${searchPlaceholder}"
             selected-menu-item="${selectedMenuItem}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .l1Data="${l1Data}"
-            .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent(contentConfig)}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -820,11 +841,24 @@ withL1.story = {
   parameters: {
     knobs: {
       DotcomShell: () => ({
-        hasProfile: boolean('show the profile functionality (has-profile)', true),
+        hasProfile: boolean(
+          'show the profile functionality (has-profile)',
+          true
+        ),
         hasSearch: boolean('show the search functionality (has-search)', true),
-        searchPlaceholder: textNullable('search placeholder (searchPlaceholder)', inPercy() ? ' ' : 'Search all of IBM'),
-        selectedMenuItem: textNullable('selected menu item (selected-menu-item)', 'Services & Consulting'),
-        userStatus: select('The user authenticated status (user-status)', userStatuses, userStatuses.unauthenticated),
+        searchPlaceholder: textNullable(
+          'search placeholder (searchPlaceholder)',
+          inPercy() ? ' ' : 'Search all of IBM'
+        ),
+        selectedMenuItem: textNullable(
+          'selected menu item (selected-menu-item)',
+          'Services & Consulting'
+        ),
+        userStatus: select(
+          'The user authenticated status (user-status)',
+          userStatuses,
+          userStatuses.unauthenticated
+        ),
       }),
     },
     propsSet: {
@@ -841,7 +875,7 @@ withL1.story = {
   },
 };
 
-export const WithHorizontalTOC = args => {
+export const WithHorizontalTOC = (args) => {
   const {
     platform,
     hasProfile,
@@ -870,48 +904,47 @@ export const WithHorizontalTOC = args => {
     </style>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent(contentConfig)}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent(contentConfig)}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -926,7 +959,7 @@ WithHorizontalTOC.story = {
   },
 };
 
-export const WithLeadspaceSearch = args => {
+export const WithLeadspaceSearch = (args) => {
   const {
     platform,
     hasProfile,
@@ -947,48 +980,47 @@ export const WithLeadspaceSearch = args => {
   return html`
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContentNoToC()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContentNoToC()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
@@ -1001,7 +1033,7 @@ WithLeadspaceSearch.story = {
   },
 };
 
-export const WithUniversalBanner = args => {
+export const WithGlobalBanner = (args) => {
   const {
     platform,
     hasProfile,
@@ -1024,8 +1056,8 @@ export const WithUniversalBanner = args => {
   } = args?.DotcomShell ?? {};
   const { useMock } = args?.Other ?? {};
 
-  const bannerHeading = document.querySelector('dds-universal-banner-heading');
-  const bannerCopy = document.querySelector('dds-universal-banner-copy');
+  const bannerHeading = document.querySelector('c4d-global-banner-heading');
+  const bannerCopy = document.querySelector('c4d-global-banner-copy');
 
   if (bannerHeading) {
     bannerHeading!.shadowRoot!.textContent = heading;
@@ -1039,76 +1071,109 @@ export const WithUniversalBanner = args => {
     <style>
       ${mastheadStyles}
     </style>
-    <dds-universal-banner image-width="${imageWidth}">
-      <dds-universal-banner-image slot="image" default-src="${images[imageWidth]}"></dds-universal-banner-image>
-      <dds-universal-banner-heading slot="heading">${heading}</dds-universal-banner-heading>
-      <dds-universal-banner-copy slot="copy">${copy}</dds-universal-banner-copy>
-      <dds-button-cta slot="cta" cta-type="local" kind="tertiary" href="https://www.example.com">
+    <c4d-global-banner image-width="${imageWidth}">
+      <c4d-global-banner-image
+        slot="image"
+        default-src="${images[imageWidth]}"></c4d-global-banner-image>
+      <c4d-global-banner-heading slot="heading"
+        >${heading}</c4d-global-banner-heading
+      >
+      <c4d-global-banner-copy slot="copy">${copy}</c4d-global-banner-copy>
+      <c4d-button
+        slot="cta"
+        cta-type="local"
+        kind="tertiary"
+        href="https://www.example.com">
         ${ctaCopy}
-      </dds-button-cta>
-    </dds-universal-banner>
+      </c4d-button>
+    </c4d-global-banner>
     ${useMock
       ? html`
-          <dds-dotcom-shell-composite
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .authenticatedProfileItems="${ifNonNull(authenticatedProfileItems)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
+          <c4d-dotcom-shell-composite
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .authenticatedProfileItems="${ifDefined(authenticatedProfileItems)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             .navLinks="${navLinks}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            .unauthenticatedProfileItems="${ifNonNull(unauthenticatedProfileItems)}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            .unauthenticatedProfileItems="${ifDefined(
+              unauthenticatedProfileItems
+            )}"
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-composite>
+          </c4d-dotcom-shell-composite>
         `
       : html`
-          <dds-dotcom-shell-container
-            platform="${ifNonNull(platform)}"
-            platform-url="${ifNonNull(platformData.url)}"
-            language="${ifNonNull(language)}"
-            lang-display="${ifNonNull(langDisplay)}"
-            footer-size="${ifNonNull(footerSize)}"
-            user-status="${ifNonNull(userStatus)}"
-            searchPlaceholder="${ifNonNull(searchPlaceholder)}"
-            selected-menu-item="${ifNonNull(selectedMenuItem)}"
-            .legalLinks="${ifNonNull(legalLinks)}"
-            .localeList="${ifNonNull(localeList)}"
-            .footerLinks="${ifNonNull(footerLinks)}"
-            .navLinks="${navLinks}"
+          <c4d-dotcom-shell-container
+            platform="${ifDefined(platform)}"
+            platform-url="${ifDefined(platformData.url)}"
+            language="${ifDefined(language)}"
+            lang-display="${ifDefined(langDisplay)}"
+            footer-size="${ifDefined(footerSize)}"
+            user-status="${ifDefined(userStatus)}"
+            searchPlaceholder="${ifDefined(searchPlaceholder)}"
+            selected-menu-item="${ifDefined(selectedMenuItem)}"
+            .legalLinks="${ifDefined(legalLinks)}"
+            .localeList="${ifDefined(localeList)}"
+            .footerLinks="${ifDefined(footerLinks)}"
             ?has-profile="${hasProfile}"
             ?has-search="${hasSearch}"
-            ?disable-locale-button="${disableLocaleButton}"
-          >
+            ?disable-locale-button="${disableLocaleButton}">
             ${StoryContent()}
-          </dds-dotcom-shell-container>
+          </c4d-dotcom-shell-container>
         `}
   `;
 };
 
-WithUniversalBanner.story = {
-  name: 'With Universal banner',
+WithGlobalBanner.story = {
+  name: 'With Global banner',
   parameters: {
     knobs: {
       DotcomShell: () => ({
-        hasProfile: boolean('show the profile functionality (has-profile)', true),
+        hasProfile: boolean(
+          'show the profile functionality (has-profile)',
+          true
+        ),
         hasSearch: boolean('show the search functionality (has-search)', true),
-        searchPlaceholder: textNullable('search placeholder (searchPlaceholder)', inPercy() ? ' ' : 'Search all of IBM'),
-        selectedMenuItem: textNullable('selected menu item (selected-menu-item)', 'Services & Consulting'),
-        userStatus: select('The user authenticated status (user-status)', userStatuses, userStatuses.unauthenticated),
-        heading: textNullable('Universal banner heading:', 'Hybrid cloud and AI for smarter business'),
-        copy: textNullable('Universal banner copy (optional):', 'Las Vegas, June 15-18, 2025'),
-        ctaCopy: textNullable('Universal banner CTA copy:', 'Register for Think. Free'),
-        imageWidth: select('Universal banner image width:', imageWidthOptions, '4-col'),
+        searchPlaceholder: textNullable(
+          'search placeholder (searchPlaceholder)',
+          inPercy() ? ' ' : 'Search all of IBM'
+        ),
+        selectedMenuItem: textNullable(
+          'selected menu item (selected-menu-item)',
+          'Services & Consulting'
+        ),
+        userStatus: select(
+          'The user authenticated status (user-status)',
+          userStatuses,
+          userStatuses.unauthenticated
+        ),
+        heading: textNullable(
+          'Global banner heading:',
+          'Hybrid cloud and AI for smarter business'
+        ),
+        copy: textNullable(
+          'Global banner copy (optional):',
+          'Las Vegas, June 15-18, 2025'
+        ),
+        ctaCopy: textNullable(
+          'Global banner CTA copy:',
+          'Register for Think. Free'
+        ),
+        imageWidth: select(
+          'Global banner image width:',
+          imageWidthOptions,
+          '4-col'
+        ),
       }),
     },
     propsSet: {
@@ -1132,35 +1197,33 @@ WithUniversalBanner.story = {
   },
 };
 
-export const WithoutShell = args => {
-  const { masthead, universalBanner, leadspaceSearch, tocLayout } = args?.DotcomShell ?? {};
+export const WithoutShell = (args) => {
+  const { masthead, globalBanner, leadspaceSearch, tocLayout } =
+    args?.DotcomShell ?? {};
 
   return html`
     <style>
       ${mastheadStyles}
     </style>
-    ${universalBanner ? StoryUniversalBanner(images['4-col']) : ''}
+    ${globalBanner ? StoryGlobalBanner(images['4-col']) : ''}
     ${masthead === 'L0'
       ? html`
-          <dds-masthead-container id="masthead-container"></dds-masthead-container>
+          <c4d-masthead-container
+            id="masthead-container"></c4d-masthead-container>
         `
       : html`
-          <dds-masthead-container id="masthead-container" .l1Data="${l1Data}"></dds-masthead-container>
+          <c4d-masthead-container
+            id="masthead-container"
+            .l1Data="${l1Data}"></c4d-masthead-container>
         `}
-    <main class="bx--content dds-ce-demo--ui-shell-content">
+    <main class="cds--content c4d-ce-demo--ui-shell-content">
       ${leadspaceSearch
         ? html`
-            <div class="bx--grid bx--col-lg-8">
-              ${contentLeadspaceSearch}
-            </div>
+            <div class="cds--grid cds--col-lg-8">${contentLeadspaceSearch}</div>
           `
         : ''}
       ${tocLayout === 'none'
-        ? html`
-            <div class="bx--grid bx--col-lg-8">
-              ${tocContent}
-            </div>
-          `
+        ? html` <div class="cds--grid cds--col-lg-8">${tocContent}</div> `
         : ''}
       ${tocLayout === null ? StoryContent() : ''}
       ${tocLayout === 'horizontal'
@@ -1180,9 +1243,13 @@ WithoutShell.story = {
     knobs: {
       DotcomShell: () => ({
         masthead: select('Masthead Version', ['L0', 'L1'], 'L0'),
-        universalBanner: boolean('Has Universal Banner', false),
+        globalBanner: boolean('Has Global Banner', false),
         leadspaceSearch: boolean('Has Leadspace With Search', false),
-        tocLayout: select('Table of Contents Layout', { Vertical: null, Horizontal: 'horizontal' }, null),
+        tocLayout: select(
+          'Table of Contents Layout',
+          { Vertical: null, Horizontal: 'horizontal' },
+          null
+        ),
       }),
     },
     propsSet: {
@@ -1199,16 +1266,34 @@ WithoutShell.story = {
 export default {
   title: 'Components/Dotcom shell',
   decorators: [
-    story => {
+    (story) => {
       if (!(window as any)._hPageShow) {
         (window as any)._hPageShow = on(window, 'pageshow', () => {
-          const leftNav = document.querySelector('dds-left-nav');
+          const leftNav = document.querySelector('c4d-left-nav');
           if (leftNav) {
-            (leftNav as DDSLeftNav).expanded = false;
+            (leftNav as c4dLeftNav).expanded = false;
           }
         });
       }
-      return story();
+      return html`
+        ${story()}
+        <script>
+          window.digitalData.page.pageInfo.ibm.contactModuleConfiguration = {
+            contactInformationBundleKey: {
+              focusArea: 'Cloud - Automation - All',
+              languageCode: 'en',
+              regionCode: 'US',
+            },
+            contactModuleTranslationKey: {
+              languageCode: 'en',
+              regionCode: 'US',
+            },
+          };
+        </script>
+        <script
+          src="//www.ibm.com/common/digitaladvisor/cm-app/latest/cm-app.min.js"
+          defer></script>
+      `;
     },
   ],
   parameters: {
@@ -1216,22 +1301,45 @@ export default {
     knobs: {
       escapeHTML: false,
       DotcomShell: () => ({
-        platform: select('Platform (platform)', { none: null, platform: platformData.name }, null),
+        platform: select(
+          'Platform (platform)',
+          { none: null, platform: platformData.name },
+          null
+        ),
         hasProfile: boolean('Show profile in masthead (profile)', true),
         hasSearch: boolean('Show search in masthead (search)', true),
-        searchPlaceholder: textNullable('Search placeholder (searchPlaceholder)', inPercy() ? ' ' : 'Search all of IBM'),
-        selectedMenuItem: select('Selected menu item (selected-menu-item)', menuItems, menuItems[1]),
-        userStatus: select('User authentication (user-status)', userStatuses, userStatuses.unauthenticated),
-        disableLocaleButton: boolean('Locale button (disable-locale-button)', false),
-        footerSize: select('Footer size (footer-size)', footerSizes, FOOTER_SIZE.REGULAR),
+        searchPlaceholder: textNullable(
+          'Search placeholder (searchPlaceholder)',
+          inPercy() ? ' ' : 'Search all of IBM'
+        ),
+        selectedMenuItem: select(
+          'Selected menu item (selected-menu-item)',
+          menuItems,
+          menuItems[1]
+        ),
+        userStatus: select(
+          'User authentication (user-status)',
+          userStatuses,
+          userStatuses.unauthenticated
+        ),
+        disableLocaleButton: boolean(
+          'Locale button (disable-locale-button)',
+          false
+        ),
+        footerSize: select(
+          'Footer size (footer-size)',
+          footerSizes,
+          FOOTER_SIZE.REGULAR
+        ),
       }),
     },
     props: (() => {
-      // Lets `<dds-masthead-container>` load the nav links and lets `<dds-footer-container>` load the footer links
-      const useMock = inPercy() || new URLSearchParams(window.location.search).has('mock');
+      // Lets `<c4d-masthead-container>` load the nav links and lets `<c4d-footer-container>` load the footer links
+      const useMock =
+        inPercy() || new URLSearchParams(window.location.search).has('mock');
       return {
         DotcomShell: {
-          navLinks: !useMock ? undefined : mastheadLinks,
+          navLinks: !useMock ? undefined : l0Data,
           langDisplay: !useMock ? undefined : 'United States - English',
           legalLinks: !useMock ? undefined : mockLegalLinks,
           links: !useMock ? undefined : mockFooterLinks,

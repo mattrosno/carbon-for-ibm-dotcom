@@ -1,35 +1,40 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import KalturaPlayerAPI from '../../internal/vendor/@carbon/ibmdotcom-services/services/KalturaPlayer/KalturaPlayer';
 import HybridRenderMixin from '../../globals/mixins/hybrid-render';
 import { MediaData } from '../../internal/vendor/@carbon/ibmdotcom-services-store/types/kalturaPlayerAPI.d';
-/* eslint-disable import/no-duplicates */
-import { VIDEO_PLAYER_CONTENT_STATE, VIDEO_PLAYER_PLAYING_MODE } from './video-player';
+import {
+  VIDEO_PLAYER_CONTENT_STATE,
+  VIDEO_PLAYER_PLAYING_MODE,
+} from './video-player';
 // Above import is interface-only ref and thus code won't be brought into the build
 import './video-player';
-/* eslint-enable import/no-duplicates */
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * Component that renders video player from its metadata, etc.
  *
- * @element dds-video-player-composite
+ * @element c4d-video-player-composite
  */
-@customElement(`${ddsPrefix}-video-player-composite`)
-class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitElement)) {
+@customElement(`${c4dPrefix}-video-player-composite`)
+class C4DVideoPlayerComposite extends HybridRenderMixin(
+  HostListenerMixin(LitElement)
+) {
   /**
    * The placeholder for `_loadVideoData()` Redux action that may be mixed in.
    *
@@ -63,8 +68,10 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
    */
   protected _activateEmbeddedVideo(videoId: string) {
     const { embeddedVideos = {} } = this;
-    Object.keys(embeddedVideos).forEach(key => {
-      embeddedVideos[key].sendNotification(key === videoId ? 'doPlay' : 'doStop');
+    Object.keys(embeddedVideos).forEach((key) => {
+      embeddedVideos[key].sendNotification(
+        key === videoId ? 'doPlay' : 'doStop'
+      );
     });
   }
 
@@ -72,12 +79,13 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
    * The video player.
    */
   protected get _videoPlayer() {
-    const { selectorVideoPlayer } = this.constructor as typeof DDSVideoPlayerComposite;
+    const { selectorVideoPlayer } = this
+      .constructor as typeof C4DVideoPlayerComposite;
     return this.querySelector(selectorVideoPlayer);
   }
 
   /**
-   * Handles `dds-video-player-content-state-changed` event.
+   * Handles `c4d-video-player-content-state-changed` event.
    * Such event is fired when user changes video content state, e.g. from thumbnail to video player.
    *
    * @param event The event.
@@ -85,7 +93,11 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
   @HostListener('eventContentStateChange')
   protected _handleContentStateChange(event: CustomEvent) {
     const { contentState, playingMode, videoId } = event.detail;
-    if (contentState === VIDEO_PLAYER_CONTENT_STATE.VIDEO && playingMode === VIDEO_PLAYER_PLAYING_MODE.INLINE && videoId) {
+    if (
+      contentState === VIDEO_PLAYER_CONTENT_STATE.VIDEO &&
+      playingMode === VIDEO_PLAYER_PLAYING_MODE.INLINE &&
+      videoId
+    ) {
       this._embedMedia?.(videoId, this.backgroundMode);
     }
   }
@@ -109,7 +121,7 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
   pauseAllVideos() {
     const { embeddedVideos = {} } = this;
 
-    Object.keys(embeddedVideos).forEach(videoId => {
+    Object.keys(embeddedVideos).forEach((videoId) => {
       embeddedVideos[videoId].sendNotification('doPause');
     });
     this.isPlaying = false;
@@ -118,10 +130,10 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
   playAllVideos() {
     const { embeddedVideos = {} } = this;
 
-    Object.keys(embeddedVideos).forEach(videoId => {
+    Object.keys(embeddedVideos).forEach((videoId) => {
       embeddedVideos[videoId].sendNotification('doPlay');
     });
-    this.isPlaying = false;
+    this.isPlaying = true;
   }
 
   /**
@@ -153,7 +165,13 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
    * Should be changed upon the locale the UI is rendered with.
    */
   @property({ attribute: false })
-  formatCaption?: ({ duration, name }: { duration?: string; name?: string }) => string;
+  formatCaption?: ({
+    duration,
+    name,
+  }: {
+    duration?: string;
+    name?: string;
+  }) => string;
 
   /**
    * The formatter for the video duration.
@@ -226,7 +244,8 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
     if (this.autoPlay || this.backgroundMode) {
       const storedPreference = this._getAutoplayPreference();
       if (storedPreference === null) {
-        this.isPlaying = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.isPlaying = !window.matchMedia('(prefers-reduced-motion: reduce)')
+          .matches;
       } else {
         this.isPlaying = storedPreference;
       }
@@ -269,49 +288,46 @@ class DDSVideoPlayerComposite extends HybridRenderMixin(HostListenerMixin(LitEle
         width: String(videoThumbnailWidth),
       });
     return html`
-      <dds-video-player
-        duration="${ifNonNull(duration)}"
+      <c4d-video-player
+        duration="${ifDefined(duration)}"
         ?hide-caption=${hideCaption}
-        name="${ifNonNull(caption || name)}"
-        video-description="${ifNonNull(customVideoDescription)}"
-        thumbnail-url="${ifNonNull(thumbnailUrl)}"
-        video-id="${ifNonNull(videoId)}"
-        aspect-ratio="${ifNonNull(aspectRatio)}"
-        .formatCaption="${ifNonNull(formatCaption)}"
-        .formatDuration="${ifNonNull(formatDuration)}"
-        playing-mode="${ifNonNull(playingMode)}"
-      >
-      </dds-video-player>
+        name="${ifDefined(caption || name)}"
+        video-description="${ifDefined(customVideoDescription)}"
+        thumbnail-url="${ifDefined(thumbnailUrl)}"
+        video-id="${ifDefined(videoId)}"
+        aspect-ratio="${ifDefined(aspectRatio)}"
+        .formatCaption="${ifDefined(formatCaption)}"
+        .formatDuration="${ifDefined(formatDuration)}"
+        playing-mode="${ifDefined(playingMode)}">
+      </c4d-video-player>
     `;
   }
 
   render() {
-    return html`
-      <slot></slot>
-    `;
+    return html` <slot></slot> `;
   }
 
   /**
    * A selector selecting the video player component.
    */
   static get selectorVideoPlayer() {
-    return `${ddsPrefix}-video-player`;
+    return `${c4dPrefix}-video-player`;
   }
 
   /**
    * The name of the custom event fired after video content state is changed upon a user gesture.
    */
   static get eventContentStateChange() {
-    return `${ddsPrefix}-video-player-content-state-changed`;
+    return `${c4dPrefix}-video-player-content-state-changed`;
   }
 
   /**
    * The name of the custom event fired requesting playback state change.
    */
   static get eventPlaybackStateChange() {
-    return `${ddsPrefix}-video-player-playback-state-changed`;
+    return `${c4dPrefix}-video-player-playback-state-changed`;
   }
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSVideoPlayerComposite;
+export default C4DVideoPlayerComposite;

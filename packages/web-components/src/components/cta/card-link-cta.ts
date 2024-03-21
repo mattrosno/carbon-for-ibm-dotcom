@@ -1,48 +1,54 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2021, 2022
+ * Copyright IBM Corp. 2021, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
+// @ts-nocheck
 
-import { html, property, customElement } from 'lit-element';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
 import {
   formatVideoCaption,
   formatVideoDuration,
 } from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/formatVideoCaption/formatVideoCaption.js';
-import DDSCardLink from '../card-link/card-link';
+import C4DCardLink from '../card-link/card-link';
 import '../card-link/card-link-heading';
-import CTAMixin from '../../component-mixins/cta/cta';
+import CTAMixin from '../../component-mixins/cta/cta-v1';
 import VideoCTAMixin from '../../component-mixins/cta/video';
-/* eslint-disable import/no-duplicates */
-import DDSCardCTAFooter from './card-cta-footer';
+import C4DCardCTAFooter from './card-cta-footer';
 import './card-cta-footer';
-/* eslint-enable import/no-duplicates */
 import { CTA_TYPE } from './defs';
 import styles from './cta.scss';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
 export { CTA_TYPE };
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * Card CTA.
  *
- * @element dds-card-cta
+ * @element c4d-card-cta
  */
-@customElement(`${ddsPrefix}-card-link-cta`)
-class DDSCardLinkCTA extends VideoCTAMixin(CTAMixin(DDSCardLink)) {
+@customElement(`${c4dPrefix}-card-link-cta`)
+class C4DCardLinkCTA extends VideoCTAMixin(CTAMixin(C4DCardLink)) {
   protected _renderHeading() {
-    const { ctaType, videoName, formatVideoCaption: formatVideoCaptionInEffect } = this;
+    const {
+      ctaType,
+      videoName,
+      formatVideoCaption: formatVideoCaptionInEffect,
+    } = this;
     if (ctaType !== CTA_TYPE.VIDEO) {
       return super._renderHeading();
     }
     const caption = formatVideoCaptionInEffect({ name: videoName });
     return html`
-      <slot name="heading"></slot><dds-card-link-heading>${caption}</dds-card-link-heading>
+      <slot name="heading"></slot
+      ><c4d-card-link-heading>${caption}</c4d-card-link-heading>
     `;
   }
 
@@ -92,7 +98,9 @@ class DDSCardLinkCTA extends VideoCTAMixin(CTAMixin(DDSCardLink)) {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    const footer = this.querySelector((this.constructor as typeof DDSCardLinkCTA).selectorFooter);
+    const footer = this.querySelector(
+      (this.constructor as typeof C4DCardLinkCTA).selectorFooter
+    );
     if (
       changedProperties.has('ctaType') ||
       changedProperties.has('formatCaption') ||
@@ -108,37 +116,42 @@ class DDSCardLinkCTA extends VideoCTAMixin(CTAMixin(DDSCardLink)) {
         formatVideoCaption: formatVideoCaptionInEffect,
         formatVideoDuration: formatVideoDurationInEffect,
       } = this;
-      const headingText = this.querySelector(`${ddsPrefix}-card-link-heading`)?.textContent;
+      const headingText = this.querySelector(
+        `${c4dPrefix}-card-link-heading`
+      )?.textContent;
       const copyText = this.textContent;
       if (footer) {
-        (footer as DDSCardCTAFooter).altAriaLabel = videoName || headingText || copyText;
-        (footer as DDSCardCTAFooter).ctaType = ctaType;
-        (footer as DDSCardCTAFooter).videoDuration = videoDuration;
-        (footer as DDSCardCTAFooter).videoName = videoName;
-        (footer as DDSCardCTAFooter).videoDescription = videoDescription;
+        (footer as C4DCardCTAFooter).altAriaLabel =
+          videoName || headingText || copyText;
+        (footer as C4DCardCTAFooter).ctaType = ctaType;
+        (footer as C4DCardCTAFooter).videoDuration = videoDuration;
+        (footer as C4DCardCTAFooter).videoName = videoName;
+        (footer as C4DCardCTAFooter).videoDescription = videoDescription;
         if (formatVideoCaptionInEffect) {
-          (footer as DDSCardCTAFooter).formatVideoCaption = formatVideoCaptionInEffect;
+          (footer as C4DCardCTAFooter).formatVideoCaption =
+            formatVideoCaptionInEffect;
         }
         if (formatVideoDurationInEffect) {
-          (footer as DDSCardCTAFooter).formatVideoDuration = formatVideoDurationInEffect;
+          (footer as C4DCardCTAFooter).formatVideoDuration =
+            formatVideoDurationInEffect;
         }
       }
     }
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--card-link-cta`;
+    return `${c4dPrefix}--card-link-cta`;
   }
 
   /**
    * A selector that will return the child footer.
    */
   static get selectorFooter() {
-    return `${ddsPrefix}-card-cta-footer`;
+    return `${c4dPrefix}-card-cta-footer`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSCardLinkCTA;
+export default C4DCardLinkCTA;

@@ -1,0 +1,459 @@
+/**
+ * Copyright IBM Corp. 2016, 2024
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+@use '@carbon/styles/scss/breakpoint' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/motion' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/themes' as *;
+@use '@carbon/styles/scss/type' as *;
+@use '@carbon/styles/scss/utilities' as *;
+@use '../../globals/utils/flex-grid' as *;
+@use '../../globals/carbon-grid' as *;
+@use '../../globals/vars' as *;
+@use '../../globals/utils/hang' as *;
+@use '../layout/layout';
+
+$hover-transition-timing: 95ms;
+
+// items that change according to the theme applied
+@mixin themed-items {
+  background: $background;
+  color: $text-primary;
+  .#{$prefix}--tableofcontents__item {
+    a {
+      border-inline-start: $spacing-02 solid $border-subtle-01;
+      color: $text-secondary;
+
+      &:hover {
+        border-inline-start-color: $layer-selected-hover-01;
+        color: $text-primary;
+      }
+    }
+  }
+
+  .#{$prefix}--tableofcontents__navbar {
+    .#{$prefix}--tableofcontents__item {
+      a {
+        border-inline-start: none;
+        color: $text-secondary;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        background-color: $background-hover;
+      }
+    }
+
+    .#{$prefix}--tableofcontents__item--active a {
+      color: $text-primary;
+
+      &::before {
+        position: absolute;
+        background-color: $border-interactive;
+        block-size: to-rem(20px);
+        content: '';
+        inline-size: $spacing-01;
+        inset-block: to-rem(14px) 0;
+        margin-inline-start: to-rem(-6px);
+      }
+    }
+  }
+
+  .#{$prefix}--tableofcontents__item--active {
+    a,
+    a:hover {
+      border-inline-start-color: $border-interactive;
+      color: $text-primary;
+    }
+
+    a:focus {
+      border-block-end: none;
+    }
+
+    &:hover {
+      border-inline-start-color: $border-interactive;
+    }
+  }
+}
+
+@mixin table-of-contents {
+  :host(#{$c4d-prefix}-table-of-contents) {
+    display: block;
+    margin: 0;
+    text-size-adjust: 100%;
+    @extend .#{$prefix}--grid;
+
+    @include themed-items;
+  }
+
+  .#{$c4d-prefix}-ce--table-of-contents__container,
+  .#{$c4d-prefix}-ce--table-of-contents-horizontal__container {
+    @include make-row();
+  }
+
+  .#{$prefix}--tableofcontents__sidebar {
+    @extend .#{$prefix}--col-lg-4;
+
+    position: inherit;
+    z-index: 10;
+    padding: 0;
+    inset-block-start: auto;
+  }
+
+  .#{$prefix}--tableofcontents__content {
+    @extend .#{$prefix}--col-lg-12;
+
+    padding: $spacing-05 0 $spacing-09 0;
+  }
+
+  .#{$prefix}--tableofcontents {
+    display: block;
+    margin-block-start: $spacing-07;
+    padding-block-start: $spacing-07;
+    @include make-col(3, 4);
+  }
+
+  .#{$prefix}--tableofcontents ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .#{$prefix}--tableofcontents__item {
+    a {
+      display: inline-block;
+      inline-size: 100%;
+      padding-block: $spacing-04;
+      padding-inline-start: $spacing-04;
+      text-decoration: none;
+      @include type-style('body-02');
+    }
+
+    a:hover {
+      cursor: pointer;
+    }
+
+    a:focus {
+      position: relative;
+      z-index: 1;
+      outline: $spacing-01 solid $focus;
+    }
+  }
+
+  .#{$prefix}--tableofcontents__children {
+    @include breakpoint(lg) {
+      margin-block-end: -$spacing-07;
+      padding-block-start: $spacing-10;
+      padding-inline-start: 0;
+      @include make-col(3, 4);
+    }
+
+    display: block;
+    padding-block-start: $spacing-07;
+
+    padding-inline-start: $spacing-05;
+
+    &[hidden] {
+      display: none;
+    }
+
+    > .#{$prefix}--link-list {
+      padding-block: 0 $spacing-05;
+    }
+
+    hr[data-autoid='#{$c4d-prefix}--hr'] {
+      margin-block-start: 0;
+    }
+  }
+
+  .#{$prefix}--tableofcontents__contents {
+    [name] {
+      display: block;
+      color: $text-primary;
+      transform: translateY(calc(-1 * #{$spacing-07}));
+
+      > * {
+        transform: translateY($spacing-07);
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .#{$prefix}--tableofcontents-horizontal__contents {
+    [name] {
+      display: block;
+      padding-block-start: $spacing-09;
+    }
+  }
+
+  .#{$prefix}--tableofcontents__navbar {
+    position: sticky;
+    z-index: 10;
+    background-color: $background;
+    block-size: $spacing-09;
+
+    border-block-end: 1px solid $border-subtle-00;
+    border-block-start: 1px solid $border-subtle-00;
+    inline-size: 100%;
+    inset-block-start: 0;
+
+    .#{$prefix}--tableofcontents__item {
+      a {
+        border-inline-start: none;
+        color: $text-secondary;
+        inline-size: auto;
+        padding-inline: $spacing-05;
+
+        &:focus {
+          position: initial;
+          outline: $spacing-01 solid $focus;
+          outline-offset: -#{$spacing-01};
+        }
+      }
+    }
+
+    .#{$prefix}--tableofcontents {
+      position: absolute;
+      flex: 1;
+      padding: 0;
+      margin-block-start: 0;
+      max-inline-size: none;
+      transition: left $transition-base motion(standard, productive);
+
+      ul {
+        display: flex;
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  .#{$prefix}--sub-content-left {
+    position: absolute;
+    block-size: 100%;
+    inline-size: 1px;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
+
+  .#{$prefix}--sub-content-right {
+    position: absolute;
+    block-size: 100%;
+    inline-size: 1px;
+    inset-block-start: 0;
+    inset-inline-end: 1px;
+  }
+
+  .#{$prefix}--toc__navbar-chevron-left-container[hidden],
+  .#{$prefix}--toc__navbar-chevron-right-container[hidden] {
+    display: none;
+  }
+
+  .#{$prefix}--toc__navbar-chevron-left-container,
+  .#{$prefix}--toc__navbar-chevron-right-container {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    border: none;
+    background-color: $background;
+    block-size: 100%;
+    inline-size: $spacing-08;
+    inset-block: 0;
+
+    > {
+      svg {
+        position: absolute;
+        fill: $icon-secondary;
+        inset-block-start: 50%;
+        inset-inline-start: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+    }
+
+    &:hover {
+      background-color: $layer-hover-03;
+      transition-duration: $hover-transition-timing;
+
+      > {
+        svg {
+          fill: $text-primary;
+        }
+      }
+    }
+
+    &:focus,
+    &:active {
+      display: block;
+      background-color: $layer-hover-03;
+      outline: $spacing-01 solid $background-brand;
+      outline-offset: -#{$spacing-01};
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      z-index: 1;
+      background: linear-gradient(
+        to right,
+        $background,
+        rgba(255, 255, 255, 0)
+      );
+      block-size: 100%;
+      content: '';
+      inline-size: $spacing-03;
+      inset-block-start: 0;
+      inset-inline-start: $spacing-08;
+    }
+  }
+
+  .#{$prefix}--toc__navbar-chevron-left-container {
+    inset-inline-start: 0;
+    @include breakpoint(md) {
+      inset-inline-start: -$spacing-05;
+    }
+
+    &:hover {
+      &::before {
+        background: linear-gradient(
+          to right,
+          $layer-hover-03,
+          rgba(255, 255, 255, 0)
+        );
+      }
+    }
+  }
+
+  .#{$prefix}--toc__navbar-chevron-right-container {
+    z-index: 2;
+    inset-inline-end: -$spacing-01;
+
+    @include breakpoint(md) {
+      inset-inline-end: -$spacing-05;
+    }
+
+    &::before {
+      background: linear-gradient(to left, $background, rgba(255, 255, 255, 0));
+      content: '';
+      inset-inline: auto $spacing-08;
+    }
+
+    &:hover {
+      &::before {
+        background: linear-gradient(
+          to left,
+          $layer-hover-03,
+          rgba(255, 255, 255, 0)
+        );
+      }
+    }
+  }
+
+  .#{$prefix}--tableofcontents--g100 {
+    @include theme($g100, feature-flag-enabled('enable-css-custom-properties'));
+
+    @include themed-items;
+  }
+
+  .#{$prefix}--tableofcontents--g10 {
+    @include theme($g10, feature-flag-enabled('enable-css-custom-properties'));
+
+    @include themed-items;
+  }
+
+  .#{$prefix}--toc__print-styles {
+    display: none;
+  }
+
+  @media print {
+    :host(#{$c4d-prefix}-table-of-contents),
+    .#{$prefix}--tableofcontents {
+      .#{$prefix}--tableofcontents__sidebar {
+        position: relative;
+      }
+
+      .#{$prefix}--tableofcontents {
+        display: block;
+      }
+
+      &[toc-layout='horizontal'] {
+        .#{$prefix}--tableofcontents__navbar {
+          display: none;
+        }
+
+        .#{$prefix}--toc__print-styles {
+          display: block;
+        }
+      }
+
+      ::slotted(#{$c4d-prefix}-image) {
+        inline-size: 25%;
+      }
+    }
+  }
+
+  :host(#{$c4d-prefix}-table-of-contents) .#{$prefix}--tableofcontents__navbar {
+    &::before,
+    &::after {
+      position: absolute;
+      z-index: 1;
+      background-color: $background;
+      block-size: 100%;
+      border-block-end: 1px solid $border-subtle-00;
+      border-block-start: 1px solid $border-subtle-00;
+      content: '';
+      inset-block-start: -1px;
+      inset-inline: calc(-50vw + 50%) 100%;
+    }
+
+    &::after {
+      inset-inline: 100% calc(-50vw + 50%);
+    }
+  }
+
+  :host(#{$c4d-prefix}-table-of-contents[toc-layout='horizontal'])
+    .#{$prefix}--tableofcontents-container {
+    position: relative;
+    overflow: auto hidden;
+    block-size: $spacing-09;
+  }
+
+  :host(#{$c4d-prefix}-table-of-contents)
+    .#{$prefix}--tableofcontents-container {
+    @include breakpoint-down(lg) {
+      position: relative;
+      overflow: scroll;
+      block-size: $spacing-09;
+    }
+  }
+
+  :host(#{$c4d-prefix}-table-of-contents[toc-layout='horizontal'])
+    .#{$prefix}--tableofcontents__content {
+    flex: 1;
+    max-inline-size: none;
+  }
+
+  .#{$c4d-prefix}-ce--table-of-contents__container {
+    // TODO: Make the layout CSS grid-based so we can remove this ruleset
+    ::slotted(#{$c4d-prefix}-content-block-simple),
+    ::slotted(#{$c4d-prefix}-content-block-segmented) {
+      margin-inline: calc(-1 * #{$spacing-05});
+    }
+  }
+
+  .#{$c4d-prefix}-ce--toc__navbar-chevron-container--hidden {
+    position: absolute;
+    visibility: hidden;
+  }
+}

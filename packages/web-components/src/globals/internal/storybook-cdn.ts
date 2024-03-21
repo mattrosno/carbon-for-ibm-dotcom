@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2021, 2022
+ * Copyright IBM Corp. 2021, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 
 import packageJson from '../../../package.json';
 
-/* eslint-disable import/prefer-default-export,max-len */
+/* eslint-disable max-len */
 
 /**
  *
@@ -19,14 +19,11 @@ import packageJson from '../../../package.json';
  *
  * @param {Array} components array of component names
  * @param {string} tag tag folder
- * @param {boolean} isRTL flag to show rtl version
  */
-function _renderScript(components, tag, isRTL = false) {
+function _renderScript(components, tag) {
   let scripts = '';
-  const rtl = isRTL ? '.rtl' : '';
-  const rtlFolder = isRTL ? 'rtl/' : '';
-  components.forEach(component => {
-    scripts += `<script type="module" src="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/${tag}/${rtlFolder}${component}${rtl}.min.js"></script>\n`;
+  components.forEach((component) => {
+    scripts += `<script type="module" src="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/${tag}/${component}.min.js"></script>\n`;
   });
   return scripts;
 }
@@ -39,7 +36,7 @@ function _renderScript(components, tag, isRTL = false) {
  */
 function _renderStyle(components, tag) {
   let styles = '';
-  components.forEach(component => {
+  components.forEach((component) => {
     styles += `<link rel="stylesheet" href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/${tag}/${component}.css" />\n`;
   });
   return styles;
@@ -49,39 +46,24 @@ function _renderStyle(components, tag) {
  * This is the markdown block for JS via CDN
  *
  * @param {Array} components array of components to render
+ * @param components.components components to render
  */
 export const cdnJs = ({ components }) => {
   return `
 ### JS (via CDN)
 
+> NOTE: Only one version of artifacts should be used. Mixing versions will cause rendering issues.
+
 \`\`\`html
-// SPECIFIC VERSION (available starting v1.6.0)
+// SPECIFIC VERSION (available starting v2.0.0)
 ${_renderScript(components, `version/v${packageJson.version}`)}
-
-// LATEST tag
-${_renderScript(components, 'tag/v1/latest')}
-
-// NEXT tag
-${_renderScript(components, 'tag/v1/next')}
 \`\`\`
-
-> NOTE: The \`latest\`/\`next\` tags are moving versions.
->
-> The \`latest\` tag is only updated every Friday at 6pm EST after a release. When \`latest\`/\`next\` tags are updated, Akamai caches can take up to 24 hours to clear, which could result in instability during that time. It is highly recommended to instead use a specific version and to properly test your application when upgrading to a newer version.
->
-> Please ensure only one version of artifacts is used at a time, having multiple versions will cause rendering issues.
 
 #### Right-to-left (RTL) versions
 
 \`\`\`html
-// SPECIFIC VERSION (available starting v1.6.0)
-${_renderScript(components, `version/v${packageJson.version}`, true)}
-
-// LATEST tag
-${_renderScript(components, 'tag/v1/latest', true)}
-
-// NEXT tag
-${_renderScript(components, 'tag/v1/next', true)}
+// SPECIFIC VERSION (available starting v2.0.0)
+${_renderScript(components, `version/v${packageJson.version}`)}
 \`\`\`
   `;
 };
@@ -90,6 +72,7 @@ ${_renderScript(components, 'tag/v1/next', true)}
  * This is the markdown block for Additional CSS via CDN
  *
  * @param {Array} components array of components to render
+ * @param components.components components to render
  */
 export const cdnCssAdditional = ({ components }) => {
   return `
@@ -100,14 +83,8 @@ order for the component to behave properly. If not including the SCSS version
 in your application's style bundle, this can be included via CDN:
 
 \`\`\`html
-// SPECIFIC VERSION (available starting v1.6.0)
+// SPECIFIC VERSION (available starting v2.0.0)
 ${_renderStyle(components, `version/v${packageJson.version}`)}
-
-// LATEST tag
-${_renderStyle(components, 'tag/v1/latest')}
-
-// NEXT tag
-${_renderStyle(components, 'tag/v1/next')}
 \`\`\`
   `;
 };

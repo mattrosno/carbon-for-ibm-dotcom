@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,22 +13,24 @@ import React from 'react';
 // In our dev env, we auto-generate the file and re-map below path to to point to the generated file.
 /* eslint-disable max-len */
 // @ts-ignore
-import ArrowRight20 from '@carbon/icons-react/es/arrow--right/20.js';
-import DDSContentGroupHeading from '@carbon/ibmdotcom-web-components/es/components-react/content-group/content-group-heading';
-import DDSContentGroupCopy from '@carbon/ibmdotcom-web-components/es/components-react/content-group/content-group-copy';
-import DDSContentGroupCards from '@carbon/ibmdotcom-web-components/es/components-react/content-group-cards/content-group-cards';
-import DDSContentGroupCardsItem from '@carbon/ibmdotcom-web-components/es/components-react/content-group-cards/content-group-cards-item';
-import DDSCardHeading from '@carbon/ibmdotcom-web-components/es/components-react/card/card-heading';
-import DDSCardFooter from '@carbon/ibmdotcom-web-components/es/components-react/card/card-footer';
-import DDSContentBlockHeading from '@carbon/ibmdotcom-web-components/es/components-react/content-block/content-block-heading';
-import DDSContentBlockCopy from '@carbon/ibmdotcom-web-components/es/components-react/content-block/content-block-copy';
-import DDSContentBlockSimple from '@carbon/ibmdotcom-web-components/es/components-react/content-block-simple/content-block-simple';
-import DDSContentSection from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section';
-import DDSContentSectionHeading from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section-heading';
-import DDSContentSectionCopy from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section-copy';
-import DDSVideoPlayerContainer from '@carbon/ibmdotcom-web-components/es/components-react/video-player/video-player-container';
-import DDSTextCTA from '@carbon/ibmdotcom-web-components/es/components-react/cta/text-cta';
-import DDSVideoCTAContainer from '@carbon/ibmdotcom-web-components/es/components-react/cta/video-cta-container';
+import { ArrowRight } from '@carbon/icons-react';
+import C4DContentGroupCardsItem from '@carbon/ibmdotcom-web-components/es/components-react/content-group-cards/content-group-cards-item';
+import C4DCard from '@carbon/ibmdotcom-web-components/es/components-react/card/card';
+import C4DCardGroup from '@carbon/ibmdotcom-web-components/es/components-react/card-group/card-group';
+import C4DCardHeading from '@carbon/ibmdotcom-web-components/es/components-react/card/card-heading';
+import C4DCardFooter from '@carbon/ibmdotcom-web-components/es/components-react/card/card-footer';
+import C4DCarousel from '@carbon/ibmdotcom-web-components/es/components-react/carousel/carousel';
+import C4DContentBlockHeading from '@carbon/ibmdotcom-web-components/es/components-react/content-block/content-block-heading';
+import C4DContentBlockCopy from '@carbon/ibmdotcom-web-components/es/components-react/content-block/content-block-copy';
+import C4DContentBlockSimple from '@carbon/ibmdotcom-web-components/es/components-react/content-block-simple/content-block-simple';
+import C4DContentSection from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section';
+import C4DContentSectionHeading from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section-heading';
+import C4DContentSectionCopy from '@carbon/ibmdotcom-web-components/es/components-react/content-section/content-section-copy';
+import C4DLinkList from '@carbon/ibmdotcom-web-components/es/components-react/link-list/link-list';
+import C4DLinkListItem from '@carbon/ibmdotcom-web-components/es/components-react/link-list/link-list-item';
+import C4DVideoPlayerContainer from '@carbon/ibmdotcom-web-components/es/components-react/video-player/video-player-container';
+import C4DTextCTA from '@carbon/ibmdotcom-web-components/es/components-react/cta/text-cta';
+import C4DVideoCTAContainer from '@carbon/ibmdotcom-web-components/es/components-react/cta/video-cta-container';
 
 import readme from './README.stories.react.mdx';
 import textNullable from '../../../../.storybook/knob-text-nullable';
@@ -42,75 +44,158 @@ And here's an intriguing paradox: over time, as our assumptions shift about what
 For example: optical scan of documents (to create a text file out of an image of text) used to be considered artificial intelligence before it became common in our everyday lives. Observers of the history of AI call this phenomenon "the AI effect."
 `;
 
+const iconProps = {
+  size: 20,
+  slot: 'icon',
+};
+
 const card1 = (
-  <DDSContentGroupCardsItem href="https://www.example.com">
-    <DDSCardHeading>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt</DDSCardHeading>
+  <C4DContentGroupCardsItem href="https://www.example.com">
+    <C4DCardHeading>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt
+    </C4DCardHeading>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
     </p>
-    <DDSCardFooter icon-placemenet="left">
-      <ArrowRight20 slot="icon" />
-    </DDSCardFooter>
-  </DDSContentGroupCardsItem>
+    <C4DCardFooter icon-placemenet="left">
+      <ArrowRight {...iconProps} />
+    </C4DCardFooter>
+  </C4DContentGroupCardsItem>
 );
 
 const card2 = (
-  <DDSContentGroupCardsItem href="https://www.example.com">
-    <DDSCardHeading>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt</DDSCardHeading>
+  <C4DContentGroupCardsItem href="https://www.example.com">
+    <C4DCardHeading>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt
+    </C4DCardHeading>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-    <DDSCardFooter icon-placemenet="left">
-      <ArrowRight20 slot="icon" />
-    </DDSCardFooter>
-  </DDSContentGroupCardsItem>
+    <C4DCardFooter icon-placemenet="left">
+      <ArrowRight {...iconProps} />
+    </C4DCardFooter>
+  </C4DContentGroupCardsItem>
 );
 
-export const Default = args => {
+const hrefDefault = 'https://www.ibm.com/standards/carbon';
+const headingDefault = 'Lorem ipsum dolor sit amet';
+const copyDefault =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est.';
+const copyOdd = `
+  ${copyDefault}
+  Mauris iaculis eget dolor nec hendrerit. Phasellus at elit sollicitudin, sodales nulla quis, consequat libero.
+`;
+
+const Card = ({
+  copy = copyDefault,
+  heading = headingDefault,
+  href = hrefDefault,
+} = {}) => (
+  <C4DCard href={href}>
+    <C4DCardHeading>{heading}</C4DCardHeading>
+    {copy}
+    <C4DCardFooter>
+      <ArrowRight {...iconProps} />
+    </C4DCardFooter>
+  </C4DCard>
+);
+
+export const Default = (args) => {
   const { heading, copy, addChildren } = args?.ContentSection ?? {};
+  const classes = addChildren.includes('Content block simple')
+    ? 'cds--col-lg-16 cds--no-gutter'
+    : '';
   return (
-    <DDSContentSection>
-      <DDSContentSectionHeading>{heading}</DDSContentSectionHeading>
-      <DDSContentSectionCopy>{copy}</DDSContentSectionCopy>
+    <C4DContentSection childrenCustomClass={classes}>
+      <C4DContentSectionHeading>{heading}</C4DContentSectionHeading>
+      <C4DContentSectionCopy>{copy}</C4DContentSectionCopy>
       {addChildren.includes('Content block simple') ? (
-        <DDSContentBlockSimple>
-          <DDSContentBlockHeading>What's the latest news in artificial intelligence?</DDSContentBlockHeading>
-          <DDSContentBlockCopy size="sm">{blockCopy}</DDSContentBlockCopy>
-          <DDSVideoPlayerContainer slot="media" video-id="1_9h94wo6b"></DDSVideoPlayerContainer>
-          <DDSTextCTA slot="footer" cta-type="jump" href="https://www.ibm.com">
+        <C4DContentBlockSimple>
+          <C4DContentBlockHeading>
+            What's the latest news in artificial intelligence?
+          </C4DContentBlockHeading>
+          <C4DContentBlockCopy size="sm">{blockCopy}</C4DContentBlockCopy>
+          <C4DVideoPlayerContainer
+            slot="media"
+            video-id="0_ibuqxqbe"></C4DVideoPlayerContainer>
+          <C4DTextCTA slot="footer" cta-type="jump" href="https://www.ibm.com">
             Jump to AI ethics and trust
-          </DDSTextCTA>
-        </DDSContentBlockSimple>
+          </C4DTextCTA>
+        </C4DContentBlockSimple>
       ) : (
         ''
       )}
-      {addChildren.includes('Content group cards') ? (
-        <DDSContentGroupCards>
-          <DDSContentGroupHeading>Lorem ipssum dolor sit amet.</DDSContentGroupHeading>
-          <DDSContentGroupCopy>Lorem ipsum dolo sit amet.</DDSContentGroupCopy>
+      {addChildren.includes('Card group') ? (
+        <C4DCardGroup>
           {card1}
           {card2}
           {card1}
           {card2}
-        </DDSContentGroupCards>
+        </C4DCardGroup>
       ) : (
         ''
       )}
-      <DDSTextCTA slot="footer" cta-type="local" href="https://www.example.com">
+      {addChildren.includes('Link list') ? (
+        <C4DLinkList>
+          <C4DLinkListItem href="https://example.com">
+            Learn more about Kubernetes and automating deployment
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+          <C4DLinkListItem href="https://example.com">
+            Containerization A Complete Guide
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+          <C4DLinkListItem href="https://example.com">
+            Microservices and container
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+          <C4DLinkListItem href="https://example.com">
+            Learn more about Kubernetes and automating deployment
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+          <C4DLinkListItem href="https://example.com">
+            Containerization A Complete Guide
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+          <C4DLinkListItem href="https://example.com">
+            Microservices and container
+            <ArrowRight {...iconProps} />
+          </C4DLinkListItem>
+        </C4DLinkList>
+      ) : (
+        ''
+      )}
+
+      {addChildren.includes('Carousel') ? (
+        <C4DCarousel>
+          {Card()}
+          {Card({ copy: copyOdd })}
+          {Card()}
+          {Card({ copy: copyOdd })}
+          {Card()}
+        </C4DCarousel>
+      ) : (
+        ''
+      )}
+
+      <C4DTextCTA slot="footer" cta-type="local" href="https://www.example.com">
         Link action
-      </DDSTextCTA>
-    </DDSContentSection>
+      </C4DTextCTA>
+    </C4DContentSection>
   );
 };
 
 export default {
   title: 'Components/Content section',
   decorators: [
-    story => {
+    (story) => {
       return (
         <>
-          <div className="bx--grid">
-            <div className="bx--row">
-              <div className="bx--col-lg-16 bx--no-gutter">
-                <DDSVideoCTAContainer>{story()}</DDSVideoCTAContainer>
+          <div className="cds--grid">
+            <div className="cds--row">
+              <div className="cds--col-lg-16 cds--no-gutter">
+                <C4DVideoCTAContainer>{story()}</C4DVideoCTAContainer>
               </div>
             </div>
           </div>
@@ -124,16 +209,24 @@ export default {
     knobs: {
       escapeHTML: false,
       ContentSection: () => ({
-        heading: textNullable('Heading:', 'Speech recognition (statistical Artificial Intelligence)'),
-        copy: textNullable('Copy:', "AI features for understanding speech can be trained for a specific speaker's voice."),
+        heading: textNullable(
+          'Heading:',
+          'Speech recognition (statistical Artificial Intelligence)'
+        ),
+        copy: textNullable(
+          'Copy:',
+          "AI features for understanding speech can be trained for a specific speaker's voice."
+        ),
         addChildren: optionsKnob(
           'Add children:',
           {
             'Content block simple': 'Content block simple',
-            'Content group cards': 'Content group cards',
+            'Card group': 'Card group',
+            'Link list': 'Link list',
+            Carousel: 'Carousel',
           },
           '',
-          { display: 'multi-select' }
+          { display: 'select' }
         ),
       }),
     },

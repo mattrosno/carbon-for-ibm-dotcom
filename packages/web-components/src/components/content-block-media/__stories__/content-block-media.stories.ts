@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,14 +11,14 @@ import '../index';
 import '../../cta/index';
 import '../../link-list/link-list';
 import '../../link-list/link-list-heading';
-import { html } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { select } from '@storybook/addon-knobs';
 import textNullable from '../../../../.storybook/knob-text-nullable';
-import imgLg16x9 from '../../../../../storybook-images/assets/720/fpo--16x9--720x405--002.jpg';
-import imgLg1x1 from '../../../../../storybook-images/assets/720/fpo--1x1--720x720--004.jpg';
-import imgMd16x9 from '../../../../../storybook-images/assets/480/fpo--16x9--480x270--002.jpg';
-import imgSm16x9 from '../../../../../storybook-images/assets/320/fpo--16x9--320x180--002.jpg';
+import imgLg16x9 from '../../../../.storybook/storybook-images/assets/720/fpo--16x9--720x405--002.jpg';
+import imgLg1x1 from '../../../../.storybook/storybook-images/assets/720/fpo--1x1--720x720--004.jpg';
+import imgMd16x9 from '../../../../.storybook/storybook-images/assets/480/fpo--16x9--480x270--002.jpg';
+import imgSm16x9 from '../../../../.storybook/storybook-images/assets/320/fpo--16x9--320x180--002.jpg';
 import readme from './README.stories.mdx';
 import { CONTENT_BLOCK_COMPLEMENTARY_STYLE_SCHEME } from '../../content-block/defs';
 
@@ -78,170 +78,258 @@ const linkListItems = [
   'Explore AI use cases in all industries',
 ];
 
-export const Default = args => {
-  const { blockHeading, simpleGroupHeading, featureCard, complementaryStyleScheme } = args?.ContentBlockMedia ?? {};
+export const Default = (args) => {
+  const {
+    blockHeading,
+    simpleGroupHeading,
+    featureCard,
+    complementaryStyleScheme,
+  } = args?.ContentBlockMedia ?? {};
   return html`
-    <dds-content-block-media complementary-style-scheme="${ifNonNull(complementaryStyleScheme)}">
-      <dds-content-block-heading>
-        ${blockHeading}
-      </dds-content-block-heading>
-      <dds-content-block-copy size="md"
-        >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est. Mauris iaculis eget dolor nec
-        hendrerit. Phasellus at elit sollicitudin, sodales nulla quis, consequat libero. Phasellus at elit sollicitudin, sodales
-        nulla quis, consequat libero.
-      </dds-content-block-copy>
-      <dds-content-block-media-content>
-        <dds-content-group-heading>
+    <c4d-content-block-media
+      complementary-style-scheme="${ifDefined(complementaryStyleScheme)}">
+      <c4d-content-block-heading> ${blockHeading} </c4d-content-block-heading>
+      <c4d-content-block-copy size="md"
+        >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et
+        ultricies est. Mauris iaculis eget dolor nec hendrerit. Phasellus at
+        elit sollicitudin, sodales nulla quis, consequat libero. Phasellus at
+        elit sollicitudin, sodales nulla quis, consequat libero.
+      </c4d-content-block-copy>
+      <c4d-content-block-media-content>
+        <c4d-content-group-heading>
           ${simpleGroupHeading}
-        </dds-content-group-heading>
-        <dds-image slot="media" alt="Image alt text" default-src="${imgLg16x9}" heading="Lorem ipsum">
-          <dds-image-item media="(min-width: 672px)" srcset="${imgLg16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 400px)" srcset="${imgMd16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 320px)" srcset="${imgSm16x9}"> </dds-image-item>
-        </dds-image>
+        </c4d-content-group-heading>
+        <c4d-image
+          slot="media"
+          alt="Image alt text"
+          default-src="${imgLg16x9}"
+          heading="Lorem ipsum">
+          <c4d-image-item media="(min-width: 672px)" srcset="${imgLg16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 400px)" srcset="${imgMd16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 320px)" srcset="${imgSm16x9}">
+          </c4d-image-item>
+        </c4d-image>
         ${items.map(
           ({ heading: itemHeading, copy: itemCopy }) => html`
-            <dds-content-item>
-              <dds-content-item-heading>${itemHeading}</dds-content-item-heading>
-              <dds-content-item-copy>${itemCopy}</dds-content-item-copy>
-            </dds-content-item>
+            <c4d-content-item>
+              <c4d-content-item-heading
+                >${itemHeading}</c4d-content-item-heading
+              >
+              <c4d-content-item-copy>${itemCopy}</c4d-content-item-copy>
+            </c4d-content-item>
           `
         )}
-        <dds-card-link-cta slot="footer" href="https://example.com" cta-type="local">
-          <dds-card-link-heading>Lorem ipsum dolor sit amet</dds-card-link-heading>
-          <dds-card-cta-footer></dds-card-cta-footer>
-        </dds-card-link-cta>
-      </dds-content-block-media-content>
-      <dds-content-block-media-content>
-        <dds-content-group-heading>
+        <c4d-card-link-cta
+          slot="footer"
+          href="https://example.com"
+          cta-type="local">
+          <c4d-card-link-heading
+            >Lorem ipsum dolor sit amet</c4d-card-link-heading
+          >
+          <c4d-card-cta-footer></c4d-card-cta-footer>
+        </c4d-card-link-cta>
+      </c4d-content-block-media-content>
+      <c4d-content-block-media-content>
+        <c4d-content-group-heading>
           ${simpleGroupHeading}
-        </dds-content-group-heading>
-        <dds-image slot="media" alt="Image alt text" default-src="${imgLg16x9}" heading="Lorem ipsum">
-          <dds-image-item media="(min-width: 672px)" srcset="${imgLg16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 400px)" srcset="${imgMd16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 320px)" srcset="${imgSm16x9}"> </dds-image-item>
-        </dds-image>
+        </c4d-content-group-heading>
+        <c4d-image
+          slot="media"
+          alt="Image alt text"
+          default-src="${imgLg16x9}"
+          heading="Lorem ipsum">
+          <c4d-image-item media="(min-width: 672px)" srcset="${imgLg16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 400px)" srcset="${imgMd16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 320px)" srcset="${imgSm16x9}">
+          </c4d-image-item>
+        </c4d-image>
         ${items.map(
           ({ heading: itemHeading, copy: itemCopy }) => html`
-            <dds-content-item>
-              <dds-content-item-heading>${itemHeading}</dds-content-item-heading>
-              <dds-content-item-copy>${itemCopy}</dds-content-item-copy>
-            </dds-content-item>
+            <c4d-content-item>
+              <c4d-content-item-heading
+                >${itemHeading}</c4d-content-item-heading
+              >
+              <c4d-content-item-copy>${itemCopy}</c4d-content-item-copy>
+            </c4d-content-item>
           `
         )}
-        <dds-card-link-cta slot="footer" href="https://example.com" cta-type="local">
-          <dds-card-link-heading>Lorem ipsum dolor sit amet</dds-card-link-heading>
-          <dds-card-cta-footer></dds-card-cta-footer>
-        </dds-card-link-cta>
-      </dds-content-block-media-content>
-      <dds-content-block-media-content>
+        <c4d-card-link-cta
+          slot="footer"
+          href="https://example.com"
+          cta-type="local">
+          <c4d-card-link-heading
+            >Lorem ipsum dolor sit amet</c4d-card-link-heading
+          >
+          <c4d-card-cta-footer></c4d-card-cta-footer>
+        </c4d-card-link-cta>
+      </c4d-content-block-media-content>
+      <c4d-content-block-media-content>
         ${featureCard === 'CTA'
           ? html`
-              <dds-feature-cta href="https://example.com" cta-type="local">
-                <dds-image slot="image" alt="Feature card image" default-src="${imgLg1x1}"></dds-image>
-                <dds-card-heading>Consectetur adipisicing elit</dds-card-heading>
-                <dds-feature-cta-footer></dds-feature-cta-footer>
-              </dds-feature-cta>
+              <c4d-feature-cta href="https://example.com" cta-type="local">
+                <c4d-image
+                  slot="image"
+                  alt="Feature card image"
+                  default-src="${imgLg1x1}"></c4d-image>
+                <c4d-card-heading
+                  >Consectetur adipisicing elit</c4d-card-heading
+                >
+                <c4d-feature-cta-footer></c4d-feature-cta-footer>
+              </c4d-feature-cta>
             `
           : ``}
-      </dds-content-block-media-content>
-    </dds-content-block-media>
+      </c4d-content-block-media-content>
+    </c4d-content-block-media>
   `;
 };
 
-export const withLinkList = args => {
-  const { blockHeading, simpleGroupHeading, featureCard, linkListHeading, complementaryStyleScheme, totalLinks } =
-    args?.ContentBlockMedia ?? {};
+export const withLinkList = (args) => {
+  const {
+    blockHeading,
+    simpleGroupHeading,
+    featureCard,
+    linkListHeading,
+    complementaryStyleScheme,
+    totalLinks,
+  } = args?.ContentBlockMedia ?? {};
   return html`
-    <dds-content-block-media complementary-style-scheme="${ifNonNull(complementaryStyleScheme)}">
-      <dds-content-block-heading>
-        ${blockHeading}
-      </dds-content-block-heading>
-      <dds-content-block-copy size="md"
-        >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est. Mauris iaculis eget dolor nec
-        hendrerit. Phasellus at elit sollicitudin, sodales nulla quis, consequat libero. Phasellus at elit sollicitudin, sodales
-        nulla quis, consequat libero.
-      </dds-content-block-copy>
-      <dds-content-block-media-content>
-        <dds-content-group-heading>
+    <c4d-content-block-media
+      complementary-style-scheme="${ifDefined(complementaryStyleScheme)}">
+      <c4d-content-block-heading> ${blockHeading} </c4d-content-block-heading>
+      <c4d-content-block-copy size="md"
+        >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et
+        ultricies est. Mauris iaculis eget dolor nec hendrerit. Phasellus at
+        elit sollicitudin, sodales nulla quis, consequat libero. Phasellus at
+        elit sollicitudin, sodales nulla quis, consequat libero.
+      </c4d-content-block-copy>
+      <c4d-content-block-media-content>
+        <c4d-content-group-heading>
           ${simpleGroupHeading}
-        </dds-content-group-heading>
-        <dds-image slot="media" alt="Image alt text" default-src="${imgLg16x9}" heading="Lorem ipsum">
-          <dds-image-item media="(min-width: 672px)" srcset="${imgLg16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 400px)" srcset="${imgMd16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 320px)" srcset="${imgSm16x9}"> </dds-image-item>
-        </dds-image>
+        </c4d-content-group-heading>
+        <c4d-image
+          slot="media"
+          alt="Image alt text"
+          default-src="${imgLg16x9}"
+          heading="Lorem ipsum">
+          <c4d-image-item media="(min-width: 672px)" srcset="${imgLg16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 400px)" srcset="${imgMd16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 320px)" srcset="${imgSm16x9}">
+          </c4d-image-item>
+        </c4d-image>
         ${items.map(
           ({ heading: itemHeading, copy: itemCopy }) => html`
-            <dds-content-item>
-              <dds-content-item-heading>${itemHeading}</dds-content-item-heading>
-              <dds-content-item-copy>${itemCopy}</dds-content-item-copy>
-            </dds-content-item>
+            <c4d-content-item>
+              <c4d-content-item-heading
+                >${itemHeading}</c4d-content-item-heading
+              >
+              <c4d-content-item-copy>${itemCopy}</c4d-content-item-copy>
+            </c4d-content-item>
           `
         )}
-        <dds-card-link-cta slot="footer" href="https://example.com" cta-type="local">
-          <dds-card-link-heading>Lorem ipsum dolor sit amet</dds-card-link-heading>
-          <dds-card-cta-footer></dds-card-cta-footer>
-        </dds-card-link-cta>
-      </dds-content-block-media-content>
-      <dds-content-block-media-content>
-        <dds-content-group-heading>
+        <c4d-card-link-cta
+          slot="footer"
+          href="https://example.com"
+          cta-type="local">
+          <c4d-card-link-heading
+            >Lorem ipsum dolor sit amet</c4d-card-link-heading
+          >
+          <c4d-card-cta-footer></c4d-card-cta-footer>
+        </c4d-card-link-cta>
+      </c4d-content-block-media-content>
+      <c4d-content-block-media-content>
+        <c4d-content-group-heading>
           Lorem ipsum dolor sit amet
-        </dds-content-group-heading>
-        <dds-image slot="media" alt="Image alt text" default-src="${imgLg16x9}" heading="Lorem ipsum">
-          <dds-image-item media="(min-width: 672px)" srcset="${imgLg16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 400px)" srcset="${imgMd16x9}"> </dds-image-item>
-          <dds-image-item media="(min-width: 320px)" srcset="${imgSm16x9}"> </dds-image-item>
-        </dds-image>
+        </c4d-content-group-heading>
+        <c4d-image
+          slot="media"
+          alt="Image alt text"
+          default-src="${imgLg16x9}"
+          heading="Lorem ipsum">
+          <c4d-image-item media="(min-width: 672px)" srcset="${imgLg16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 400px)" srcset="${imgMd16x9}">
+          </c4d-image-item>
+          <c4d-image-item media="(min-width: 320px)" srcset="${imgSm16x9}">
+          </c4d-image-item>
+        </c4d-image>
         ${items.map(
           ({ heading: itemHeading, copy: itemCopy }) => html`
-            <dds-content-item>
-              <dds-content-item-heading>${itemHeading}</dds-content-item-heading>
-              <dds-content-item-copy>${itemCopy}</dds-content-item-copy>
-            </dds-content-item>
+            <c4d-content-item>
+              <c4d-content-item-heading
+                >${itemHeading}</c4d-content-item-heading
+              >
+              <c4d-content-item-copy>${itemCopy}</c4d-content-item-copy>
+            </c4d-content-item>
           `
         )}
-        <dds-card-link-cta slot="footer" href="https://example.com" cta-type="local">
-          <dds-card-link-heading>Lorem ipsum dolor sit amet</dds-card-link-heading>
-          <dds-card-cta-footer></dds-card-cta-footer>
-        </dds-card-link-cta>
-      </dds-content-block-media-content>
-      <dds-content-block-media-content>
+        <c4d-card-link-cta
+          slot="footer"
+          href="https://example.com"
+          cta-type="local">
+          <c4d-card-link-heading
+            >Lorem ipsum dolor sit amet</c4d-card-link-heading
+          >
+          <c4d-card-cta-footer></c4d-card-cta-footer>
+        </c4d-card-link-cta>
+      </c4d-content-block-media-content>
+      <c4d-content-block-media-content>
         ${featureCard === 'CTA'
           ? html`
-              <dds-feature-cta href="https://example.com" cta-type="local">
-                <dds-image slot="image" alt="Feature card image" default-src="${imgLg1x1}"></dds-image>
-                <dds-card-heading>Consectetur adipisicing elit</dds-card-heading>
-                <dds-feature-cta-footer> </dds-feature-cta-footer>
-              </dds-feature-cta>
+              <c4d-feature-cta href="https://example.com" cta-type="local">
+                <c4d-image
+                  slot="image"
+                  alt="Feature card image"
+                  default-src="${imgLg1x1}"></c4d-image>
+                <c4d-card-heading
+                  >Consectetur adipisicing elit</c4d-card-heading
+                >
+                <c4d-feature-cta-footer> </c4d-feature-cta-footer>
+              </c4d-feature-cta>
             `
           : ``}
-      </dds-content-block-media-content>
-      <dds-link-list type="default" slot="complementary">
-        <dds-link-list-heading>${linkListHeading}</dds-link-list-heading>
+      </c4d-content-block-media-content>
+      <c4d-link-list type="default" slot="complementary">
+        <c4d-link-list-heading>${linkListHeading}</c4d-link-list-heading>
         ${linkListItems.slice(0, totalLinks).map(
-          linkListCopy => html`
-            <dds-link-list-item-card-cta href="https://example.com" cta-type="local">
+          (linkListCopy) => html`
+            <c4d-link-list-item-cta
+              href="https://example.com"
+              cta-type="local"
+              type="default">
               <p>${linkListCopy}</p>
-              <dds-card-cta-footer></dds-card-cta-footer>
-            </dds-link-list-item-card-cta>
+            </c4d-link-list-item-cta>
           `
         )}
-      </dds-link-list>
-    </dds-content-block-media>
+      </c4d-link-list>
+    </c4d-content-block-media>
   `;
 };
 
 withLinkList.story = {
   name: 'With link list',
   parameters: {
-    gridContentClasses: 'bx--col-lg-12',
+    gridContentClasses: 'cds--col-lg-12',
     knobs: {
       ContentBlockMedia: () => ({
-        blockHeading: textNullable('Heading (required)', 'Curabitur malesuada varius mi eu posuere'),
-        simpleGroupHeading: textNullable('Simple Group Heading (required)', 'Lorem ipsum dolor sit amet'),
+        blockHeading: textNullable(
+          'Heading (required)',
+          'Curabitur malesuada varius mi eu posuere'
+        ),
+        simpleGroupHeading: textNullable(
+          'Simple Group Heading (required)',
+          'Lorem ipsum dolor sit amet'
+        ),
         featureCard: select('FeatureCard (optional)', ['CTA', 'none'], 'CTA'),
-        linkListHeading: textNullable('Link list heading (heading)', 'Tutorials'),
+        linkListHeading: textNullable(
+          'Link list heading (heading)',
+          'Tutorials'
+        ),
         totalLinks: select('Number of links', [2, 3, 4], 2),
         complementaryStyleScheme: select(
           'Container bottom border',
@@ -269,9 +357,9 @@ export default {
   title: 'Components/Content block media',
   decorators: [
     (story, { parameters }) => html`
-      <div class="bx--grid">
-        <div class="bx--row">
-          <div class="${parameters.gridContentClasses} bx--no-gutter">
+      <div class="cds--grid">
+        <div class="cds--row">
+          <div class="${parameters.gridContentClasses} cds--no-gutter">
             ${story()}
           </div>
         </div>
@@ -280,12 +368,18 @@ export default {
   ],
   parameters: {
     ...readme.parameters,
-    gridContentClasses: 'bx--col-lg-8',
+    gridContentClasses: 'cds--col-lg-8',
     hasStoryPadding: true,
     knobs: {
       ContentBlockMedia: () => ({
-        blockHeading: textNullable('Heading (required)', 'Curabitur malesuada varius mi eu posuere'),
-        simpleGroupHeading: textNullable('Simple Group Heading (required)', 'Lorem ipsum dolor sit amet'),
+        blockHeading: textNullable(
+          'Heading (required)',
+          'Curabitur malesuada varius mi eu posuere'
+        ),
+        simpleGroupHeading: textNullable(
+          'Simple Group Heading (required)',
+          'Lorem ipsum dolor sit amet'
+        ),
         featureCard: select('FeatureCard (optional)', ['CTA', 'none'], 'CTA'),
         complementaryStyleScheme: select(
           'Container bottom border',

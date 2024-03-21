@@ -1,26 +1,28 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement } from 'lit-element';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import styles from './content-section.scss';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * Heading in content section.
  *
- * @element dds-content-section-heading
+ * @element c4d-content-section-heading
  */
-@customElement(`${ddsPrefix}-content-section-heading`)
-class DDSContentSectionHeading extends StableSelectorMixin(LitElement) {
+@customElement(`${c4dPrefix}-content-section-heading`)
+class C4DContentSectionHeading extends StableSelectorMixin(LitElement) {
   @property({ reflect: true })
   slot = 'heading';
 
@@ -35,17 +37,15 @@ class DDSContentSectionHeading extends StableSelectorMixin(LitElement) {
   }
 
   render() {
-    return html`
-      <slot></slot>
-    `;
+    return html` <slot></slot> `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--content-section-heading`;
+    return `${c4dPrefix}--content-section-heading`;
   }
 
   static styles = styles;
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSContentSectionHeading;
+export default C4DContentSectionHeading;

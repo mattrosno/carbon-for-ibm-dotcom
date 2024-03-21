@@ -1,13 +1,17 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TRANSLATE_API_ACTION, Translation, TranslateAPIState } from '../../types/translateAPI';
+import {
+  TRANSLATE_API_ACTION,
+  Translation,
+  TranslateAPIState,
+} from '../../types/translateAPI';
 import { TranslateAPIActions } from '../../actions/translateAPI';
 import convertValue from '../../../tests/utils/convert-value';
 import reducer from '../translateAPI';
@@ -15,23 +19,25 @@ import reducer from '../translateAPI';
 const mockTranslation: Partial<Translation> = {
   mastheadNav: {
     links: [
-      { title: 'item-title-foo', url: 'https://carbon-design-system.github.io/carbon-for-ibm-dotcom/canary/web-components/foo' },
+      {
+        title: 'item-title-foo',
+        url: 'https://carbon-design-system.github.io/carbon-for-ibm-dotcom/canary/web-components/foo',
+      },
       {
         title: 'menu-title-foo',
-        menuSections: [
+        submenu: [
           {
-            menuItems: [
-              {
-                title: 'menu-item-title-bar',
-                url: 'https://carbon-design-system.github.io/carbon-for-ibm-dotcom/canary/web-components/bar',
-              },
-            ],
+            title: 'menu-item-title-bar',
+            url: 'https://carbon-design-system.github.io/carbon-for-ibm-dotcom/canary/web-components/bar',
           },
         ],
       },
     ],
   },
 };
+
+const endpoint =
+  '/common/carbon-for-ibm-dotcom/translations/masthead-footer/v2';
 
 describe('Redux reducers for `LocaleAPI`', () => {
   it('should return the state unmodified for unknown action', () => {
@@ -51,6 +57,7 @@ describe('Redux reducers for `LocaleAPI`', () => {
           type: TRANSLATE_API_ACTION.SET_REQUEST_TRANSLATION_IN_PROGRESS,
           language: 'lang-foo',
           request,
+          endpoint,
         })
       )
     ).toEqual({
@@ -59,6 +66,7 @@ describe('Redux reducers for `LocaleAPI`', () => {
       },
       requestsTranslation: {
         'lang-foo': 'PROMISE',
+        endpoint,
       },
     });
   });
@@ -89,6 +97,7 @@ describe('Redux reducers for `LocaleAPI`', () => {
           type: TRANSLATE_API_ACTION.SET_TRANSLATION,
           language: 'lang-foo',
           translation: mockTranslation as Translation,
+          endpoint,
         })
       )
     ).toEqual({
@@ -97,6 +106,7 @@ describe('Redux reducers for `LocaleAPI`', () => {
       },
       requestsTranslation: {
         'lang-foo': 'PROMISE',
+        endpoint,
       },
       translations: {
         'lang-foo': mockTranslation,

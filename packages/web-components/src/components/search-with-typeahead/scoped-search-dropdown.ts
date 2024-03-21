@@ -1,31 +1,33 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2019, 2022
+ * Copyright IBM Corp. 2019, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import settings from 'carbon-components/es/globals/js/settings.js';
-import { customElement } from 'lit-element';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
-import DDSDropdown from '../footer/dropdown';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import CDSDropdown, {
+  DROPDOWN_TYPE,
+} from '../../internal/vendor/@carbon/web-components/components/dropdown/dropdown.js';
+
 import styles from './search-with-typeahead.scss';
+import { DROPDOWN_COLOR_SCHEME, DROPDOWN_SIZE } from '../footer/defs';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-export { DROPDOWN_COLOR_SCHEME, DROPDOWN_SIZE, DROPDOWN_TYPE } from '../footer/dropdown';
+export { DROPDOWN_COLOR_SCHEME, DROPDOWN_SIZE, DROPDOWN_TYPE };
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
-const { prefix } = settings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Dropdown component to change search scope.
  *
- * @element dds-scoped-search-dropdown
- * @fires bx-select-selected - The custom event fired after the the dropdown value is changed upon a user gesture.
+ * @element c4d-scoped-search-dropdown
+ * @fires cds-select-selected - The custom event fired after the the dropdown value is changed upon a user gesture.
  */
-@customElement(`${ddsPrefix}-scoped-search-dropdown`)
-class DDSScopedSearchDropdown extends DDSDropdown {
+@customElement(`${c4dPrefix}-scoped-search-dropdown`)
+class C4DScopedSearchDropdown extends CDSDropdown {
   /**
    * Handles user-initiated selection of a dropdown item
    *
@@ -37,10 +39,10 @@ class DDSScopedSearchDropdown extends DDSDropdown {
         bubbles: true,
         composed: true,
         detail: {
-          value: item.value,
+          appId: item.value,
         },
       };
-      const constructor = this.constructor as typeof DDSScopedSearchDropdown;
+      const constructor = this.constructor as typeof C4DScopedSearchDropdown;
       const beforeSelectEvent = new CustomEvent(constructor.eventBeforeSelect, {
         ...init,
         cancelable: true,
@@ -64,4 +66,4 @@ class DDSScopedSearchDropdown extends DDSDropdown {
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSScopedSearchDropdown;
+export default C4DScopedSearchDropdown;

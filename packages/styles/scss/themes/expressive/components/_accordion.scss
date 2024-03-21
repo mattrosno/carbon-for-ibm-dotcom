@@ -1,11 +1,13 @@
 /**
- * Copyright IBM Corp. 2016, 2020
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import 'carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/layout/convert';
+@use 'sass:list';
+
+@use '@carbon/styles/scss/utilities/convert' as *;
 
 //-----------------------------
 // Accordion (expressive)
@@ -17,15 +19,15 @@
 @mixin accordion-expressive {
   .#{$prefix}--accordion__heading {
     padding: calc(
-        (#{$container-03} - #{map-get($body-long-01, 'line-height')}) / 2
+        list.slash(#{$spacing-09} - #{map-get($body-01, 'line-height')}, 2)
       )
       0;
   }
 
   .#{$prefix}--accordion__arrow {
-    width: $icon-size-01;
-    height: $icon-size-01;
     flex: 0 0 $icon-size-01;
+    block-size: $icon-size-01;
+    inline-size: $icon-size-01;
     // margin: $accordion-arrow-margin;
   }
 }

@@ -1,25 +1,27 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html, property } from 'lit-element';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import DDSStructuredListRow from '../structured-list/structured-list-row';
+import C4DStructuredListRow from '../structured-list/structured-list-row';
 import styles from './pricing-table.scss';
 import { setColumnWidth } from './utils';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
-@customElement(`${ddsPrefix}-pricing-table-row`)
-class DDSPricingTableRow extends StableSelectorMixin(DDSStructuredListRow) {
+@customElement(`${c4dPrefix}-pricing-table-row`)
+class C4DPricingTableRow extends StableSelectorMixin(C4DStructuredListRow) {
   @property()
-  hasAnnotations: boolean = false;
+  hasAnnotations = false;
 
   protected _handleSlotChange() {
     setColumnWidth(this);
@@ -27,9 +29,13 @@ class DDSPricingTableRow extends StableSelectorMixin(DDSStructuredListRow) {
 
   private _hasAnnotations(): boolean {
     let hasAnnotations = false;
-    Array.from(this.children).forEach(cell => {
-      const annotation = cell.querySelector(`${ddsPrefix}-pricing-table-cell-annotation`);
-      if (annotation) hasAnnotations = true;
+    Array.from(this.children).forEach((cell) => {
+      const annotation = cell.querySelector(
+        `${c4dPrefix}-pricing-table-cell-annotation`
+      );
+      if (annotation) {
+        hasAnnotations = true;
+      }
     });
 
     return hasAnnotations;
@@ -39,7 +45,9 @@ class DDSPricingTableRow extends StableSelectorMixin(DDSStructuredListRow) {
     this.hasAnnotations = this._hasAnnotations();
 
     if (this.hasAnnotations) {
-      const toggle = this.ownerDocument.createElement('dds-pricing-table-annotation-toggle');
+      const toggle = this.ownerDocument.createElement(
+        'c4d-pricing-table-annotation-toggle'
+      );
       this.children[0].append(toggle);
     }
 
@@ -47,16 +55,14 @@ class DDSPricingTableRow extends StableSelectorMixin(DDSStructuredListRow) {
   }
 
   render() {
-    return html`
-      <slot @slotchange=${this._handleSlotChange}></slot>
-    `;
+    return html` <slot @slotchange=${this._handleSlotChange}></slot> `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--pricing-table-row`;
+    return `${c4dPrefix}--pricing-table-row`;
   }
 
   static styles = styles;
 }
 
-export default DDSPricingTableRow;
+export default C4DPricingTableRow;

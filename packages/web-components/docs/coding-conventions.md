@@ -29,8 +29,10 @@
 - [Null checks](#null-checks)
 - [Updating view upon change in `private`/`protected` properties](#updating-view-upon-change-in-privateprotected-properties)
 - [Avoiding global `document`/`window` reference](#avoiding-global-documentwindow-reference)
-- [Custom element registration](#custom-element-registration)
-- [Custom element itself as an eleement](#custom-element-itself-as-an-eleement)
+- [Custom Elements](#custom-elements)
+  - [@carbonElement Decorator](#carbon-element-decorator)
+  - [Custom element registration](#custom-element-registration)
+  - [Custom element itself as an element](#custom-element-itself-as-an-element)
 - [Propagating misc attributes from shadow host to an element in shadow DOM](#propagating-misc-attributes-from-shadow-host-to-an-element-in-shadow-dom)
 - [Private properties](#private-properties)
 - [Preferring class inheritance pattern over React composition pattern](#preferring-class-inheritance-pattern-over-react-composition-pattern)
@@ -42,24 +44,23 @@
 ## Linters/formatters
 
 `@carbon/ibmdotcom-web-components` uses ESLint with `typescript-eslint` for linting, and Prettier for code formatting.
-Most of ESLint configurations are same as [ones in `carbon-components`](https://www.npmjs.com/package/eslint-config-carbon-base).
 
 ## TSDoc comments
 
-In addition to using TypeScript, we try to leverage editors' code assistance feature as much as possible.
+In addition to using TypeScript, we try to leverage editor code assistance feature as much as possible.
 
 For that purpose, we add TSDoc comments to the following:
 
-- All classes (With their custom events (`@fires`), Shadow DOM slots (`@slot`) and Shadow DOM parts (`@csspart`))
-- All properties/methods (including private properties), only exception here is one being overriden
+- All classes (with their custom events (`@fires`), shadow DOM slots (`@slot`) and shadow DOM parts (`@csspart`))
+- All properties/methods (including private properties), except when overridden
 - All type definitions (e.g. `interface`, `enum`)
 
 For `@fires`, `@slot` and `@csspart`, refer to: https://github.com/runem/web-component-analyzer#-how-to-document-your-components-using-jsdoc
 
 ## No kitchen-sink "base" class and using mix-in
 
-We strive to avoid kitchen-sink "base" class, for the sake of maintenability and avoiding code bloat.
-Toward that goal, we use mix-in classes. Instead of manipulating prototype, we simply use ECMAScript class feature ([Subclass Factory Pattern](https://github.com/justinfagnani/proposal-mixins#subclass-factory-pattern)), which is, something like:
+We strive to avoid kitchen-sink "base" classes, for the sake of maintenability and avoiding code bloat.
+Toward that goal, we use mix-in classes. Instead of manipulating prototypes, we use the ECMAScript class feature ([Subclass Factory Pattern](https://github.com/justinfagnani/proposal-mixins#subclass-factory-pattern)):
 
 ```typescript
 const Mixin = <T extends Constructor<SomeClass>>(Base: T) => class extends Base {
@@ -81,18 +82,18 @@ For example, `<CTA>` in `@carbon/ibmdotcom-react` is heavy, and thus components 
 
 To avoid memory leaks and zombie event listeners, we ensure the event listeners on custom elements themselves (hosts) and ones on `document`, etc. are released when they get out of render tree.
 
-For that purpose, similar to `carbon-web-components`, `@carbon/ibmdotcom-web-components` uses `@HostListener(type, options)` decorator. `@HostListener(type, options)` decorator works with a custom element class inheriting `HostListenerMixin()` and attaches an event listener using the target method as the listener.
+For that purpose, similar to `@carbon/web-components`, `@carbon/ibmdotcom-web-components` uses `@HostListener(type, options)` decorator. `@HostListener(type, options)` decorator works with a custom element class inheriting `HostListenerMixin()` and attaches an event listener using the target method as the listener.
 
-Here's an example seen in `<bx-modal>` code:
+Here's an example seen in `<cds-modal>` code:
 
 ```typescript
 ...
-import HostListener from 'carbon-web-components/es/globals/decorators/HostListener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/HostListener.js';
+import HostListener from '@carbon/web-components/es/globals/decorators/HostListener.js';
+import HostListenerMixin from '@carbon/web-components/es/globals/mixins/HostListener.js';
 ...
 
 @customElement(`${prefix}-modal` as any)
-class BXModal extends HostListenerMixin(LitElement) {
+class CDSModal extends HostListenerMixin(LitElement) {
   ...
 
   @HostListener('click')
@@ -124,7 +125,7 @@ import Handle from '../../globals/internal/handle';
 
 ...
 
-@customElement(`${ddsPrefix}-some-component`)
+@customElement(`${c4dPrefix}-some-component`)
 class SomeComponent extends LitElement {
   ...
 
@@ -141,7 +142,7 @@ class SomeComponent extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    const { mediaStickExpanded } = this.constructor as typeof DDSFooterNavGroup;
+    const { mediaStickExpanded } = this.constructor as typeof C4DFooterNavGroup;
     // `.matchMedia()` returns an event target
     const mediaQueryList = this.ownerDocument!.defaultView!.matchMedia(mediaStickExpanded);
     this._hChangeMediaQuery = on(mediaQueryList, 'change', this._handleChangeMediaQuery);
@@ -167,9 +168,9 @@ class SomeComponent extends LitElement {
 
 ## Component styles for different component states/variants
 
-Carbon core CSS uses BEM modifier like `bx--btn--danger` to style different states/variants of a component.
+Carbon core CSS uses BEM modifier like `cds--btn--danger` to style different states/variants of a component.
 
-OTOH, similar to `carbonm-custom-elements`, `@carbon/ibmdotcom-web-components` uses attributes to represent different states/variants (e.g. `<bx-btn type="danger">`), in a similar manner as how attributes influence states/variants of native elements (e.g. `<input type="hidden">`).
+OTOH, similar to `carbonm-custom-elements`, `@carbon/ibmdotcom-web-components` uses attributes to represent different states/variants (e.g. `<cds-btn type="danger">`), in a similar manner as how attributes influence states/variants of native elements (e.g. `<input type="hidden">`).
 
 If such states/variants should affect the style of custom element (shadow host), we define attribute styles from the following reasons:
 
@@ -183,7 +184,7 @@ Sometimes a component attribute/property chooses one in the choices. For example
 Instead of using `primary`/`secondary`, etc. directly like this:
 
 ```typescript
-class BXBtn extends LitElement {
+class CDSBtn extends LitElement {
   ...
 
   /**
@@ -226,7 +227,7 @@ export enum BUTTON_KIND {
 
 ...
 
-class BXBtn extends LitElement {
+class CDSBtn extends LitElement {
   ...
 
   /**
@@ -260,7 +261,7 @@ A component variant with different options can be created by creating a derived 
 | CSS selectors/classes used in imperative DOM API calls (Doing so allows overriding `.render()` method) | `selectorNonSelectedItem`                          | An exception is where `lit-element`'s `@query` decorator is applicable |
 | [Custom event](#custom-events) names                                                                   | `eventBeforeSelect`                                |                                                                        |
 
-#### Areas where component optinos are _not_ applied
+#### Areas where component options are _not_ applied
 
 - CSS classes used in template (Should be done by overriding `.render()` method)
 
@@ -268,7 +269,7 @@ A component variant with different options can be created by creating a derived 
 
 This codebase intends to support the components being inherited, to some extent. e.g. Compoennts with different options described above. To support that, it's easier for all properties/methods exposed as `protected`, but it exposes a risk of the component internals being poked around. The current guideline for using `protected` is the following:
 
-- Ones where override happens within this component library (e.g. `<bx-multi-select>` inheriting `<bx-dropdown>`)
+- Ones where override happens within this component library (e.g. `<bx-multi-select>` inheriting `<cds-dropdown>`)
 - Element ID's auto-generation logic
 - (Possibly some more, e.g. ones whose API are stable enough)
 
@@ -298,25 +299,25 @@ One of the greatest things about Web Components is that component's implementati
 
 ### Strive to avoid accessing shadow DOM nodes of other components
 
-Given we are using [`open` mode for Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM#Basic_usage), access to shadow DOM content won't be prohibited and it's sometime temptative to access shadow DOM nodes of a component from another component, like in `<dds-masthead-menu-button>`:
+Given we are using [`open` mode for Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM#Basic_usage), access to shadow DOM content won't be prohibited and it's sometime temptative to access shadow DOM nodes of a component from another component, like in `<c4d-masthead-menu-button>`:
 
 `masthead-menu-button.ts`:
 
 ```typescript
 // ❗️ Don't do this
 _handleClick(event: MouseEvent) {
-  // Grab `<dds-left-nav>`
-  const leftNav = document.querySelector('dds-left-nav');
+  // Grab `<cds-left-nav>`
+  const leftNav = document.querySelector('c4d-left-nav');
   // Poke into inner DOM node in shadow DOM
-  const leftNavContentInShadowDOM = leftNav.shadowRoot.querySelector('.dds--left-nav__content');
+  const leftNavContentInShadowDOM = leftNav.shadowRoot.querySelector('.c4d--left-nav__content');
   // Change the CSS class of inner DOM node
-  leftNavContentInShadowDOM.classList.togle('.dds--left-nav__content--shown');
+  leftNavContentInShadowDOM.classList.togle('.c4d--left-nav__content--shown');
 }
 ```
 
-However, it means poking into `<dds-left-nav>`'s implementation details, in a similar manner to accessing `private` properties in a class. And thus when `<dds-left-nav>` removes `dds--left-nav__content` class from the content node (it's an implementation detail) `<dds-masthead-menu-button>` will be broken.
+However, it means poking into `<c4d-left-nav>`'s implementation details, in a similar manner to accessing `private` properties in a class. And thus when `<c4d-left-nav>` removes `c4d--left-nav__content` class from the content node (it's an implementation detail) `<c4d-masthead-menu-button>` will be broken.
 
-The first step to fix this problem is adding an API to `<dds-left-nav>` for adding/removing `dds--left-nav__content--shown` class. For example, we can introduce `active` property to do so:
+The first step to fix this problem is adding an API to `<c4d-left-nav>` for adding/removing `c4d--left-nav__content--shown` class. For example, we can introduce `active` property to do so:
 
 `left-nav.ts`:
 
@@ -327,8 +328,8 @@ active = false;
 render() {
   const { active } = this;
   const classes = classMap({
-    [`${ddsPrefix}--left-nav__content`]: true,
-    [`${ddsPrefix}--left-nav__content__shown`]: active,
+    [`${c4dPrefix}--left-nav__content`]: true,
+    [`${c4dPrefix}--left-nav__content__shown`]: active,
   });
   return html`
     <div class="${classes}">
@@ -340,7 +341,7 @@ render() {
 
 ### Custom events
 
-Another step is adding an API to `<dds-masthead-menu-button>` that tells the user gesture of clicking and translating it to a meaning context to an application ("toggling" in this case):
+Another step is adding an API to `<c4d-masthead-menu-button>` that tells the user gesture of clicking and translating it to a meaning context to an application ("toggling" in this case):
 
 `masthead-menu-button.ts`:
 
@@ -349,7 +350,7 @@ _handleClick(event: MouseEvent) {
   const active = !this.active;
   this.active = active;
   this.dispatchEvent(
-    new CustomEvent((this.constructor as typeof BXHeaderMenuButton).eventToggle, {
+    new CustomEvent((this.constructor as typeof CDSHeaderMenuButton).eventToggle, {
       bubbles: true,
       cancelable: false,
       composed: true,
@@ -361,11 +362,11 @@ _handleClick(event: MouseEvent) {
 }
 
 static get eventToggle() {
-  return `${ddsPrefix}-masthead-menu-button-toggled`;
+  return `${c4dPrefix}-masthead-menu-button-toggled`;
 }
 ```
 
-Above code fires `dds-masthead-menu-button-toggled` custom event so that other components can see when user toggles the state of `<dds-masthead-menu-button>`. For example, `<dds-left-nav>` can listen to `dds-masthead-menu-button-toggled` event and reflect the new state from the event to `<dds-left-nav>`:
+Above code fires `c4d-masthead-menu-button-toggled` custom event so that other components can see when user toggles the state of `<c4d-masthead-menu-button>`. For example, `<c4d-left-nav>` can listen to `c4d-masthead-menu-button-toggled` event and reflect the new state from the event to `<c4d-left-nav>`:
 
 `left-nav.ts`:
 
@@ -377,7 +378,7 @@ private _handleToggleMenuButton(event: CustomEvent) {
 }
 
 static get eventButtonToggle() {
-  return `${ddsPrefix}-header-menu-button-toggled`;
+  return `${c4dPrefix}-header-menu-button-toggled`;
 }
 ```
 
@@ -437,7 +438,32 @@ To cause re-rendering upon change in `private`/`protected` properties, use `stat
 
 Global `document`/`window` can be different from the ones associated with custom element instance, when the custom element is transported to a different frame e.g. with `document.importNode()`. Though such cases are rare, the codebase avoids global `document`/`window` reference to keep ourselves in a good DOM citizen. We use [`element.ownerDocument`](https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument)/[`.element.ownerDocument.defaultView`](https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView), respectively, instead.
 
-## Custom element registration
+## Custom Elements
+### @carbonElement Decorator
+
+We use a custom [`@carbonElement`](../../carbon-web-components/src/globals/decorators/carbon-element.ts) decorator instead of Lit's [`@customElement`](https://lit.dev/docs/v1/api/lit-element/decorators/#customElement), which doesn't provide a way to check if an element has already been defined in the window's `CustomElementRegistry`. If an attempt is made to redefine an element that has already been registered, an error will occur and any remaining code will fail to execute.
+
+`@carbonElement` is identical to `@customElement` with the exception that it gracefully handles any failures from duplicate registrations and continues executing the remainder of the running script.
+
+#### Usage
+
+1. Use this project's `carbon-element.ts` file to supply the decorator
+2. Alias `@carbonElement` to `@customElement`
+
+The second item is **required** for proper creation of the react-wrapped components
+
+Example:
+
+```typescript
+import { html, LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
+import { carbonElement as customElement } from '../../globals/decorators/carbon-element';
+
+@customElement(`${prefix}-accordion-item`)
+class CDSAccordionItem extends FocusMixin(LitElement) {
+  ...
+```
+### Custom element registration
 
 This library registers custom elements to global `window` automatically upon importing the corresponding modules.
 It may not be desirable in two scenarios:
@@ -445,23 +471,23 @@ It may not be desirable in two scenarios:
 - One is when consumer wants to customize our custom element's behavior before it's registered. In such case, consumer can create a derived class and register it with a different custom element name.
 - Another, though the use case is rare, is using our custom element in a different realm. In such case, consumer can re-register the custom element in the realm.
 
-## Custom element itself as an eleement
+### Custom element itself as an element
 
 In Custom Elements world, the custom element itself (the host of shadow DOM) itself is an element.
 
-When we create a custom element that represents `<li class="bx--footer-nav-group__item">`, it's tempting to render the following in shadow DOM:
+When we create a custom element that represents `<li class="cds--footer-nav-group__item">`, it's tempting to render the following in shadow DOM:
 
 ```typescript
-@customElement(`${ddsPreifx}-footer-nav-item`)
-class DDSFooterNavItem extends LitElement {
+@customElement(`${c4dPrefix}-footer-nav-item`)
+class C4DFooterNavItem extends LitElement {
   ...
 
   render() {
     const { href } = this;
     // ❗️ Don't do this
     return html`
-      <li class="bx--footer-nav-group__item">
-        <a class="bx--footer-nav-group__link bx--footer__link" href="${ifNonNull(href)}">
+      <li class="cds--footer-nav-group__item">
+        <a class="cds--footer-nav-group__link cds--footer__link" href="${ifDefined(href)}">
       </li>
     `;
   }
@@ -470,22 +496,22 @@ class DDSFooterNavItem extends LitElement {
 }
 ```
 
-But if we do this, we end up creating a DOM tree like below, which means, creating `<dds-footer-nav-item>` as an element in addition to the `<li>`:
+But if we do this, we end up creating a DOM tree like below, which means, creating `<c4d-footer-nav-item>` as an element in addition to the `<li>`:
 
 ```html
-<dds-footer-nav-item>
+<c4d-footer-nav-item>
   #shadow-root
-    <li class="bx--footer-nav-group__item">
-      <a class="bx--footer-nav-group__link bx--footer__link" href="https://ibm.com/foo">
+    <li class="cds--footer-nav-group__item">
+      <a class="cds--footer-nav-group__link cds--footer__link" href="https://ibm.com/foo">
     </li>
-</dds-footer-nav-item>
+</c4d-footer-nav-item>
 ```
 
 To solve such redundant DOM element, we do the following instead:
 
 ```typescript
 @customElement(`${ddsPreifx}-footer-nav-item`)
-class DDSFooterNavItem extends LitElement {
+class C4DFooterNavItem extends LitElement {
   ...
 
   connectedCallback() {
@@ -500,7 +526,7 @@ class DDSFooterNavItem extends LitElement {
     const { href } = this;
     // Don't render `<li>` here
     return html`
-      <a class="bx--footer-nav-group__link bx--footer__link" href="${ifNonNull(href)}">
+      <a class="cds--footer-nav-group__link cds--footer__link" href="${ifDefined(href)}">
     `;
   }
 
@@ -508,15 +534,15 @@ class DDSFooterNavItem extends LitElement {
 }
 ```
 
-> 💡 Make sure `:host(#{$ddsPrefix}-footer-nav-item)` the same CSS rules as `#{$prefix}--footer-nav-group__item` in the Sass code.
+> 💡 Make sure `:host(#{$c4dPrefix}-footer-nav-item)` the same CSS rules as `#{$prefix}--footer-nav-group__item` in the Sass code.
 
 > 💡 `<button>` and `<a>` are exceptions to this rule because there is no way to implement the same feature of those tags with a custom element.
 
 ## Propagating misc attributes from shadow host to an element in shadow DOM
 
-Similar to `carbon-web-components`, some components, e.g. `<bx-btn>`, simply represent the content in shadow DOM, e.g. `<button>` in it. It's sometimes desiable for applications to have control of attributes in `<button>`, for example, adding `data-` attributes there.
+Similar to `carbon-web-components`, some components, e.g. `<cds-btn>`, simply represent the content in shadow DOM, e.g. `<button>` in it. It's sometimes desiable for applications to have control of attributes in `<button>`, for example, adding `data-` attributes there.
 
-In such case, we let consumer create a derived class. For example, its `.attributeChangedCallback()` can propagate `<bx-btn>`'s attribute to `<button>` in it.
+In such case, we let consumer create a derived class. For example, its `.attributeChangedCallback()` can propagate `<cds-btn>`'s attribute to `<button>` in it.
 
 ## Private properties
 
@@ -535,7 +561,7 @@ That said, in `@carbon/ibmdotcom-web-components` codebase prefers class inherita
 To highlight this, here is an example of what a preferred inheritance pattern would be:
 
 ```typescript
-class DDSFoo extends DDSBar {
+class C4DFoo extends C4DBar {
   render() {
     return html`
       ${super.render()}(Some additional content)
@@ -547,11 +573,11 @@ class DDSFoo extends DDSBar {
 Whereas this would be a pattern to avoid:
 
 ```typescript
-class DDSFoo extends LitElement {
+class C4DFoo extends LitElement {
   render() {
     return html`
       // ❗️ Consider avoiding this
-      <dds-bar>...</dds-bar>
+      <cds-bar>...</cds-bar>
     `;
   }
 }
@@ -562,12 +588,12 @@ class DDSFoo extends LitElement {
 This repository limits the number of components that works with component data, from the following reasons:
 
 1. It's hard for users to figure out what the correct data structure to set to our components, even if we document it well. For example, an effort to test components with different data can easily cause data scheme validation errors, or (even worse) internal errors, if the component requires complex data structure to use.
-2. Native HTML elements, including custom elements, can handle only primitive data effectively via attributes. For example, `<dds-some-element complex-data="{ foo: { subFoo: 'sub-foo' } }">` is hard to read and has `JSON.parse()`/`JSON.stringify()` overhead. We can use an element property instead of an attribute in this particular case, but properties won't be shown explicitly in e.g. DOM inspectors.
+2. Native HTML elements, including custom elements, can handle only primitive data effectively via attributes. For example, `<c4d-some-element complex-data="{ foo: { subFoo: 'sub-foo' } }">` is hard to read and has `JSON.parse()`/`JSON.stringify()` overhead. We can use an element property instead of an attribute in this particular case, but properties won't be shown explicitly in e.g. DOM inspectors.
 3. Modern templating engines do some sort of data comparisons to determine what portion of UI has to be re-rendered. If many components have to work with complex data, such comparison will be very costful.
 
 But there are certain kind of components that have to work with complex data, which is, ones that manage application-level states. This repository clearly separates such kind of components vs. one that purely represents user interface/interaction, using the following categorization:
 
-- **Container components**: Ones that manage application-level states and/or do data fetching/storing. The elements has `<dds-*-container>` naming rule. Container components may work with dedicated state manager like Redux (often recommended).
+- **Container components**: Ones that manage application-level states and/or do data fetching/storing. The elements has `<c4d-*-container>` naming rule. Container components may work with dedicated state manager like Redux (often recommended).
 - **Leaf components**: Ones that represents user interface/interaction. Most of our components are in this category.
 
 ## Optimizing layout query

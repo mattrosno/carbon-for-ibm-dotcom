@@ -1,35 +1,37 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html, property, LitElement } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import Close from 'carbon-web-components/es/icons/close/16.js';
-import FocusMixin from 'carbon-web-components/es/globals/mixins/focus.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
+import Close from '../../internal/vendor/@carbon/web-components/icons/close/16.js';
+import FocusMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/focus.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
 import styles from './filter-panel.scss';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * The input select inner dropdown.
  *
- * @element dds-filter-panel-input-select-item
+ * @element c4d-filter-panel-input-select-item
  */
-@customElement(`${ddsPrefix}-filter-panel-input-select-item`)
-class DDSFilterPanelInputSelectItem extends FocusMixin(StableSelectorMixin(LitElement)) {
+@customElement(`${c4dPrefix}-filter-panel-input-select-item`)
+class C4DFilterPanelInputSelectItem extends FocusMixin(
+  StableSelectorMixin(LitElement)
+) {
   /**
    * Property for the input select item value
    */
   @property()
-  _title: string = '';
+  _title = '';
 
   /**
    * sets the input select dropdown to unselected
@@ -38,14 +40,25 @@ class DDSFilterPanelInputSelectItem extends FocusMixin(StableSelectorMixin(LitEl
   selected = false;
 
   /**
+   * Property for setting the value to a string.
+   */
+  @property()
+  value = '';
+
+  /**
    * Handles `slotchange` event.
    *
    * @param event The event.
+   * @param event.target The event target.
    */
   protected _handleSlotChange({ target }: Event) {
-    this._title = (target as HTMLSlotElement).assignedNodes()[0].textContent as string;
+    this._title = (target as HTMLSlotElement).assignedNodes()[0]
+      .textContent as string;
 
-    this.setAttribute('aria-label', `${this._title}, ${this.selected ? 'selected' : 'unselected'}`);
+    this.setAttribute(
+      'aria-label',
+      `${this._title}, ${this.selected ? 'selected' : 'unselected'}`
+    );
   }
 
   connectedCallback() {
@@ -62,7 +75,10 @@ class DDSFilterPanelInputSelectItem extends FocusMixin(StableSelectorMixin(LitEl
   updated(changedProperties) {
     if (changedProperties.has('selected')) {
       this.setAttribute('aria-selected', `${String(Boolean(this.selected))}`);
-      this.setAttribute('aria-label', `${this._title}, ${this.selected ? 'selected' : 'unselected'}`);
+      this.setAttribute(
+        'aria-label',
+        `${this._title}, ${this.selected ? 'selected' : 'unselected'}`
+      );
     }
   }
 
@@ -76,11 +92,11 @@ class DDSFilterPanelInputSelectItem extends FocusMixin(StableSelectorMixin(LitEl
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}-filter-panel-input-select-item`;
+    return `${c4dPrefix}-filter-panel-input-select-item`;
   }
 
   static styles = styles;
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSFilterPanelInputSelectItem;
+export default C4DFilterPanelInputSelectItem;

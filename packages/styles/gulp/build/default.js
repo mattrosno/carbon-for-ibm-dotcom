@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,5 +14,5 @@ const gulp = require('gulp');
  *
  * @module default
  */
-module.exports = gulp.task('default', gulp.series('clean', 
-    gulp.parallel('sass-ltr', 'sass-rtl')));
+module.exports = gulp.task('default', gulp.series('clean',
+    gulp.parallel('sass-ltr')));

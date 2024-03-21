@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2021
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,6 +17,7 @@ export interface BasicLink {
   highlightedLink?: boolean;
   url?: string;
   description?: string;
+  target?: string;
 }
 
 /**
@@ -28,57 +29,29 @@ export interface BasicLinkSet {
   links: BasicLink[];
 }
 
-/**
- * A feature in mega panel.
- */
-export interface MegapanelFeature {
-  heading?: string;
-  imageUrl?: string;
-  linkTitle?: string;
-  linkUrl?: string;
+export interface L0Menu {
+  items: L0MenuItem[];
 }
 
-/**
- * A content in mega panel.
- */
-export interface MegapanelContent {
-  headingTitle?: string;
-  headingUrl?: string;
-  description?: string;
-  quickLinks: BasicLinkSet;
-  feature: MegapanelFeature;
+export interface L0MenuItem extends BasicLink {
+  submenu?: L0Megamenu | BasicLink[];
 }
 
-/**
- * A menu item in masthead.
- */
-export interface MastheadMenuItem {
-  title: string;
-  titleEnglish?: string;
-  url?: string;
-  highlighted?: boolean;
-  megaPanelViewAll?: boolean;
-  megapanelContent?: MegapanelContent;
+export interface L0Megamenu {
+  sections: Megapanel[];
+  highlights?: MegapanelLinkGroup[];
+  viewAll?: BasicLink;
 }
 
-/**
- * A menu section in masthead.
- */
-export interface MastheadMenuSection {
-  heading?: string;
-  menuItems: MastheadMenuItem[];
+export interface Megapanel {
+  heading?: BasicLink;
+  groups: MegapanelLinkGroup[];
+  viewAll?: BasicLink;
 }
 
-/**
- * An item in masthead.
- */
-export interface MastheadLink {
-  title: string;
-  titleEnglish?: string;
-  url?: string;
-  hasMenu?: boolean;
-  hasMegapanel?: boolean;
-  menuSections?: MastheadMenuSection[];
+export interface MegapanelLinkGroup {
+  heading?: BasicLink;
+  links?: BasicLink[];
 }
 
 /**
@@ -87,7 +60,42 @@ export interface MastheadLink {
 export interface MastheadL1 {
   title: string;
   url?: string;
-  menuItems?: MastheadLink[];
+  menuItems: L1MenuItem[];
+  actions?: {
+    cta?: L1CtaLink;
+    login?: BasicLink;
+  };
+}
+
+export interface L1CtaLink extends BasicLink {
+  ctaType?: string;
+}
+
+export interface L1MenuItem extends BasicLink {
+  submenu?: L1Submenu;
+}
+
+export interface L1Submenu {
+  announcement?: string; // From AEM rich text editor
+  menuSections: L1SubmenuSection[]; // maximum of 3 in outer array
+  columns?: 1 | 2 | 3; // Should default to 1 if unspecified
+  footer?: {
+    title: string;
+    url: string;
+  };
+}
+
+export interface L1SubmenuSection {
+  span: 1 | 2; // Only used if containing L1Submenu.columns === 3.
+  heading?: L1SubmenuSectionHeading;
+  items?: BasicLink[];
+}
+
+export interface L1SubmenuSectionHeading {
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  title: string;
+  url?: string;
+  description?: string;
 }
 
 /**
@@ -127,16 +135,18 @@ export interface MastheadLogoData {
   allowlist: [];
   end: string;
   path: string;
+  href: string;
 }
 
 /**
  * Cloud Masthead Profile content
+ *
+ * @deprecated
  */
 export interface MastheadProfileContent {
   iconLabel: string;
   links: MastheadProfileItem[];
   ctaButtons: MastheadProfileItem[];
-  contactUsButton: string;
 }
 
 /**
@@ -149,11 +159,16 @@ export interface MiscLabels {
  * The translation data for ibm.com sites
  */
 export interface Translation {
+  /**
+   * Main masthead navigation data.
+   *
+   * @deprecated Use masthead.nav instead.
+   */
   mastheadNav: {
     /**
      * The nav links.
      */
-    links: MastheadLink[];
+    links: L0MenuItem[];
   };
 
   /**
@@ -167,7 +182,24 @@ export interface Translation {
   footerThin: BasicLink[];
 
   /**
+   * Masthead items other than main navigation
+   */
+  masthead: {
+    logo: MastheadLogoData;
+    nav: L0MenuItem[];
+    contact: MastheadProfileItem;
+    profileMenu: {
+      unauthenticated: MastheadProfileItem[];
+      authenticated: MastheadProfileItem[];
+      signedin: MastheadProfileContent;
+      signedout: MastheadProfileContent;
+    };
+  };
+
+  /**
    * The profile menus.
+   *
+   * @deprecated Use masthead.profileMenu instead.
    */
   profileMenu: {
     /**
@@ -179,17 +211,6 @@ export interface Translation {
      * The profile menu for logged out state.
      */
     signedout: MastheadProfileItem[];
-  };
-
-  /**
-   * Cloud masthead profile items
-   */
-  masthead: {
-    contact: MastheadProfileContent;
-    profileMenu: {
-      signedout: MastheadProfileContent;
-      signedin: MastheadProfileContent;
-    };
   };
 
   /**
@@ -235,7 +256,10 @@ export interface TranslateAPIState {
   /**
    * The requests for the translation data, keyed by the language.
    */
-  requestsTranslation?: { [language: string]: Promise<Translation> };
+  requestsTranslation?: {
+    [language: string]: Promise<Translation> | string;
+    endpoint: string;
+  };
 
   /**
    * The status of whether requests for the translation data are in progress, keyed by the language.

@@ -1,26 +1,27 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import BXStructuredListHead from 'carbon-web-components/es/components/structured-list/structured-list-head.js';
-import { customElement } from 'lit-element';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import CDSStructuredListHead from '../../internal/vendor/@carbon/web-components/components/structured-list/structured-list-head.js';
+import {} from 'lit';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import styles from './structured-list.scss';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * StructuredListHead
  *
- * @element dds-structured-list-head
+ * @element c4d-structured-list-head
  */
-@customElement(`${ddsPrefix}-structured-list-head`)
-class DDSStructuredListHead extends BXStructuredListHead {
+@customElement(`${c4dPrefix}-structured-list-head`)
+class C4DStructuredListHead extends CDSStructuredListHead {
   connectedCallback() {
     super.connectedCallback();
   }
@@ -29,4 +30,4 @@ class DDSStructuredListHead extends BXStructuredListHead {
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSStructuredListHead;
+export default C4DStructuredListHead;

@@ -1,18 +1,23 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
+import { LitElement, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
 import LocaleAPI from '../../internal/vendor/@carbon/ibmdotcom-services/services/Locale/Locale';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import MediaQueryMixin, {
+  MQBreakpoints,
+  MQDirs,
+} from '../../component-mixins/media-query/media-query';
 import HybridRenderMixin from '../../globals/mixins/hybrid-render';
 import ModalRenderMixin from '../../globals/mixins/modal-render';
 import { globalInit } from '../../internal/vendor/@carbon/ibmdotcom-services/services/global/global';
@@ -22,13 +27,12 @@ import {
   BasicLinkSet,
   Translation,
 } from '../../internal/vendor/@carbon/ibmdotcom-services-store/types/translateAPI.d';
-/* eslint-disable import/no-duplicates */
 import { FOOTER_SIZE } from './footer';
+import { DROPDOWN_SIZE } from './combo-box';
 // Above import is interface-only ref and thus code won't be brought into the build
 import './footer';
 // Above import is interface-only ref and thus code won't be brought into the build
 import '../locale-modal/locale-modal-composite';
-/* eslint-enable import/no-duplicates */
 import './footer-logo';
 import './footer-nav';
 import './footer-nav-group';
@@ -39,33 +43,59 @@ import './legal-nav-item';
 import './legal-nav-cookie-preferences-placeholder';
 import './language-selector-desktop';
 import './language-selector-mobile';
-import 'carbon-web-components/es/components/combo-box/combo-box-item.js';
-import 'carbon-web-components/es/components/select/select-item.js';
+import '../../internal/vendor/@carbon/web-components/components/combo-box/combo-box-item.js';
+import '../../internal/vendor/@carbon/web-components/components/select/select-item.js';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
+import { moderate02 } from '@carbon/motion';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
+
+// Delay matches the CSS animation timing for fadein/out of modal.
+const delay = parseInt(moderate02, 10);
 
 /**
  * Component that rendres footer from inks data.
  *
- * @element dds-footer-composite
+ * @element c4d-footer-composite
  */
-@customElement(`${ddsPrefix}-footer-composite`)
-class DDSFooterComposite extends ModalRenderMixin(HybridRenderMixin(HostListenerMixin(LitElement))) {
+@customElement(`${c4dPrefix}-footer-composite`)
+class C4DFooterComposite extends MediaQueryMixin(
+  ModalRenderMixin(HybridRenderMixin(HostListenerMixin(LitElement))),
+  { [MQBreakpoints.LG]: MQDirs.MAX }
+) {
   /**
    * Handles `click` event on the locale button.
    */
-  private _handleClickLocaleButton = () => {
+  private async _handleClickLocaleButton() {
     this.openLocaleModal = true;
-  };
+
+    // Set 'open' attribute after modal is in dom so CSS can fade it in.
+    this.updateComplete.then(() => {
+      const composite = this.modalRenderRoot?.querySelector(
+        `${c4dPrefix}-locale-modal-composite`
+      );
+      composite?.setAttribute('open', '');
+    });
+  }
+
+  @state()
+  _isMobile = this.carbonBreakpoints.lg.matches;
+
+  protected mediaQueryCallbackMaxLG() {
+    this._isMobile = this.carbonBreakpoints.lg.matches;
+  }
 
   /**
-   * Handles `dds-expressive-modal-closed` event on the locale modal.
+   * Handles `c4d-expressive-modal-closed` event on the locale modal.
    */
   @HostListener('document:eventCloseModal')
   // @ts-ignore: The decorator refers to this method but TS thinks this method is not referred to
   private _handleCloseModal = (event: CustomEvent) => {
     if ((this.modalRenderRoot as Element).contains(event.target as Node)) {
-      this.openLocaleModal = false;
+      // Timeout here ensures the modal closing animation is visible.
+      setTimeout(() => {
+        this.openLocaleModal = false;
+      }, delay);
     }
   };
 
@@ -95,6 +125,12 @@ class DDSFooterComposite extends ModalRenderMixin(HybridRenderMixin(HostListener
    */
   @property()
   buttonLabel?: string;
+
+  /**
+   * The aria-label to use for the legal-nav
+   */
+  @property()
+  navLabel?: string;
 
   /**
    * The clear button label for language selector.
@@ -177,10 +213,15 @@ class DDSFooterComposite extends ModalRenderMixin(HybridRenderMixin(HostListener
   localeList?: LocaleList;
 
   /**
+   * @inheritdoc
+   */
+  modalTriggerProps = ['openLocaleModal', 'localeList'];
+
+  /**
    * `true` to open the locale modal.
    */
   @property({ type: Boolean, attribute: 'open-locale-modal' })
-  openLocaleModal = false;
+  openLocaleModal;
 
   /**
    * Footer size.
@@ -202,9 +243,11 @@ class DDSFooterComposite extends ModalRenderMixin(HybridRenderMixin(HostListener
     }
     this._loadTranslation?.(language);
 
-    this.getLangDisplay().then(res => {
+    this.getLangDisplay().then((res) => {
       this.langDisplay = res;
     });
+
+    super.firstUpdated();
   }
 
   updated(changedProperties) {
@@ -221,170 +264,196 @@ class DDSFooterComposite extends ModalRenderMixin(HybridRenderMixin(HostListener
    * @returns The locale modal.
    */
   renderModal() {
-    const { collatorCountryName, langDisplay, language, localeList, openLocaleModal, _loadLocaleList: loadLocaleList } = this;
+    const {
+      collatorCountryName,
+      langDisplay,
+      language,
+      localeList,
+      openLocaleModal,
+      _loadLocaleList: loadLocaleList,
+    } = this;
+    return openLocaleModal
+      ? html`
+          <c4d-locale-modal-composite
+            lang-display="${ifDefined(langDisplay)}"
+            language="${ifDefined(language)}"
+            .collatorCountryName="${ifDefined(collatorCountryName)}"
+            .localeList="${ifDefined(localeList)}"
+            ._loadLocaleList="${ifDefined(loadLocaleList)}">
+          </c4d-locale-modal-composite>
+        `
+      : html``;
+  }
+
+  renderLanguageSelector(slot = 'language-selector') {
+    const {
+      clearSelectionLabel,
+      _isMobile: isMobile,
+      langList,
+      languageSelectorLabel,
+      selectedLanguage,
+      size,
+    } = this;
+    const dropdownSize =
+      size === FOOTER_SIZE.MICRO ? DROPDOWN_SIZE.MICRO : DROPDOWN_SIZE.LARGE;
+    return isMobile
+      ? html`
+          <c4d-language-selector-mobile
+            size="${dropdownSize}"
+            slot="${slot}"
+            value="${selectedLanguage}"
+            placeholder="${selectedLanguage}">
+            ${langList?.map(
+              (language) => html`
+                <cds-select-item
+                  label="${ifDefined(language.text)}"
+                  value="${ifDefined(language.text)}"
+                  lang="${ifDefined(language.id)}"
+                  >${ifDefined(language.text)}</cds-select-item
+                >
+              `
+            )}
+          </c4d-language-selector-mobile>
+        `
+      : html`
+          <c4d-language-selector-desktop
+            size="${dropdownSize}"
+            slot="${slot}"
+            trigger-content="${languageSelectorLabel}"
+            label-text="${languageSelectorLabel}"
+            value="${selectedLanguage}"
+            clear-selection-label="${clearSelectionLabel}">
+            ${langList?.map(
+              (language) => html`
+                <cds-combo-box-item
+                  value="${ifDefined(language.text)}"
+                  lang="${ifDefined(language.id)}"
+                  >${ifDefined(language.text)}</cds-combo-box-item
+                >
+              `
+            )}
+          </c4d-language-selector-desktop>
+        `;
+  }
+
+  renderLocaleButton(slot = 'locale-button') {
+    const {
+      buttonLabel,
+      _handleClickLocaleButton: handleClickLocaleButton,
+      langDisplay,
+      size,
+    } = this;
     return html`
-      <dds-locale-modal-composite
-        lang-display="${ifNonNull(langDisplay)}"
-        language="${ifNonNull(language)}"
-        ?open="${openLocaleModal}"
-        .collatorCountryName="${ifNonNull(collatorCountryName)}"
-        .localeList="${ifNonNull(localeList)}"
-        ._loadLocaleList="${ifNonNull(loadLocaleList)}"
+      <c4d-locale-button
+        buttonLabel="${ifDefined(buttonLabel)}"
+        size="${size}"
+        slot="${slot}"
+        @click="${handleClickLocaleButton.bind(this)}"
+        >${langDisplay}</c4d-locale-button
       >
-      </dds-locale-modal-composite>
     `;
   }
 
   renderLightDOM() {
     const {
-      buttonLabel,
-      clearSelectionLabel,
       disableLocaleButton,
-      langDisplay,
       langList,
-      languageSelectorLabel,
-      selectedLanguage,
       size,
       links,
       legalLinks,
       adjunctLinks,
-      _handleClickLocaleButton: handleClickLocaleButton,
+      navLabel,
     } = this;
     return html`
-      <dds-footer size="${ifNonNull(size)}" ?disable-locale-button="${ifNonNull(disableLocaleButton)}">
-        <dds-footer-logo></dds-footer-logo>
-        <dds-footer-nav ?disable-locale-button="${ifNonNull(disableLocaleButton)}">
-          ${links?.map(
-            ({ title: groupTitle, links: groupLinks }) => html`
-              <dds-footer-nav-group title-text="${ifNonNull(groupTitle)}">
-                ${groupLinks?.map(
-                  ({ title, url }) => html`
-                    <dds-footer-nav-item href="${ifNonNull(url)}">${title}</dds-footer-nav-item>
-                  `
-                )}
-              </dds-footer-nav-group>
-            `
-          )}
-        </dds-footer-nav>
-        ${size !== FOOTER_SIZE.MICRO && !langList && !disableLocaleButton
-          ? html`
-              <dds-locale-button buttonLabel="${ifNonNull(buttonLabel)}" size="${size}" @click="${handleClickLocaleButton}"
-                >${langDisplay}</dds-locale-button
-              >
-            `
+      <c4d-footer
+        size="${ifDefined(size)}"
+        ?disable-locale-button="${ifDefined(disableLocaleButton)}">
+        <c4d-footer-logo></c4d-footer-logo>
+        ${size !== FOOTER_SIZE.MICRO && size !== FOOTER_SIZE.SHORT
+          ? html` <c4d-footer-nav
+              ?disable-locale-button="${ifDefined(disableLocaleButton)}">
+              ${links?.map(
+                ({ title: groupTitle, links: groupLinks }) => html`
+                  <c4d-footer-nav-group title-text="${ifDefined(groupTitle)}">
+                    ${groupLinks?.map(
+                      ({ title, url }) => html`
+                        <c4d-footer-nav-item href="${ifDefined(url)}"
+                          >${title}</c4d-footer-nav-item
+                        >
+                      `
+                    )}
+                  </c4d-footer-nav-group>
+                `
+              )}
+              ${!langList && !disableLocaleButton
+                ? this.renderLocaleButton()
+                : ``}
+              ${langList && !disableLocaleButton
+                ? this.renderLanguageSelector()
+                : ``}
+            </c4d-footer-nav>`
           : ``}
-        ${size !== FOOTER_SIZE.MICRO && langList && !disableLocaleButton
-          ? html`
-              <dds-language-selector-desktop
-                trigger-content="${languageSelectorLabel}"
-                label-text="${languageSelectorLabel}"
-                value="${selectedLanguage}"
-                clear-selection-label="${clearSelectionLabel}"
-              >
-                ${langList?.map(
-                  language => html`
-                    <bx-combo-box-item value="${ifNonNull(language.text)}" lang="${ifNonNull(language.id)}"
-                      >${ifNonNull(language.text)}</bx-combo-box-item
-                    >
-                  `
-                )}
-              </dds-language-selector-desktop>
-              <dds-language-selector-mobile value="${selectedLanguage}" placeholder="${selectedLanguage}">
-                ${langList?.map(
-                  language => html`
-                    <bx-select-item
-                      label="${ifNonNull(language.text)}"
-                      value="${ifNonNull(language.text)}"
-                      lang="${ifNonNull(language.id)}"
-                      >${ifNonNull(language.text)}</bx-select-item
-                    >
-                  `
-                )}
-              </dds-language-selector-mobile>
-            `
+        ${(size === FOOTER_SIZE.SHORT || size === FOOTER_SIZE.MICRO) &&
+        !langList &&
+        !disableLocaleButton
+          ? this.renderLocaleButton()
           : ``}
-        <dds-legal-nav size="${ifNonNull(size)}">
+        ${(size === FOOTER_SIZE.SHORT || size === FOOTER_SIZE.MICRO) &&
+        langList &&
+        !disableLocaleButton
+          ? this.renderLanguageSelector()
+          : ``}
+
+        <c4d-legal-nav
+          size="${ifDefined(size)}"
+          navLabel="${ifDefined(navLabel)}">
+          <c4d-footer-logo
+            size="${ifDefined(size)}"
+            ?disable-locale-button="${disableLocaleButton}"></c4d-footer-logo>
           ${legalLinks?.map(
             ({ title, url, titleEnglish }) => html`
-              <dds-legal-nav-item autoid="${ifNonNull(titleEnglish)}" href="${ifNonNull(url)}">${title}</dds-legal-nav-item>
+              <c4d-legal-nav-item
+                autoid="${ifDefined(titleEnglish)}"
+                href="${ifDefined(url)}"
+                >${title}</c4d-legal-nav-item
+              >
             `
           )}
           ${size !== FOOTER_SIZE.MICRO
             ? adjunctLinks?.map(
                 ({ title, url, titleEnglish }) => html`
-                  <dds-legal-nav-item autoid="${ifNonNull(titleEnglish)}" href="${ifNonNull(url)}" slot="adjunct-links">
+                  <c4d-legal-nav-item
+                    autoid="${ifDefined(titleEnglish)}"
+                    href="${ifDefined(url)}"
+                    slot="adjunct-links">
                     ${title}
-                  </dds-legal-nav-item>
+                  </c4d-legal-nav-item>
                 `
               )
             : ``}
-          <dds-legal-nav-cookie-preferences-placeholder></dds-legal-nav-cookie-preferences-placeholder>
+          <c4d-legal-nav-cookie-preferences-placeholder></c4d-legal-nav-cookie-preferences-placeholder>
           ${size === FOOTER_SIZE.MICRO && !langList && !disableLocaleButton
-            ? html`
-                <dds-locale-button
-                  buttonLabel="${ifNonNull(buttonLabel)}"
-                  size="${size}"
-                  slot="locale"
-                  @click="${handleClickLocaleButton}"
-                  >${langDisplay}</dds-locale-button
-                >
-              `
+            ? this.renderLocaleButton('locale')
             : ``}
           ${size === FOOTER_SIZE.MICRO && langList && !disableLocaleButton
-            ? html`
-                <dds-language-selector-desktop
-                  size="${size}"
-                  slot="locale"
-                  trigger-content="${languageSelectorLabel}"
-                  label-text="${languageSelectorLabel}"
-                  value="${selectedLanguage}"
-                  clear-selection-label="${clearSelectionLabel}"
-                >
-                  ${langList?.map(
-                    language => html`
-                      <bx-combo-box-item value="${ifNonNull(language.text)}" lang="${ifNonNull(language.id)}"
-                        >${ifNonNull(language.text)}</bx-combo-box-item
-                      >
-                    `
-                  )}
-                </dds-language-selector-desktop>
-                <dds-language-selector-mobile
-                  size="${size}"
-                  slot="locale"
-                  value="${selectedLanguage}"
-                  placeholder="${selectedLanguage}"
-                >
-                  ${langList?.map(
-                    language => html`
-                      <bx-select-item
-                        label="${ifNonNull(language.text)}"
-                        value="${ifNonNull(language.text)}"
-                        lang="${ifNonNull(language.id)}"
-                        >${ifNonNull(language.text)}</bx-select-item
-                      >
-                    `
-                  )}
-                </dds-language-selector-mobile>
-              `
+            ? this.renderLanguageSelector('locale')
             : ``}
-        </dds-legal-nav>
-      </dds-footer>
+        </c4d-legal-nav>
+      </c4d-footer>
     `;
   }
 
   render() {
-    return html`
-      <slot></slot>
-    `;
+    return html` <slot></slot> `;
   }
 
   /**
    * The name of the custom event fired after this modal is closed upon a user gesture.
    */
   static get eventCloseModal() {
-    return `${ddsPrefix}-expressive-modal-closed`;
+    return `${c4dPrefix}-expressive-modal-closed`;
   }
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSFooterComposite;
+export default C4DFooterComposite;

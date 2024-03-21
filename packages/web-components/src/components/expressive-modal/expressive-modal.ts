@@ -1,72 +1,36 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { classMap } from 'lit-html/directives/class-map.js';
-import { html, customElement, property, state, query, LitElement, TemplateResult, SVGTemplateResult } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import on from 'carbon-components/es/globals/js/misc/on.js';
-import { selectorTabbable } from 'carbon-web-components/es/globals/settings.js';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { html, LitElement, SVGTemplateResult, TemplateResult } from 'lit';
+import { property, query, state } from 'lit/decorators.js';
+import { EXPRESSIVE_MODAL_MODE, EXPRESSIVE_MODAL_SIZE } from './defs';
+import { classMap } from 'lit/directives/class-map.js';
+import C4DCarousel from '../carousel/carousel';
+import C4DExpressiveModalCloseButton from './expressive-modal-close-button';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
+import on from '../../internal/vendor/@carbon/web-components/globals/mixins/on.js';
+import { selectorTabbable } from '../../internal/vendor/@carbon/web-components/globals/settings.js';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import { EXPRESSIVE_MODAL_SIZE, EXPRESSIVE_MODAL_MODE } from './defs';
-import DDSExpressiveModalCloseButton from './expressive-modal-close-button';
 import styles from './expressive-modal.scss';
-import DDSCarousel from '../carousel/carousel';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /* eslint-disable no-bitwise */
-const PRECEDING = Node.DOCUMENT_POSITION_PRECEDING | Node.DOCUMENT_POSITION_CONTAINS;
-const FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY;
+const PRECEDING =
+  Node.DOCUMENT_POSITION_PRECEDING | Node.DOCUMENT_POSITION_CONTAINS;
+const FOLLOWING =
+  Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY;
 const WITHIN = Node.DOCUMENT_POSITION_CONTAINED_BY;
 /* eslint-enable no-bitwise */
-
-/**
- * Tries to focus on the given elements and bails out if one of the is successful.
- *
- * @param elems The elements.
- * @param reverse `true` to go through the list in reverse order.
- * @param fallback element to focus on if none
- * @returns `true` if one of the attempts is successful, `false` otherwise.
- */
-function tryFocusElems(
-  elems: NodeListOf<HTMLElement> | [HTMLElement],
-  reverse: boolean = false,
-  fallback: HTMLElement | null = null
-) {
-  if (!reverse) {
-    for (let i = 0; i < elems.length; ++i) {
-      const elem = elems[i];
-      if (elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length) {
-        elem.focus();
-        if ((elem.getRootNode() as Document).activeElement === elem) {
-          return true;
-        }
-      }
-    }
-  } else {
-    for (let i = elems.length - 1; i >= 0; --i) {
-      const elem = elems[i];
-      if (elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length) {
-        elem.focus();
-        if ((elem.getRootNode() as Document).activeElement === elem) {
-          return true;
-        }
-      }
-    }
-  }
-  fallback?.focus();
-  return false;
-}
 
 // TODO: Wait for `.d.ts` update to support `ResizeObserver`
 // @ts-ignore
@@ -91,16 +55,18 @@ const slotExistencePropertyNames = {
 /**
  * Expressive modal.
  *
- * @element dds-expressive-modal
- * @fires dds-expressive-modal-beingclosed
+ * @element c4d-expressive-modal
+ * @fires c4d-expressive-modal-beingclosed
  *   The custom event fired before this modal is being closed upon a user gesture.
  *   Cancellation of this event stops the user-initiated action of closing this modal.
- * @fires dds-expressive-modal-closed - The custom event fired after this modal is closed upon a user gesture.
+ * @fires c4d-expressive-modal-closed - The custom event fired after this modal is closed upon a user gesture.
  * @slot header - The header content.
  * @slot footer - The footer content.
  */
-@customElement(`${ddsPrefix}-expressive-modal`)
-class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElement)) {
+@customElement(`${c4dPrefix}-expressive-modal`)
+class C4DExpressiveModal extends StableSelectorMixin(
+  HostListenerMixin(LitElement)
+) {
   /**
    * `true` if there is a header content.
    */
@@ -127,25 +93,33 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
   /**
    * Collection of elements to search for focusable elements.
    */
-  hasFocusableElements: [DDSExpressiveModal | DDSCarousel] = [this];
+  hasFocusableElements: [C4DExpressiveModal | C4DCarousel] = [this];
 
   /**
    * Returns all focusable elements within this component and its shadowroot
    */
   get focusableElements() {
-    const { selectorCloseButton, selectorTabbable: selectorTabbableForModal } = this.constructor as typeof DDSExpressiveModal;
+    const { selectorCloseButton, selectorTabbable: selectorTabbableForModal } =
+      this.constructor as typeof C4DExpressiveModal;
     return [
-      ...Array.from((this.shadowRoot?.querySelectorAll(selectorCloseButton) as NodeListOf<HTMLElement>) || []),
-      ...Array.from(this.querySelectorAll(selectorTabbableForModal) as NodeListOf<HTMLElement>),
+      ...Array.from(
+        (this.shadowRoot?.querySelectorAll(
+          selectorCloseButton
+        ) as NodeListOf<HTMLElement>) || []
+      ),
+      ...Array.from(
+        this.querySelectorAll(
+          selectorTabbableForModal
+        ) as NodeListOf<HTMLElement>
+      ),
     ];
   }
 
-  private get _focusableElements() {
+  get _focusableElements() {
     const { hasFocusableElements } = this;
-
     const focusableElements: [HTMLElement?] = [];
 
-    hasFocusableElements.forEach(el => {
+    hasFocusableElements.forEach((el) => {
       if (el.focusableElements) {
         focusableElements.push(...el.focusableElements);
       }
@@ -183,12 +157,14 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
   @query(`.${prefix}--modal-content`)
   modalContent?: HTMLDivElement;
 
-  @query(`.${ddsPrefix}-ce--modal__body`)
+  @query(`.${c4dPrefix}-ce--modal__body`)
   modalBody?: HTMLDivElement;
 
   // TODO: Wait for `.d.ts` update to support `ResizeObserver`
   // @ts-ignore
-  private _resizeObserver = new ResizeObserver(onResize as ResizeObserverCallback);
+  private _resizeObserver = new ResizeObserver(
+    onResize as ResizeObserverCallback
+  );
 
   /**
    * Handles `click` event on this element.
@@ -208,12 +184,16 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * Handles the `focusin` event on the start and end sentinels
    *
    * @param event The event.
+   * @param event.target The event target.
+   * @param event.relatedTarget The event relatedTarget.
    */
-  private _handleFocusIn = ({ target, relatedTarget }) => {
+  protected _handleFocusIn = ({ target, relatedTarget }) => {
+    const { tryFocusElems } = this.constructor as typeof C4DExpressiveModal;
     let focusFromWithin = false;
     if (target && relatedTarget) {
       const comparedToThis = this.compareDocumentPosition(relatedTarget);
-      const comparedToShadowRoot = this.shadowRoot!.compareDocumentPosition(relatedTarget);
+      const comparedToShadowRoot =
+        this.shadowRoot!.compareDocumentPosition(relatedTarget);
       // If relatedTarget is descendent of `this` or `this.shadowRoot`.
       if (comparedToThis & WITHIN || comparedToShadowRoot & WITHIN) {
         focusFromWithin = true;
@@ -241,20 +221,28 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * Handles `focusout` event on this element.
    *
    * @param event The event.
+   * @param event.target The event target.
+   * @param event.relatedTarget The event relatedTarget.
    */
   @HostListener('focusout')
   // @ts-ignore: The decorator refers to this method but TS thinks this method is not referred to
   private _handleFocusOut = ({ target, relatedTarget }) => {
     // Don't attempt to wrap focus if the modal isn't open.
-    if (!this.open) return;
+    if (!this.open) {
+      return;
+    }
     // If no target/relatedTarget, focus has entered/left the window. Do nothing.
-    if (!target || !relatedTarget) return;
+    if (!target || !relatedTarget) {
+      return;
+    }
 
+    const { tryFocusElems } = this.constructor as typeof C4DExpressiveModal;
     const { _focusableElements: focusableElements } = this;
 
     // See if element gaining focus is inside `this` or `this.shadowRoot`.
     const positionToModal =
-      this.compareDocumentPosition(relatedTarget) | (this.shadowRoot?.compareDocumentPosition(relatedTarget) || 0);
+      this.compareDocumentPosition(relatedTarget) |
+      (this.shadowRoot?.compareDocumentPosition(relatedTarget) || 0);
     const positionToPrevious = target.compareDocumentPosition(relatedTarget);
     const relatedTargetIsContained = Boolean(positionToModal & WITHIN);
 
@@ -283,7 +271,11 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * @param event The event.
    */
   private _handleClickContainer(event: MouseEvent) {
-    if ((event.target as Element).matches((this.constructor as typeof DDSExpressiveModal).selectorCloseButton)) {
+    if (
+      (event.target as Element).matches(
+        (this.constructor as typeof C4DExpressiveModal).selectorCloseButton
+      )
+    ) {
       this._handleUserInitiatedClose(event.target);
     }
   }
@@ -295,7 +287,19 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
     const { name } = target as HTMLSlotElement;
     const hasContent = (target as HTMLSlotElement)
       .assignedNodes()
-      .some(node => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim());
+      .some((node) => {
+        // Allow non-empty text nodes.
+        if (node.nodeType === Node.TEXT_NODE && node!.textContent!.trim()) {
+          return true;
+        }
+        // Allow only element nodes that don't have a .cds--visually-hidden
+        // class.
+        if (node instanceof Element) {
+          return !node.classList.contains('cds--visually-hidden');
+        }
+        // No opinion on other cases.
+        return true;
+      });
     this[slotExistencePropertyNames[name] || '_hasBody'] = hasContent;
   }
 
@@ -314,7 +318,8 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
           triggeredBy,
         },
       };
-      const { eventBeforeClose, eventClose } = this.constructor as typeof DDSExpressiveModal;
+      const { eventBeforeClose, eventClose } = this
+        .constructor as typeof C4DExpressiveModal;
       if (this.dispatchEvent(new CustomEvent(eventBeforeClose, init))) {
         this.open = false;
         this.dispatchEvent(new CustomEvent(eventClose, init));
@@ -327,8 +332,8 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * @param timeout The number of milliseconds as the longest time waiting for `transitionend` event.
    * @returns A promise that is resolves when `transitionend` on the host element fires.
    */
-  private _waitForTransitionEnd(timeout: number = 1000) {
-    return new Promise(resolve => {
+  private _waitForTransitionEnd(timeout = 1000) {
+    return new Promise((resolve) => {
       let done = false;
       let hTransitionEnd;
       const handleResolve = () => {
@@ -350,12 +355,19 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * @returns The header content.
    */
   protected _renderHeader(): TemplateResult | SVGTemplateResult | void {
-    const { _hasHeader: hasHeader, _hasBody: hasBody, _hasFooter: hasFooter } = this;
+    const {
+      _hasHeader: hasHeader,
+      _hasBody: hasBody,
+      _hasFooter: hasFooter,
+    } = this;
     const headerClasses = classMap({
-      [`${ddsPrefix}-ce--modal__header--with-body`]: hasHeader && (hasBody || hasFooter),
+      [`${c4dPrefix}-ce--modal__header--with-body`]:
+        hasHeader && (hasBody || hasFooter),
     });
     return html`
-      <div id="${ddsPrefix}--modal-header" class="${headerClasses}"><slot name="header"></slot></div>
+      <div id="${prefix}--modal-header" class="${headerClasses}">
+        <slot name="header"></slot>
+      </div>
     `;
   }
 
@@ -365,12 +377,10 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
   protected _renderBody(): TemplateResult | SVGTemplateResult | void {
     const { _hasBody: hasBody, _hasFooter: hasFooter } = this;
     const bodyClasses = classMap({
-      [`${ddsPrefix}-ce--modal__body`]: true,
-      [`${ddsPrefix}-ce--modal__body--with-footer`]: hasBody && hasFooter,
+      [`${c4dPrefix}-ce--modal__body`]: true,
+      [`${c4dPrefix}-ce--modal__body--with-footer`]: hasBody && hasFooter,
     });
-    return html`
-      <div class="${bodyClasses}"><slot></slot></div>
-    `;
+    return html` <div class="${bodyClasses}"><slot></slot></div> `;
   }
 
   /**
@@ -378,9 +388,7 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    */
   // eslint-disable-next-line class-methods-use-this
   protected _renderFooter(): TemplateResult | SVGTemplateResult | void {
-    return html`
-      <div><slot name="footer"></slot></div>
-    `;
+    return html` <div><slot name="footer"></slot></div> `;
   }
 
   /**
@@ -420,24 +428,34 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
       .reduce((acc, item) => ({ ...acc, [item]: true }), {});
     const containerClasses = classMap({
       [`${prefix}--modal-container`]: true,
-      [`${prefix}--modal-container--fullwidth`]: size === EXPRESSIVE_MODAL_SIZE.FULL_WIDTH,
+      [`${prefix}--modal-container--fullwidth`]:
+        size === EXPRESSIVE_MODAL_SIZE.FULL_WIDTH,
       ...containerClass,
     });
     return html`
-      <button id="start-sentinel" class="${prefix}--visually-hidden" @focusin="${handleFocusIn}">START</button>
+      <button
+        id="start-sentinel"
+        class="${prefix}--visually-hidden"
+        @focusin="${handleFocusIn}">
+        START
+      </button>
       <div
         class="${containerClasses}"
         tabindex="-1"
         role="dialog"
-        aria-labelledby="${ddsPrefix}--modal-header"
+        aria-labelledby="${c4dPrefix}--modal-header"
         @click="${handleClickContainer}"
-        @slotchange="${handleSlotChange}"
-      >
+        @slotchange="${handleSlotChange}">
         <div class="${prefix}--modal-content">
           ${this._renderHeader()}${this._renderBody()}${this._renderFooter()}
         </div>
       </div>
-      <button id="end-sentinel" class="${prefix}--visually-hidden" @focusin="${handleFocusIn}">END</button>
+      <button
+        id="end-sentinel"
+        class="${prefix}--visually-hidden"
+        @focusin="${handleFocusIn}">
+        END
+      </button>
     `;
   }
 
@@ -449,12 +467,13 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
 
   async updated(changedProperties) {
     const { _focusableElements: focusableElements, size } = this;
-    const { selectorCloseButton } = this.constructor as typeof DDSExpressiveModal;
+    const { selectorCloseButton, tryFocusElems } = this
+      .constructor as typeof C4DExpressiveModal;
 
     if (changedProperties.has('size')) {
       const closeButton = this.querySelector(selectorCloseButton);
       if (closeButton) {
-        (closeButton as DDSExpressiveModalCloseButton).size = size;
+        (closeButton as C4DExpressiveModalCloseButton).size = size;
       }
     }
     if (changedProperties.has('open')) {
@@ -462,16 +481,21 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
         this.ownerDocument.body.style.overflow = 'hidden';
         this.removeAttribute('aria-hidden');
         this._launcher = this.ownerDocument!.activeElement;
-        const primaryFocusNode = this.querySelector((this.constructor as typeof DDSExpressiveModal).selectorPrimaryFocus);
         await this._waitForTransitionEnd();
+        const primaryFocusNode = this.querySelector(
+          (this.constructor as typeof C4DExpressiveModal).selectorPrimaryFocus
+        );
         if (primaryFocusNode) {
-          // For cases where a `carbon-web-components` component (e.g. `<bx-btn>`) being `primaryFocusNode`,
-          // where its first update/render cycle that makes it focusable happens after `<bx-modal>`'s first update/render cycle
+          // For cases where a `carbon-web-components` component (e.g. `<cds-btn>`) being `primaryFocusNode`,
+          // where its first update/render cycle that makes it focusable happens after `<cds-modal>`'s first update/render cycle
           (primaryFocusNode as HTMLElement).focus();
         } else {
           tryFocusElems(focusableElements as [HTMLElement], true, this);
         }
-      } else if (this._launcher && typeof (this._launcher as HTMLElement).focus === 'function') {
+      } else if (
+        this._launcher &&
+        typeof (this._launcher as HTMLElement).focus === 'function'
+      ) {
         (this._launcher as HTMLElement).focus();
         this.ownerDocument.body.style.overflow = '';
         this._launcher = null;
@@ -485,7 +509,7 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * A selector selecting buttons that should close this modal.
    */
   static get selectorCloseButton() {
-    return `[data-modal-close],${prefix}-modal-close-button,${ddsPrefix}-expressive-modal-close-button`;
+    return `[data-modal-close],${prefix}-modal-close-button,${c4dPrefix}-expressive-modal-close-button`;
   }
 
   /**
@@ -494,9 +518,9 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
   static get selectorTabbable() {
     return `
       ${selectorTabbable},
-      ${ddsPrefix}-button-expressive,
-      ${ddsPrefix}-expressive-modal,
-      ${ddsPrefix}-expressive-modal-close-button
+      ${c4dPrefix}-button,
+      ${c4dPrefix}-expressive-modal,
+      ${c4dPrefix}-expressive-modal-close-button
     `;
   }
 
@@ -506,13 +530,12 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
   static get selectorPrimaryFocus() {
     return `
       [data-modal-primary-focus],
-      ${ddsPrefix}-expressive-modal-footer ${prefix}-btn[kind="primary"],
-      ${ddsPrefix}-expressive-modal-footer ${ddsPrefix}-button-expressive[kind="primary"]
+      ${c4dPrefix}-expressive-modal-footer ${c4dPrefix}-button[kind="primary"]
     `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--expressive-modal`;
+    return `${c4dPrefix}--expressive-modal`;
   }
 
   /**
@@ -520,18 +543,64 @@ class DDSExpressiveModal extends StableSelectorMixin(HostListenerMixin(LitElemen
    * Cancellation of this event stops the user-initiated action of closing this modal.
    */
   static get eventBeforeClose() {
-    return `${ddsPrefix}-expressive-modal-beingclosed`;
+    return `${c4dPrefix}-expressive-modal-beingclosed`;
   }
 
   /**
    * The name of the custom event fired after this modal is closed upon a user gesture.
    */
   static get eventClose() {
-    return `${ddsPrefix}-expressive-modal-closed`;
+    return `${c4dPrefix}-expressive-modal-closed`;
+  }
+
+  /**
+   * Tries to focus on the given elements and bails out if one of the is successful.
+   *
+   * @param elems The elements.
+   * @param reverse `true` to go through the list in reverse order.
+   * @param fallback element to focus on if none
+   * @returns `true` if one of the attempts is successful, `false` otherwise.
+   */
+  static tryFocusElems(
+    elems: NodeListOf<HTMLElement> | [HTMLElement],
+    reverse = false,
+    fallback: HTMLElement | null = null
+  ) {
+    if (!reverse) {
+      for (let i = 0; i < elems.length; ++i) {
+        const elem = elems[i];
+        if (
+          elem.offsetWidth ||
+          elem.offsetHeight ||
+          elem.getClientRects().length
+        ) {
+          elem.focus();
+          if ((elem.getRootNode() as Document).activeElement === elem) {
+            return true;
+          }
+        }
+      }
+    } else {
+      for (let i = elems.length - 1; i >= 0; --i) {
+        const elem = elems[i];
+        if (
+          elem.offsetWidth ||
+          elem.offsetHeight ||
+          elem.getClientRects().length
+        ) {
+          elem.focus();
+          if ((elem.getRootNode() as Document).activeElement === elem) {
+            return true;
+          }
+        }
+      }
+    }
+    fallback?.focus();
+    return false;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSExpressiveModal;
+export default C4DExpressiveModal;

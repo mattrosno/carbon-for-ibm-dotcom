@@ -1,19 +1,20 @@
-import { Preview, Props, Description, Story } from '@storybook/addon-docs/blocks';
+import {
+  Preview,
+  Props,
+  Description,
+  Story,
+} from '@storybook/addon-docs/blocks';
 import '../index';
 import contributing from '../../../../../../docs/contributing-license.md';
 import { cdnJs, cdnCss } from '../../../globals/internal/storybook-cdn';
 
-
-
-
-
 # Filter Panel
 
 > 💡 Check our
-> [CodeSandbox](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/filter-panel)
+> [Stackblitz](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/filter-panel)
 > example implementation.
 
-[![Edit @carbon/ibmdotcom-web-components](https://codesandbox.io/static/img/play-codesandbox.svg)](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/filter-panel)
+[![Edit @carbon/ibmdotcom-web-components](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/filter-panel)
 
 ## Getting started
 
@@ -23,7 +24,6 @@ Here's a quick example to get you started.
 
 ```javascript
 import '@carbon/ibmdotcom-web-components/es/components/filter-panel/index.js';
-
 ```
 
 <Description markdown={`${cdnJs({ components: ['filter-panel'] })}`} />
@@ -33,92 +33,147 @@ import '@carbon/ibmdotcom-web-components/es/components/filter-panel/index.js';
 ### HTML
 
 ```html
-      <dds-filter-panel-composite>
-        <dds-filter-panel-heading slot="heading">Filter</dds-filter-panel-heading>
-        <dds-filter-group>
-          <dds-filter-group-item title-text="Product types">
-            <dds-filter-panel-checkbox value="API">API</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Application">Application</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Data Set">Data Set</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Free Trial">Free Trial</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Hardware">Hardware</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Service">Service</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Service Assets">Service Assets</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="Software">Software</dds-filter-panel-checkbox>
-          </dds-filter-group-item>
-          <dds-filter-group-item title-text="Technologies">
-            <dds-filter-panel-input-select header-value="Analytics" title="Analytics"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Artificial intelligence" title="Artificial intelligence">
-              <dds-filter-panel-input-select-item value="Machine Learning">Machine Learning</dds-filter-panel-input-select-item>
-              <dds-filter-panel-input-select-item value="Natural language processing">Natural language processing</dds-filter-panel-input-select-item>
-              <dds-filter-panel-input-select-item value="Speech recognition">Speech recognition</dds-filter-panel-input-select-item>
-            </dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Automation" title="Automation"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Blockchain" title="Blockchain"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Cloud computing" title="Cloud computing"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="IT infrastructure" title="IT infrastructure"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="IT management" title="IT management"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Mobile technologys" title="Mobile technology"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Security" title="Security"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Software development" title="Software development"></dds-filter-panel-input-select>
-          </dds-filter-group-item>
-          <dds-filter-group-item title-text="Business needs">
-            <dds-filter-panel-input-select header-value="Business operations" title="Business operations"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Content Management" title="Content Management"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Customer service" title="Customer service"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Finance" title="Finance"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Marketing and sales" title="Marketing and sales"></dds-filter-panel-input-select>
-            <dds-filter-panel-input-select header-value="Supply chain management" title="Supply chain management"></dds-filter-panel-input-select>
-          </dds-filter-group-item>
-          <dds-filter-group-item title-text="Deployment types">
-            <dds-filter-panel-checkbox value="On-premises">On-premises</dds-filter-panel-checkbox>
-            <dds-filter-panel-checkbox value="SaaS">SaaS</dds-filter-panel-checkbox>
-          </dds-filter-group-item>
-        </dds-filter-group>
-      </dds-filter-panel-composite>
+<c4d-filter-panel-composite>
+  <c4d-filter-panel-heading slot="heading">Filter</c4d-filter-panel-heading>
+  <c4d-filter-group>
+    <c4d-filter-group-item title="Product types">
+      <c4d-filter-panel-checkbox value="API">API</c4d-filter-panel-checkbox>
+      <c4d-filter-panel-checkbox value="Application"
+        >Application</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Data Set"
+        >Data Set</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Free Trial"
+        >Free Trial</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Hardware"
+        >Hardware</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Service"
+        >Service</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Service Assets"
+        >Service Assets</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="Software"
+        >Software</c4d-filter-panel-checkbox
+      >
+    </c4d-filter-group-item>
+    <c4d-filter-group-item title="Technologies">
+      <c4d-filter-panel-input-select
+        header-value="Analytics"
+        title="Analytics"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Artificial intelligence"
+        title="Artificial intelligence">
+        <c4d-filter-panel-input-select-item value="Machine Learning"
+          >Machine Learning</c4d-filter-panel-input-select-item
+        >
+        <c4d-filter-panel-input-select-item value="Natural language processing"
+          >Natural language processing</c4d-filter-panel-input-select-item
+        >
+        <c4d-filter-panel-input-select-item value="Speech recognition"
+          >Speech recognition</c4d-filter-panel-input-select-item
+        >
+      </c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Automation"
+        title="Automation"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Blockchain"
+        title="Blockchain"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Cloud computing"
+        title="Cloud computing"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="IT infrastructure"
+        title="IT infrastructure"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="IT management"
+        title="IT management"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Mobile technologys"
+        title="Mobile technology"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Security"
+        title="Security"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Software development"
+        title="Software development"></c4d-filter-panel-input-select>
+    </c4d-filter-group-item>
+    <c4d-filter-group-item title="Business needs">
+      <c4d-filter-panel-input-select
+        header-value="Business operations"
+        title="Business operations"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Content Management"
+        title="Content Management"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Customer service"
+        title="Customer service"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Finance"
+        title="Finance"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Marketing and sales"
+        title="Marketing and sales"></c4d-filter-panel-input-select>
+      <c4d-filter-panel-input-select
+        header-value="Supply chain management"
+        title="Supply chain management"></c4d-filter-panel-input-select>
+    </c4d-filter-group-item>
+    <c4d-filter-group-item title="Deployment types">
+      <c4d-filter-panel-checkbox value="On-premises"
+        >On-premises</c4d-filter-panel-checkbox
+      >
+      <c4d-filter-panel-checkbox value="SaaS">SaaS</c4d-filter-panel-checkbox>
+    </c4d-filter-group-item>
+  </c4d-filter-group>
+</c4d-filter-panel-composite>
 ```
 
-## `<dds-filter-panel-composite>` attributes and properties
+## `<c4d-filter-panel-composite>` attributes and properties
 
-<Props of="dds-filter-panel-composite" />
+<Props of="c4d-filter-panel-composite" />
 
-## `<dds-filter-group-item>` attributes and properties
+## `<c4d-filter-group-item>` attributes and properties
 
-<Props of="dds-filter-group-item" />
+<Props of="c4d-filter-group-item" />
 
-## `<dds-filter-panel-checkbox>` attributes and properties
+## `<c4d-filter-panel-checkbox>` attributes and properties
 
-<Props of="dds-filter-panel-checkbox" />
+<Props of="c4d-filter-panel-checkbox" />
 
-## `<dds-filter-panel-heading>` attributes and properties
+## `<c4d-filter-panel-heading>` attributes and properties
 
-<Props of="dds-filter-panel-heading" />
+<Props of="c4d-filter-panel-heading" />
 
-## `<dds-filter-panel-input-select-item>` attributes and properties
+## `<c4d-filter-panel-input-select-item>` attributes and properties
 
-<Props of="dds-filter-panel-input-select-item" />
+<Props of="c4d-filter-panel-input-select-item" />
 
-## `<dds-filter-panel-input-select>` attributes and properties
+## `<c4d-filter-panel-input-select>` attributes and properties
 
-<Props of="dds-filter-panel-input-select" />
+<Props of="c4d-filter-panel-input-select" />
 
-## `<dds-filter-panel-modal>` attributes and properties
+## `<c4d-filter-panel-modal>` attributes and properties
 
-<Props of="dds-filter-panel-modal" />
+<Props of="c4d-filter-panel-modal" />
 
-## `<dds-filter-panel>` attributes and properties
+## `<c4d-filter-panel>` attributes and properties
 
-<Props of="dds-filter-panel" />
+<Props of="c4d-filter-panel" />
 
 ## Stable selectors
 
-See [our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components) to see how Web Components selector and `data-autoid` should be used.
+See
+[our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components)
+to see how Web Components selector and `data-autoid` should be used.
 
-| Web Components selector | Compatibility selector         | Description |
-| ----------------------- | ------------------------------ | ----------- |
-| `<dds-filter-panel>`                 | `data-autoid="dds--filter-panel"` | Component   |
-| `<dds-filter-panel-modal>`           | `data-autoid="dds--filter-panel-modal"` | Component   |
-| `<dds-filter-panel-composite>`       | `data-autoid="dds--filter-panel-composite"` | Component   |
-
+| Web Components selector        | Compatibility selector                      | Description |
+| ------------------------------ | ------------------------------------------- | ----------- |
+| `<c4d-filter-panel>`           | `data-autoid="c4d--filter-panel"`           | Component   |
+| `<c4d-filter-panel-modal>`     | `data-autoid="c4d--filter-panel-modal"`     | Component   |
+| `<c4d-filter-panel-composite>` | `data-autoid="c4d--filter-panel-composite"` | Component   |
 
 <Description markdown={contributing} />

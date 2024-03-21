@@ -1,47 +1,46 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
+// @ts-nocheck
 
-import { property, customElement, html } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import PlayVideo from '@carbon/ibmdotcom-styles/icons/svg/play-video.svg';
 import {
   formatVideoCaption,
   formatVideoDuration,
 } from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/formatVideoCaption/formatVideoCaption.js';
-import DDSFeatureCard from '../feature-card/feature-card';
-import CTAMixin from '../../component-mixins/cta/cta';
+import C4DFeatureCard from '../feature-card/feature-card';
+import CTAMixin from '../../component-mixins/cta/cta-v1';
 import VideoCTAMixin from '../../component-mixins/cta/video';
-/* eslint-disable import/no-duplicates */
-import DDSFeatureCTAFooter from './feature-cta-footer';
+import C4DFeatureCTAFooter from './feature-cta-footer';
 import './feature-cta-footer';
-/* eslint-enable import/no-duplicates */
 import { CTA_TYPE } from './defs';
 import styles from './cta.scss';
 
 import '../card/card-eyebrow';
 import '../card/card-heading';
 import '../image/image';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
 export { CTA_TYPE };
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Feature CTA.
  *
- * @element dds-feature-cta
+ * @element c4d-feature-cta
  */
-@customElement(`${ddsPrefix}-feature-cta`)
-class DDSFeatureCTA extends VideoCTAMixin(CTAMixin(DDSFeatureCard)) {
+@customElement(`${c4dPrefix}-feature-cta`)
+class C4DFeatureCTA extends VideoCTAMixin(CTAMixin(C4DFeatureCard)) {
   protected _renderCopy() {
     const {
       ctaType,
@@ -54,7 +53,9 @@ class DDSFeatureCTA extends VideoCTAMixin(CTAMixin(DDSFeatureCard)) {
       return super._renderCopy();
     }
     const caption = formatCaptionInEffect({
-      duration: formatDurationInEffect({ duration: !videoDuration ? videoDuration : videoDuration * 1000 }),
+      duration: formatDurationInEffect({
+        duration: !videoDuration ? videoDuration : videoDuration * 1000,
+      }),
       name: videoName,
     });
 
@@ -73,14 +74,19 @@ class DDSFeatureCTA extends VideoCTAMixin(CTAMixin(DDSFeatureCard)) {
       ctaType !== CTA_TYPE.VIDEO || noPoster
         ? undefined
         : html`
-            <dds-image alt="${ifNonNull(videoName)}" default-src="${ifNonNull(thumbnail || videoThumbnailUrl)}" slot="image">
+            <c4d-image
+              alt="${ifDefined(videoName)}"
+              default-src="${ifDefined(thumbnail || videoThumbnailUrl)}"
+              slot="image">
               ${PlayVideo({ slot: 'icon' })}
-            </dds-image>
+            </c4d-image>
           `;
     return noPoster
       ? undefined
       : html`
-          <slot name="image" @slotchange="${this._handleSlotChange}">${image}</slot>
+          <slot name="image" @slotchange="${this._handleSlotChange}"
+            >${image}</slot
+          >
         `;
   }
 
@@ -147,21 +153,30 @@ class DDSFeatureCTA extends VideoCTAMixin(CTAMixin(DDSFeatureCard)) {
 
   updated(changedProperties) {
     super.updated(changedProperties);
-    const { selectorFooter } = this.constructor as typeof DDSFeatureCTA;
-    if (changedProperties.has('ctaType') || changedProperties.has('videoName') || changedProperties.has('captionHeading')) {
+    const { selectorFooter } = this.constructor as typeof C4DFeatureCTA;
+    if (
+      changedProperties.has('ctaType') ||
+      changedProperties.has('videoName') ||
+      changedProperties.has('captionHeading')
+    ) {
       const { ctaType, videoName, videoDescription } = this;
       const footer = this.querySelector(selectorFooter);
       if (footer) {
-        (footer as DDSFeatureCTAFooter).ctaType = ctaType;
-        (footer as DDSFeatureCTAFooter).altAriaLabel = this.videoName || this.captionHeading;
-        (footer as DDSFeatureCTAFooter).videoName = videoName;
-        (footer as DDSFeatureCTAFooter).videoDescription = videoDescription;
+        (footer as C4DFeatureCTAFooter).ctaType = ctaType;
+        (footer as C4DFeatureCTAFooter).altAriaLabel =
+          this.videoName || this.captionHeading;
+        (footer as C4DFeatureCTAFooter).videoName = videoName;
+        (footer as C4DFeatureCTAFooter).videoDescription = videoDescription;
       }
     }
     if (changedProperties.has('captionHeading')) {
-      (this.querySelector(
-        (this.constructor as typeof DDSFeatureCTA).selectorHeading
-      ) as HTMLElement)!.innerText = this.captionHeading;
+      const heading = this.querySelector(
+        (this.constructor as typeof C4DFeatureCTA).selectorHeading
+      ) as HTMLElement;
+
+      if (heading) {
+        heading!.innerText = this.captionHeading;
+      }
     }
   }
 
@@ -169,22 +184,27 @@ class DDSFeatureCTA extends VideoCTAMixin(CTAMixin(DDSFeatureCard)) {
    * A selector that will return the child heading.
    */
   static get selectorHeading() {
-    return `${ddsPrefix}-card-heading`;
+    return `${c4dPrefix}-card-heading`;
   }
 
   /**
    * A selector that will return the child footer.
    */
   static get selectorFooter() {
-    return `${ddsPrefix}-feature-cta-footer`;
+    return `${c4dPrefix}-feature-cta-footer`;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--feature-cta`;
+    return `${c4dPrefix}--feature-cta`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
+console.warn(
+  `The c4d-feature-cta component has been deprecated. All its features have been absorbed into
+  the base c4d-feature-card component. See migration guide for more information.`
+);
+
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSFeatureCTA;
+export default C4DFeatureCTA;

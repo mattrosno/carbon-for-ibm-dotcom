@@ -1,23 +1,23 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html, state, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { TemplateResult, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
 
 import styles from './cta-block.scss';
-import DDSContentBlock from '../content-block/content-block';
+import C4DContentBlock from '../content-block/content-block';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * The table mapping slot name with the private property name that indicates the existence of the slot content.
@@ -30,12 +30,12 @@ const slotExistencePropertyNames = {
 /**
  * The CTA BLOCK pattern
  *
- * @element dds-cta-block
+ * @element c4d-cta-block
  * @slot heading - The text heading.
  * @slot action - The CTA Buttons.
  */
-@customElement(`${ddsPrefix}-cta-block`)
-class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
+@customElement(`${c4dPrefix}-cta-block`)
+class C4DCTABlock extends StableSelectorMixin(C4DContentBlock) {
   @property({ type: Boolean, attribute: 'no-border', reflect: true })
   _noBorder = false;
 
@@ -56,8 +56,13 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
    */
   updated(changedProperties) {
     if (changedProperties.has('_noBorder')) {
-      const layoutWrapper = (this.shadowRoot as ShadowRoot).querySelector(`.${prefix}--content-layout`);
-      layoutWrapper?.classList.toggle(`${prefix}--content-layout--border`, !this._noBorder);
+      const layoutWrapper = (this.shadowRoot as ShadowRoot).querySelector(
+        `.${prefix}--content-layout`
+      );
+      layoutWrapper?.classList.toggle(
+        `${prefix}--content-layout--border`,
+        !this._noBorder
+      );
     }
   }
 
@@ -81,7 +86,9 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
     }
     const hasContent = (target as HTMLSlotElement)
       .assignedNodes()
-      .some(node => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim());
+      .some(
+        (node) => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim()
+      );
     this[slotExistencePropertyNames[name]] = hasContent;
   }
 
@@ -101,10 +108,17 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
    * @returns The main content.
    */
   protected _renderContent(): TemplateResult | string | void {
-    const { _hasAction, _hasCopy, _hasLinkList, _hasContent, _handleSlotChange } = this;
+    const {
+      _hasAction,
+      _hasCopy,
+      _hasLinkList,
+      _hasContent,
+      _handleSlotChange,
+    } = this;
     const classes = classMap({
       [`${prefix}--helper-wrapper`]: true,
-      [`${prefix}--helper-wrapper--less-space`]: !_hasAction && !_hasCopy && !_hasLinkList,
+      [`${prefix}--helper-wrapper--less-space`]:
+        !_hasAction && !_hasCopy && !_hasLinkList,
     });
     return html`
       <div ?hidden="${!_hasContent}" class="${classes}">
@@ -122,7 +136,8 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
     const { _hasCopy, _hasAction, _hasLinkList, _hasContent } = this;
     const classes = classMap({
       [`${prefix}--content-layout__body`]: true,
-      [`${prefix}--content-layout__body--tight`]: !_hasCopy && !_hasAction && (_hasLinkList || _hasContent),
+      [`${prefix}--content-layout__body--tight`]:
+        !_hasCopy && !_hasAction && (_hasLinkList || _hasContent),
     });
 
     return html`
@@ -148,7 +163,7 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
    * @returns The main content.
    */
   protected _renderInnerBody(): TemplateResult | string | void {
-    // Note: The media content in `<dds-cta-section>` is not supported at the time of writing this code
+    // Note: The media content in `<c4d-cta-section>` is not supported at the time of writing this code
     return html`
       ${this._renderActions()}${this._renderLinkList()}${this._renderContent()}
     `;
@@ -158,20 +173,28 @@ class DDSCTABlock extends StableSelectorMixin(DDSContentBlock) {
    * @returns The link list content.
    */
   protected _renderLinkList(): TemplateResult | string | void {
-    const { _hasLinkList: hasLinkList, _handleSlotChange: handleSlotChange } = this;
+    const { _hasLinkList: hasLinkList, _handleSlotChange: handleSlotChange } =
+      this;
     return html`
-      <div ?hidden="${!hasLinkList}" class="${prefix}--content-layout__link-list">
+      <div
+        ?hidden="${!hasLinkList}"
+        class="${prefix}--content-layout__link-list">
         <slot name="link-list" @slotchange="${handleSlotChange}"></slot>
       </div>
     `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--cta-block`;
+    return `${c4dPrefix}--cta-block`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
+console.warn(
+  'The cta-block component has been deprecated in favor of the content-section/block and content-item components. ' +
+    'See content-section/block and content-items documentation for more information.'
+);
+
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSCTABlock;
+export default C4DCTABlock;

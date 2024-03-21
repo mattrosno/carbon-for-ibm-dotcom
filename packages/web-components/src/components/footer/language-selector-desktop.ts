@@ -1,33 +1,33 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { property, customElement, query, state } from 'lit-element';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
-import BXComboBoxItem from 'carbon-web-components/es/components/combo-box/combo-box-item.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { property, query, state } from 'lit/decorators.js';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
+import CDSComboBoxItem from '../../internal/vendor/@carbon/web-components/components/combo-box/combo-box-item.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import { LANGUAGE_SELECTOR_STYLE_SCHEME } from './defs';
-import DDSComboBox, { DROPDOWN_SIZE } from './combo-box';
+import C4DComboBox from './combo-box';
 import styles from './footer.scss';
 import { findIndex, forEach } from '../../globals/internal/collection-helpers';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * Language selector component - desktop.
  * The API for language selection is still subject to change.
  *
- * @element dds-language-selector-desktop
- * @internal
+ * @element c4d-language-selector-desktop
  */
-@customElement(`${ddsPrefix}-language-selector-desktop`)
-class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
+@customElement(`${c4dPrefix}-language-selector-desktop`)
+class C4DLanguageSelectorDesktop extends HostListenerMixin(C4DComboBox) {
   /**
    * Property that saves the last valid language to use on reset cases.
    */
@@ -38,7 +38,7 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
    * The `<input>` for filtering.
    */
   @query('input')
-  private _filterInputNode!: HTMLInputElement;
+  protected _filterInputNode!: HTMLInputElement;
 
   /**
    * Reverts input value to last chosen valid language.
@@ -60,11 +60,17 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
    * Highlights and scrolls into the view the matched item.
    */
   protected _handleInput() {
-    const items = this.querySelectorAll((this.constructor as typeof DDSComboBox).selectorItem);
-    const index = !this._filterInputNode.value ? -1 : findIndex(items, this._testItemWithQueryText, this);
+    const items = this.querySelectorAll(
+      (this.constructor as typeof C4DComboBox).selectorItem
+    );
+    const index = !this._filterInputNode.value
+      ? -1
+      : findIndex(items, this._testItemWithQueryText, this);
     forEach(items, (item, i) => {
-      if (i === index) item.scrollIntoView();
-      (item as BXComboBoxItem).highlighted = i === index;
+      if (i === index) {
+        item.scrollIntoView();
+      }
+      (item as CDSComboBoxItem).highlighted = i === index;
     });
     const { _filterInputNode: filterInput } = this;
     this._filterInputValue = !filterInput ? '' : filterInput.value;
@@ -77,10 +83,15 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
    * Also saves the current valid language.
    */
   protected _handleUserInitiatedClearInput() {
-    forEach(this.querySelectorAll((this.constructor as typeof DDSComboBox).selectorItem), item => {
-      (item as BXComboBoxItem).highlighted = false;
-      (item as BXComboBoxItem).selected = false;
-    });
+    forEach(
+      this.querySelectorAll(
+        (this.constructor as typeof C4DComboBox).selectorItem
+      ),
+      (item) => {
+        (item as CDSComboBoxItem).highlighted = false;
+        (item as CDSComboBoxItem).selected = false;
+      }
+    );
     this._lastValidLang = this._filterInputValue;
     this._filterInputValue = '';
     this._filterInputNode.focus();
@@ -93,7 +104,7 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
    *
    * @param item that was selected
    */
-  protected _handleUserInitiatedSelectItem(item?: BXComboBoxItem) {
+  protected _handleUserInitiatedSelectItem(item?: CDSComboBoxItem) {
     if (item && !this._selectionShouldChange(item)) {
       // Escape hatch for `shouldUpdate()` logic that updates `._filterInputValue()` when selection changes,
       // given we want to update the `<input>` and close the dropdown even if selection doesn't update.
@@ -108,17 +119,9 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
       this.requestUpdate();
     }
     this._lastValidLang = item?.textContent as string;
-    (item as BXComboBoxItem).selected = true;
+    (item as CDSComboBoxItem).selected = true;
     super._handleUserInitiatedSelectItem(item);
   }
-
-  /**
-   * Property that specifies the ComboBox to have size xl
-   *
-   * @internal
-   */
-  @property()
-  size = DROPDOWN_SIZE.EXTRA_LARGE;
 
   /**
    * Size property to apply different styles.
@@ -132,9 +135,8 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
   @property({ reflect: true })
   slot = 'language-selector';
 
-  // @ts-ignore
   updated(changedProperties) {
-    super.updated();
+    super.updated(changedProperties);
     if (changedProperties.has('value')) {
       this._lastValidLang = this.value;
     }
@@ -143,4 +145,4 @@ class DDSLanguageSelectorDesktop extends HostListenerMixin(DDSComboBox) {
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
-export default DDSLanguageSelectorDesktop;
+export default C4DLanguageSelectorDesktop;

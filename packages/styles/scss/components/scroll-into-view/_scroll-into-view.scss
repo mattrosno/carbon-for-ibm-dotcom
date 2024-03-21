@@ -1,83 +1,87 @@
 /**
- * Copyright IBM Corp. 2016, 2021
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import '../../globals/vars';
-@import '../../globals/imports';
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/motion' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '../../globals/vars' as *;
 
-:root {
-  --#{$dds-prefix}--fade-in-out-delay: 0s;
-}
+@mixin scroll-into-view {
+  :root {
+    --#{$c4d-prefix}--fade-in-out-delay: 0s;
+  }
 
-$dds--slide-distance: $carbon--layout-03;
+  $cds--slide-distance: $spacing-07;
 
-.#{$prefix}--fade-in {
-  transition-timing-function: carbon--motion(entrance, expressive);
-  transition-duration: $duration--slow-01;
-  transition-delay: var(--#{$dds-prefix}--fade-in-out-delay);
-  opacity: 1;
-}
-
-.#{$prefix}--fade-out {
-  opacity: 0;
-}
-
-.#{$prefix}--slide {
-  &-in {
-    position: relative;
-    top: 0;
-    left: 0;
+  .#{$prefix}--fade-in {
     opacity: 1;
-
-    transition-timing-function: carbon--motion(entrance, expressive);
-    transition-duration: $duration--slow-01;
-    transition-delay: var(--#{$dds-prefix}--fade-in-out-delay);
+    transition-delay: var(--#{$c4d-prefix}--fade-in-out-delay);
+    transition-duration: $duration-slow-01;
+    transition-timing-function: motion(entrance, expressive);
   }
 
-  &-up {
-    top: $dds--slide-distance;
+  .#{$prefix}--fade-out {
     opacity: 0;
   }
 
-  &-up-right {
-    top: $dds--slide-distance;
-    left: -$dds--slide-distance;
-    opacity: 0;
-  }
+  .#{$prefix}--slide {
+    &-in {
+      position: relative;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      opacity: 1;
+      transition-delay: var(--#{$c4d-prefix}--fade-in-out-delay);
+      transition-duration: $duration-slow-01;
 
-  &-right {
-    left: -$dds--slide-distance;
-    opacity: 0;
-  }
+      transition-timing-function: motion(entrance, expressive);
+    }
 
-  &-down-right {
-    top: -$dds--slide-distance;
-    left: -$dds--slide-distance;
-    opacity: 0;
-  }
+    &-up {
+      inset-block-start: $cds--slide-distance;
+      opacity: 0;
+    }
 
-  &-down {
-    top: -$dds--slide-distance;
-    opacity: 0;
-  }
+    &-up-right {
+      inset-block-start: $cds--slide-distance;
+      inset-inline-start: -$cds--slide-distance;
+      opacity: 0;
+    }
 
-  &-down-left {
-    top: -$dds--slide-distance;
-    left: $dds--slide-distance;
-    opacity: 0;
-  }
+    &-right {
+      inset-inline-start: -$cds--slide-distance;
+      opacity: 0;
+    }
 
-  &-left {
-    left: $dds--slide-distance;
-    opacity: 0;
-  }
+    &-down-right {
+      inset-block-start: -$cds--slide-distance;
+      inset-inline-start: -$cds--slide-distance;
+      opacity: 0;
+    }
 
-  &-up-left {
-    top: $dds--slide-distance;
-    left: $dds--slide-distance;
-    opacity: 0;
+    &-down {
+      inset-block-start: -$cds--slide-distance;
+      opacity: 0;
+    }
+
+    &-down-left {
+      inset-block-start: -$cds--slide-distance;
+      inset-inline-start: $cds--slide-distance;
+      opacity: 0;
+    }
+
+    &-left {
+      inset-inline-start: $cds--slide-distance;
+      opacity: 0;
+    }
+
+    &-up-left {
+      inset-block-start: $cds--slide-distance;
+      inset-inline-start: $cds--slide-distance;
+      opacity: 0;
+    }
   }
 }

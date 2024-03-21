@@ -3,16 +3,12 @@ import markdownContents from '../../../../docs/markdown-contents.md';
 import contributing from '../../../../../../docs/contributing-license.md';
 import { cdnJs, cdnCss } from '../../../globals/internal/storybook-cdn';
 
-
-
-
-
-# `<dds-cta-block>`
+# `<c4d-cta-block>`
 
 > 💡 Check our
-> [CodeSandbox](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/cta-block)
+> [Stackblitz](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/cta-block)
 > example implementation.
-> [![Edit @carbon/ibmdotcom-web-components](https://codesandbox.io/static/img/play-codesandbox.svg)](https://githubbox.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/codesandbox/components/cta-block)
+> [![Edit @carbon/ibmdotcom-web-components](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components/examples/stackblitz/components/cta-block)
 
 ## Getting started
 
@@ -34,96 +30,121 @@ import '@carbon/ibmdotcom-web-components/es/components/link-list/index.js';
 ### HTML
 
 ```html
-<dds-cta-block no-border>
-  <dds-content-block-heading>DDS Content Block Heading</dds-content-block-heading>
-  <dds-content-block-copy>DDS Content Block Copy</dds-content-block-copy>
+<c4d-cta-block no-border>
+  <c4d-content-block-heading
+    >C4D Content Block Heading</c4d-content-block-heading
+  >
+  <c4d-content-block-copy>C4D Content Block Copy</c4d-content-block-copy>
 
-  <dds-button-group slot="action">
-    <dds-button-group-item href="https://example.com">
+  <c4d-button-group slot="action">
+    <c4d-button-group-item href="https://example.com">
       Secondary Button
-    </dds-button-group-item>
-    <dds-button-group-item ref="https://example.com">
+    </c4d-button-group-item>
+    <c4d-button-group-item ref="https://example.com">
       Primary button
-    </dds-button-group-item>
-  </dds-button-group>
+    </c4d-button-group-item>
+  </c4d-button-group>
 
-  <dds-cta-block-item-row>
-    <dds-cta-block-item>
-      <dds-content-item-heading>Get connected</dds-content-item-heading>
-      <dds-content-item-copy
-        >IBM DevOps partners have a wide range of expertise. Find one to build that right solution for you.</dds-content-item-copy
+  <c4d-cta-block-item-row>
+    <c4d-cta-block-item>
+      <c4d-content-item-heading>Get connected</c4d-content-item-heading>
+      <c4d-content-item-copy
+        >IBM DevOps partners have a wide range of expertise. Find one to build
+        that right solution for you.</c4d-content-item-copy
       >
-      <dds-text-cta slot="footer" cta-type="local" icon-placement="right" href="example.com">Find a partner</dds-text-cta>
-    </dds-cta-block-item>
+      <c4d-text-cta
+        slot="footer"
+        cta-type="local"
+        icon-placement="right"
+        href="example.com"
+        >Find a partner</c4d-text-cta
+      >
+    </c4d-cta-block-item>
 
-    <dds-cta-block-item>
-      <dds-content-item-heading>Learn how</dds-content-item-heading>
-      <dds-content-item-copy>Dig into more self-directed larning about DevOps methodologies.</dds-content-item-copy>
-      <dds-text-cta slot="footer" cta-type="local" icon-placement="right" href="example.com">Browse tutorials</dds-text-cta>
-    </dds-cta-block-item>
+    <c4d-cta-block-item>
+      <c4d-content-item-heading>Learn how</c4d-content-item-heading>
+      <c4d-content-item-copy
+        >Dig into more self-directed larning about DevOps
+        methodologies.</c4d-content-item-copy
+      >
+      <c4d-text-cta
+        slot="footer"
+        cta-type="local"
+        icon-placement="right"
+        href="example.com"
+        >Browse tutorials</c4d-text-cta
+      >
+    </c4d-cta-block-item>
 
-    <dds-cta-block-item>
-      <dds-content-item-heading>Learn how</dds-content-item-heading>
-      <dds-content-item-copy>Dig into more self-directed larning about DevOps methodologies.</dds-content-item-copy>
-      <dds-text-cta slot="footer" cta-type="local" icon-placement="right" href="example.com">Browse tutorials</dds-text-cta>
-    </dds-cta-block-item>
-  </dds-cta-block-item-row>
-</dds-cta-block>
+    <c4d-cta-block-item>
+      <c4d-content-item-heading>Learn how</c4d-content-item-heading>
+      <c4d-content-item-copy
+        >Dig into more self-directed larning about DevOps
+        methodologies.</c4d-content-item-copy
+      >
+      <c4d-text-cta
+        slot="footer"
+        cta-type="local"
+        icon-placement="right"
+        href="example.com"
+        >Browse tutorials</c4d-text-cta
+      >
+    </c4d-cta-block-item>
+  </c4d-cta-block-item-row>
+</c4d-cta-block>
 ```
 
 ### With link list
 
 ```html
-<dds-cta-block>
-  <dds-content-block-heading>DDS Content Block Heading</dds-content-block-heading>
-  <dds-content-block-copy>DDS Content Block Copy</dds-content-block-copy>
+<c4d-cta-block>
+  <c4d-content-block-heading
+    >C4D Content Block Heading</c4d-content-block-heading
+  >
+  <c4d-content-block-copy>C4D Content Block Copy</c4d-content-block-copy>
 
-  <dds-button-group slot="action">
-    <dds-button-group-item target="${target}" href="https://example.com">
+  <c4d-button-group slot="action">
+    <c4d-button-group-item target="${target}" href="https://example.com">
       Secondary Button
-    </dds-button-group-item>
-    <dds-button-group-item target="${target}" href="https://example.com">
+    </c4d-button-group-item>
+    <c4d-button-group-item target="${target}" href="https://example.com">
       Primary button
-    </dds-button-group-item>
-  </dds-button-group>
+    </c4d-button-group-item>
+  </c4d-button-group>
 
-  <dds-link-list slot="link-list" type="end">
-    <dds-link-list-heading>More ways to explore DevOps</dds-link-list-heading>
-    <dds-link-list-item href="https://example.com">
-      Events
-    </dds-link-list-item>
-    <dds-link-list-item href="https://example.com">
-      Blogs
-    </dds-link-list-item>
-    <dds-link-list-item href="https://example.com">
+  <c4d-link-list slot="link-list" type="end">
+    <c4d-link-list-heading>More ways to explore DevOps</c4d-link-list-heading>
+    <c4d-link-list-item href="https://example.com"> Events </c4d-link-list-item>
+    <c4d-link-list-item href="https://example.com"> Blogs </c4d-link-list-item>
+    <c4d-link-list-item href="https://example.com">
       Training
-    </dds-link-list-item>
-    <dds-link-list-item href="https://example.com">
+    </c4d-link-list-item>
+    <c4d-link-list-item href="https://example.com">
       Developer resources
-    </dds-link-list-item>
-    <dds-link-list-item href="https://example.com">
+    </c4d-link-list-item>
+    <c4d-link-list-item href="https://example.com">
       Research
-    </dds-link-list-item>
-    <dds-link-list-item href="https://example.com">
-      News
-    </dds-link-list-item>
-  </dds-link-list>
-</dds-cta-block>
+    </c4d-link-list-item>
+    <c4d-link-list-item href="https://example.com"> News </c4d-link-list-item>
+  </c4d-link-list>
+</c4d-cta-block>
 ```
 
 ## Props
 
-<Props of="dds-cta-block" />
+<Props of="c4d-cta-block" />
 <Description markdown={markdownContents} />
 
 ## Stable selectors
 
-See [our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components) to see how Web Components selector and `data-autoid` should be used.
+See
+[our README](https://github.com/carbon-design-system/carbon-for-ibm-dotcom/tree/main/packages/web-components#stable-selectors-for-analytics-and-integratione2e-testing-in-web-components)
+to see how Web Components selector and `data-autoid` should be used.
 
 | Web Components selector    | Compatibility selector              | Description |
 | -------------------------- | ----------------------------------- | ----------- |
-| `<dds-cta-block>`          | `data-autoid="dds--cta-block"`      | Component   |
-| `<dds-cta-block-item>`     | `data-autoid="dds--cta-block-item"` | Component   |
-| `<dds-cta-block-item-row>` | `data-autoid="dds--cta-block-row"`  | Component   |
+| `<c4d-cta-block>`          | `data-autoid="c4d--cta-block"`      | Component   |
+| `<c4d-cta-block-item>`     | `data-autoid="c4d--cta-block-item"` | Component   |
+| `<c4d-cta-block-item-row>` | `data-autoid="c4d--cta-block-row"`  | Component   |
 
 <Description markdown={contributing} />

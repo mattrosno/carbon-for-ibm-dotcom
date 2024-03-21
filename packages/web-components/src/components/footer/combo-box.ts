@@ -1,41 +1,51 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2019, 2022
+ * Copyright IBM Corp. 2019, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import settings from 'carbon-components/es/globals/js/settings.js';
-import { TemplateResult } from 'lit-html';
-import { html, property, query, customElement } from 'lit-element';
-import BXComboBoxItem from 'carbon-web-components/es/components/combo-box/combo-box-item.js';
-import Close16 from 'carbon-web-components/es/icons/close/16.js';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { TemplateResult, html } from 'lit';
+import { property, query } from 'lit/decorators.js';
+import CDSComboBoxItem from '../../internal/vendor/@carbon/web-components/components/combo-box/combo-box-item.js';
+import CDSDropdown, {
+  DROPDOWN_KEYBOARD_ACTION,
+  DROPDOWN_TYPE,
+  NAVIGATION_DIRECTION,
+} from '../../internal/vendor/@carbon/web-components/components/dropdown/dropdown.js';
+import Close16 from '../../internal/vendor/@carbon/web-components/icons/close/16.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import { findIndex, forEach } from '../../globals/internal/collection-helpers';
-import DDSDropdown, { DROPDOWN_KEYBOARD_ACTION } from './dropdown';
+import { DROPDOWN_COLOR_SCHEME, DROPDOWN_SIZE } from './defs';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-export { DROPDOWN_COLOR_SCHEME, DROPDOWN_SIZE, DROPDOWN_TYPE } from './dropdown';
+export {
+  DROPDOWN_COLOR_SCHEME,
+  DROPDOWN_KEYBOARD_ACTION,
+  DROPDOWN_SIZE,
+  DROPDOWN_TYPE,
+  NAVIGATION_DIRECTION,
+};
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
-const { prefix } = settings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 /**
  * Combo box.
  *
- * @element dds-combo-box
- * @fires bx-combo-box-beingselected
+ * @element c4d-combo-box
+ * @fires cds-combo-box-beingselected
  *   The custom event fired before a combo box item is selected upon a user gesture.
  *   Cancellation of this event stops changing the user-initiated selection.
- * @fires bx-combo-box-beingtoggled
+ * @fires cds-combo-box-beingtoggled
  *   The custom event fired before the open state of this combo box is toggled upon a user gesture.
  *   Cancellation of this event stops the user-initiated toggling.
- * @fires bx-combo-box-selected - The custom event fired after a combo box item is selected upon a user gesture.
- * @fires bx-combo-box-toggled - The custom event fired after the open state of this combo box is toggled upon a user gesture.
+ * @fires cds-combo-box-selected - The custom event fired after a combo box item is selected upon a user gesture.
+ * @fires cds-combo-box-toggled - The custom event fired after the open state of this combo box is toggled upon a user gesture.
  */
-@customElement(`${ddsPrefix}-combo-box`)
-class DDSComboBox extends DDSDropdown {
+@customElement(`${c4dPrefix}-combo-box`)
+class C4DComboBox extends CDSDropdown {
   /**
    * The text content that should be set to the `<input>` for filtering.
    */
@@ -53,14 +63,17 @@ class DDSComboBox extends DDSDropdown {
    * The `<input>` for filtering.
    */
   @query('input')
-  private _filterInputNode!: HTMLInputElement;
+  protected _filterInputNode!: HTMLInputElement;
 
   /**
    * @param item A combo box item.
    * @returns `true` if the given combo box item matches the query text user types.
    */
   protected _testItemWithQueryText(item) {
-    return (this.itemMatches || this._defaultItemMatches)(item, this._filterInputNode.value);
+    return (this.itemMatches || this._defaultItemMatches)(
+      item,
+      this._filterInputNode.value
+    );
   }
 
   /* eslint-disable class-methods-use-this */
@@ -71,8 +84,13 @@ class DDSComboBox extends DDSDropdown {
    * @param queryText The query text user types.
    * @returns `true` if the given combo box item matches the given query text.
    */
-  protected _defaultItemMatches(item: BXComboBoxItem, queryText: string): boolean {
-    return item.textContent!.toLowerCase().indexOf(queryText.toLowerCase()) >= 0;
+  protected _defaultItemMatches(
+    item: CDSComboBoxItem,
+    queryText: string
+  ): boolean {
+    return (
+      item.textContent!.toLowerCase().indexOf(queryText.toLowerCase()) >= 0
+    );
   }
   /* eslint-enable class-methods-use-this */
 
@@ -80,10 +98,14 @@ class DDSComboBox extends DDSDropdown {
    * Handles `input` event on the `<input>` for filtering.
    */
   protected _handleInput() {
-    const items = this.querySelectorAll((this.constructor as typeof DDSComboBox).selectorItem);
-    const index = !this._filterInputNode.value ? -1 : findIndex(items, this._testItemWithQueryText, this);
+    const items = this.querySelectorAll(
+      (this.constructor as typeof C4DComboBox).selectorItem
+    );
+    const index = !this._filterInputNode.value
+      ? -1
+      : findIndex(items, this._testItemWithQueryText, this);
     forEach(items, (item, i) => {
-      (item as BXComboBoxItem).highlighted = i === index;
+      (item as CDSComboBoxItem).highlighted = i === index;
     });
     const { _filterInputNode: filterInput } = this;
     this._filterInputValue = !filterInput ? '' : filterInput.value;
@@ -101,7 +123,7 @@ class DDSComboBox extends DDSDropdown {
 
   protected _handleKeypressInner(event: KeyboardEvent) {
     const { key } = event;
-    const action = (this.constructor as typeof DDSDropdown).getAction(key);
+    const action = (this.constructor as typeof CDSDropdown).getAction(key);
     const { TRIGGERING } = DROPDOWN_KEYBOARD_ACTION;
     if (
       this._selectionButtonNode?.contains(event.target as Node) &&
@@ -118,16 +140,21 @@ class DDSComboBox extends DDSDropdown {
    * Handles user-initiated clearing the `<input>` for filtering.
    */
   protected _handleUserInitiatedClearInput() {
-    forEach(this.querySelectorAll((this.constructor as typeof DDSComboBox).selectorItem), item => {
-      (item as BXComboBoxItem).highlighted = false;
-    });
+    forEach(
+      this.querySelectorAll(
+        (this.constructor as typeof C4DComboBox).selectorItem
+      ),
+      (item) => {
+        (item as CDSComboBoxItem).highlighted = false;
+      }
+    );
     this._filterInputValue = '';
     this._filterInputNode.focus();
     this.open = false;
     this.requestUpdate();
   }
 
-  protected _handleUserInitiatedSelectItem(item?: BXComboBoxItem) {
+  protected _handleUserInitiatedSelectItem(item?: CDSComboBoxItem) {
     if (item && !this._selectionShouldChange(item)) {
       // Escape hatch for `shouldUpdate()` logic that updates `._filterInputValue()` when selection changes,
       // given we want to update the `<input>` and close the dropdown even if selection doesn't update.
@@ -144,26 +171,30 @@ class DDSComboBox extends DDSDropdown {
     super._handleUserInitiatedSelectItem(item);
   }
 
-  protected _renderTriggerContent(): TemplateResult {
-    const { disabled, triggerContent, _filterInputValue: filterInputValue, _handleInput: handleInput } = this;
+  protected _renderLabel(): TemplateResult {
+    const {
+      disabled,
+      label,
+      _filterInputValue: filterInputValue,
+      _handleInput: handleInput,
+    } = this;
     return html`
       <input
         id="trigger-label"
         class="${prefix}--text-input"
         ?disabled=${disabled}
-        placeholder="${triggerContent}"
+        placeholder="${label}"
         .value=${filterInputValue}
         role="combobox"
         aria-expanded="${this.open}"
         aria-labelledby="assistiveStatus"
         aria-controls="menu-body"
         aria-autocomplete="list"
-        @input=${handleInput}
-      />
+        @input=${handleInput} />
     `;
   }
 
-  protected _renderFollowingTriggerContent(): TemplateResult | void {
+  protected _renderFollowingLabel(): TemplateResult | void {
     const { clearSelectionLabel, _filterInputValue: filterInputValue } = this;
     return filterInputValue.length === 0
       ? undefined
@@ -173,8 +204,7 @@ class DDSComboBox extends DDSDropdown {
             role="button"
             class="${prefix}--list-box__selection"
             tabindex="0"
-            title="${clearSelectionLabel}"
-          >
+            title="${clearSelectionLabel}">
             ${Close16({ 'aria-label': clearSelectionLabel })}
           </div>
         `;
@@ -190,7 +220,7 @@ class DDSComboBox extends DDSDropdown {
    * The custom item matching callback.
    */
   @property({ attribute: false })
-  itemMatches!: (item: BXComboBoxItem, queryText: string) => boolean;
+  itemMatches!: (item: CDSComboBoxItem, queryText: string) => boolean;
 
   shouldUpdate(changedProperties) {
     super.shouldUpdate(changedProperties);
@@ -201,7 +231,8 @@ class DDSComboBox extends DDSDropdown {
     return true;
   }
 
-  updated() {
+  updated(changedProperties) {
+    super.updated(changedProperties);
     const { _listBoxNode: listBoxNode } = this;
     if (listBoxNode) {
       listBoxNode.classList.add(`${prefix}--combo-box`);
@@ -263,4 +294,4 @@ class DDSComboBox extends DDSDropdown {
   }
 }
 
-export default DDSComboBox;
+export default C4DComboBox;

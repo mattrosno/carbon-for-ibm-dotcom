@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,15 +9,18 @@
 
 'use strict';
 
-const svg2js = require('svgo/lib/svgo/svg2js');
 const createSVGResultFromIconDescriptor = require('./svg-result-from-icon-descriptor');
+const path = require('path');
+const svg2js = require('svgo/lib/svgo/svg2js');
 
 /**
  * @param {object} node The node in SVG2JS result.
  * @returns {object} The first `<svg>` in the given SVG2JS result.
  */
 function findRootNode(node) {
-  return node.elem === 'svg' ? node : node.content && node.content.find(item => findRootNode(item));
+  return node.elem === 'svg'
+    ? node
+    : node.content && node.content.find((item) => findRootNode(item));
 }
 
 /**
@@ -44,7 +47,7 @@ function convertAttrs(node) {
     );
   }
   if (content) {
-    result.content = content.map(item => convertAttrs(item));
+    result.content = content.map((item) => convertAttrs(item));
   }
   return result;
 }
@@ -54,21 +57,28 @@ function convertAttrs(node) {
  */
 function svgResultIBMDotcomIconLoader(content) {
   const callback = this.async();
-  svg2js(content, result => {
+  svg2js(content, (result) => {
     const { error: message } = result;
     if (message) {
       callback(new Error(message));
     } else {
       const svgNode = findRootNode(result);
       if (!svgNode) {
-        callback(new Error(`Wrong SVG2JS result found in: ${this.resourcePath}`));
+        callback(
+          new Error(`Wrong SVG2JS result found in: ${this.resourcePath}`)
+        );
       } else {
         callback(
           null,
           `
-          import { svg } from 'lit-html';
-          import spread from 'carbon-web-components/es/globals/directives/spread.js';
-          const svgResultCarbonIcon = ${createSVGResultFromIconDescriptor(convertAttrs(svgNode))};
+          import { svg } from 'lit';
+          import spread from '${path.resolve(
+            __dirname,
+            '../src/internal/vendor/@carbon/web-components/globals/directives/spread'
+          )}';
+          const svgResultCarbonIcon = ${createSVGResultFromIconDescriptor(
+            convertAttrs(svgNode)
+          )};
           export default svgResultCarbonIcon;
         `
         );

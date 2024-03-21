@@ -1,19 +1,21 @@
 /**
-* Copyright IBM Corp. 2016, 2020
+* Copyright IBM Corp. 2016, 2023
 *
 * This source code is licensed under the Apache-2.0 license found in the
 * LICENSE file in the root directory of this source tree.
 */
+
+@use '../../globals/utils/flex-grid' as *;
 
 @mixin content-block-headlines {
   .#{$prefix}--content-block-headlines {
     .#{$prefix}--content-block {
       &__heading,
       &__copy {
-        @include carbon--breakpoint('lg') {
-          @include carbon--make-col-ready;
+        @include breakpoint(lg) {
+          @include make-col-ready;
 
-          @include carbon--make-col(8, 12);
+          @include make-col(8, 12);
 
           @include hang;
         }
@@ -21,94 +23,91 @@
 
       &__copy {
         p {
-          margin-bottom: $carbon--layout-05;
+          margin-block-end: $spacing-10;
 
-          @include carbon--breakpoint('lg') {
-            margin-bottom: $carbon--layout-06;
+          @include breakpoint(lg) {
+            margin-block-end: $spacing-12;
           }
         }
       }
 
-      @include carbon--breakpoint('md') {
-        padding-top: $carbon--spacing-07;
+      @include breakpoint(md) {
+        padding-block-start: $spacing-07;
       }
 
-      @include carbon--breakpoint('lg') {
-        padding-top: $carbon--layout-05;
+      @include breakpoint(lg) {
+        padding-block-start: $spacing-10;
       }
     }
 
     &__container {
-      @include carbon--make-row;
+      @include make-row;
     }
 
     &__row {
-      @include carbon--make-col-ready;
+      @include make-col-ready;
 
       &:last-of-type {
-        margin-bottom: $carbon--spacing-07;
+        margin-block-end: $spacing-07;
 
-        @include carbon--breakpoint('md') {
-          margin-bottom: $carbon--spacing-07;
+        @include breakpoint(md) {
+          margin-block-end: $spacing-07;
         }
 
-        @include carbon--breakpoint('lg') {
-          margin-bottom: $carbon--layout-06;
+        @include breakpoint(lg) {
+          margin-block-end: $spacing-12;
         }
       }
 
-      @include carbon--breakpoint('md') {
-        border-top: 1px solid $ui-03;
+      @include breakpoint(md) {
+        border-block-start: 1px solid $layer-accent-01;
 
-        @include carbon--make-col(12, 12);
+        @include make-col(12, 12);
       }
 
-      @include carbon--breakpoint('lg') {
-        @include carbon--make-col(8, 12);
+      @include breakpoint(lg) {
+        @include make-col(8, 12);
       }
     }
 
     &__item {
       &-container {
-        @include carbon--make-row;
+        @include make-row;
       }
 
-      @include carbon--make-col-ready;
+      @include make-col-ready;
 
-      border-top: 1px solid $ui-03;
-      padding-top: $carbon--spacing-05;
-      padding-bottom: $carbon--spacing-07;
+      border-block-start: 1px solid $layer-accent-01;
+
+      padding-block: $spacing-05 $spacing-07;
 
       h4,
       p {
-        max-width: 90%;
-        color: $text-01;
+        color: $text-primary;
+        max-inline-size: 90%;
       }
 
       p {
-        @include carbon--type-style('body-long-02', true);
+        @include type-style('body-02', true);
 
-        margin: $carbon--spacing-05 0 0;
+        margin: $spacing-05 0 0;
       }
 
       h4 {
-        @include carbon--type-style('display-02', true);
+        @include type-style('display-02', true);
       }
 
       .#{$prefix}--link {
-        margin-top: $carbon--spacing-05;
+        margin-block-start: $spacing-05;
       }
 
-      @include carbon--breakpoint('md') {
-        @include carbon--make-col(4, 8);
+      @include breakpoint(md) {
+        @include make-col(4, 8);
 
-        border-top: none;
-        padding-top: $carbon--spacing-05;
-        padding-bottom: $carbon--layout-05;
+        border-block-start: none;
+
+        padding-block: $spacing-05 $spacing-10;
       }
     }
   }
-}
-@include exports('content-block-headlines') {
-  @include content-block-headlines;
 }

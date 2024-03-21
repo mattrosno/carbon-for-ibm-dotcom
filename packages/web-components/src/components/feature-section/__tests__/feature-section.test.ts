@@ -1,30 +1,32 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2021, 2022
+ * Copyright IBM Corp. 2021, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { render } from 'lit-html';
+import { render } from 'lit/html.js';
 import '../feature-section';
 import { Default } from '../__stories__/feature-section.stories';
 
 const template = (props?) =>
   Default({
-    'dds-feature-section': props,
+    'c4d-feature-section': props,
   });
 
-describe('dds-feature-section', function() {
-  describe('Misc attributes', function() {
-    it('should render with minimum attributes', async function() {
+describe('c4d-feature-section', function () {
+  describe('Misc attributes', function () {
+    it('should render with minimum attributes', async function () {
       render(template(), document.body);
-      await Promise.resolve(); // Update cycle for `<dds-feature-section>`
-      expect(document.body.querySelector('dds-feature-section')).toMatchSnapshot({ mode: 'shadow' });
+      await Promise.resolve(); // Update cycle for `<c4d-feature-section>`
+      expect(
+        document.body.querySelector('c4d-feature-section')
+      ).toMatchSnapshot({ mode: 'shadow' });
     });
 
-    it('should render with various attributes', async function() {
+    it('should render with various attributes', async function () {
       render(
         template({
           mediaAlign: 'right',
@@ -36,12 +38,14 @@ describe('dds-feature-section', function() {
         }),
         document.body
       );
-      await Promise.resolve(); // Update cycle for `<dds-feature-section>`
-      expect(document.body.querySelector('dds-feature-section')).toMatchSnapshot({ mode: 'shadow' });
+      await Promise.resolve(); // Update cycle for `<c4d-feature-section>`
+      expect(
+        document.body.querySelector('c4d-feature-section')
+      ).toMatchSnapshot({ mode: 'shadow' });
     });
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await render(undefined!, document.body);
   });
 });

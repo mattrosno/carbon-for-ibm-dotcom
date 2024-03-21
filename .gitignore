@@ -3,17 +3,13 @@
 packages/*/build/
 packages/*/examples/*/build/
 packages/*/tests/e2e/dist/
+packages/carbon-web-components/scss/
+storybook-static*
 es
 lib
-!packages/eslint-plugin-react-prop-type-comments/lib
-!packages/eslint-plugin-ibmdotcom-import-rules/lib
 dist
 umd
 css
-
-# Netlify deploy folder
-/demo/*
-!/demo/index.html
 
 # Config files
 .npmrc
@@ -29,6 +25,8 @@ logs
 pids
 *.pid
 *.seed
+custom-elements.json
+.env
 
 # Certificates
 *.crt
@@ -53,3 +51,14 @@ package-lock.json
 
 # auto-generated release notes
 TEMP_RELEASENOTES.md
+
+# Yarn
+# https://yarnpkg.com/getting-started/qa/#which-files-should-be-gitignored
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+install-state.gz

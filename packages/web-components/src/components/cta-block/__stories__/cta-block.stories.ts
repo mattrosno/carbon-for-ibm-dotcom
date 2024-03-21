@@ -1,17 +1,17 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import { boolean, number, select } from '@storybook/addon-knobs';
-import ArrowRight20 from 'carbon-web-components/es/icons/arrow--right/20';
-import Launch20 from 'carbon-web-components/es/icons/launch/20';
-import { html } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import ArrowRight20 from '../../../internal/vendor/@carbon/web-components/icons/arrow--right/20';
+import Launch20 from '../../../internal/vendor/@carbon/web-components/icons/launch/20';
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import readme from './README.stories.mdx';
 import styles from './cta-block.stories.scss';
 import textNullable from '../../../../.storybook/knob-text-nullable';
@@ -32,25 +32,37 @@ const iconOptions = {
 };
 
 const renderCTA = {
-  text: renderIcon => html`
-    <dds-text-cta slot="action" cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'} href="https://example.com"
-      >CTA text link</dds-text-cta
+  text: (renderIcon) => html`
+    <c4d-text-cta
+      slot="action"
+      cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'}
+      href="https://example.com"
+      >CTA text link</c4d-text-cta
     >
   `,
-  button: renderIcon => html`
-    <dds-button-cta slot="action" cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'} href="https://example.com"
-      >CTA Button link</dds-button-cta
+  button: (renderIcon) => html`
+    <c4d-button
+      slot="action"
+      cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'}
+      href="https://example.com"
+      >CTA Button link</c4d-button
     >
   `,
   buttonGroup: (renderIcon, target) => html`
-    <dds-button-group slot="action">
-      <dds-button-group-item target="${target}" href="https://example.com">
-        Secondary Button ${renderIcon}
-      </dds-button-group-item>
-      <dds-button-group-item target="${target}" href="https://example.com">
-        Primary button ${renderIcon}
-      </dds-button-group-item>
-    </dds-button-group>
+    <c4d-button-group slot="action">
+      <c4d-button-group-item
+        target="${target}"
+        href="https://example.com"
+        cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'}>
+        Secondary button
+      </c4d-button-group-item>
+      <c4d-button-group-item
+        target="${target}"
+        href="https://example.com"
+        cta-type=${renderIcon === iconMap.Launch20 ? 'external' : 'local'}>
+        Primary button
+      </c4d-button-group-item>
+    </c4d-button-group>
   `,
 };
 
@@ -61,62 +73,73 @@ const ctaTypeOptions = {
 };
 
 const contentItemTextCTA = ({ heading, copy, links }) => html`
-  <dds-cta-block-item>
-    <dds-content-item-heading>${heading}</dds-content-item-heading>
-    <dds-content-item-copy>${copy}</dds-content-item-copy>
+  <c4d-cta-block-item>
+    <c4d-content-item-heading>${heading}</c4d-content-item-heading>
+    <c4d-content-item-copy>${copy}</c4d-content-item-copy>
     ${links.map(
-      elem =>
+      (elem) =>
         html`
-          <dds-text-cta slot="footer" cta-type="local" icon-placement="right" href="${elem.href}">${elem.copy}</dds-text-cta>
+          <c4d-text-cta
+            slot="footer"
+            cta-type="local"
+            icon-placement="right"
+            href="${elem.href}"
+            >${elem.copy}</c4d-text-cta
+          >
         `
     )}
-  </dds-cta-block-item>
+  </c4d-cta-block-item>
 `;
 
 const renderItems = (item, count) => {
   return html`
-    <dds-cta-block-item-row no-border>
+    <c4d-cta-block-item-row no-border>
       ${count.map((_, index) => item({ ...content[index] }))}
-    </dds-cta-block-item-row>
+    </c4d-cta-block-item-row>
   `;
 };
 
-export const Default = args => {
+export const Default = (args) => {
   const { heading, border, copy, renderIcon, cta } = args?.CTABlock ?? {};
   const target = renderIcon === iconMap.Launch20 ? '_blank' : '';
 
-  const headingComponent = document.querySelector('dds-content-block-heading');
+  const headingComponent = document.querySelector('c4d-content-block-heading');
 
   if (headingComponent) {
     headingComponent!.shadowRoot!.innerHTML = heading;
   }
 
   return html`
-    <dds-cta-block ?no-border=${!border}>
-      <dds-content-block-heading>${ifNonNull(heading)}</dds-content-block-heading>
-      <dds-content-block-copy>${copy}</dds-content-block-copy>
+    <c4d-cta-block ?no-border=${!border}>
+      <c4d-content-block-heading
+        >${ifDefined(heading)}</c4d-content-block-heading
+      >
+      <c4d-content-block-copy>${copy}</c4d-content-block-copy>
       ${renderCTA[cta](renderIcon, target)}
-    </dds-cta-block>
+    </c4d-cta-block>
   `;
 };
 
-export const WithContentItems = args => {
+export const WithContentItems = (args) => {
   const { heading, border, copy, renderIcon, cta } = args?.CTABlock ?? {};
   const { contentItemType, contentItemCount } = args?.WithContentItems ?? {};
   const target = renderIcon === iconMap.Launch20 ? '_blank' : '';
 
-  const headingComponent = document.querySelector('dds-content-block-heading');
+  const headingComponent = document.querySelector('c4d-content-block-heading');
 
   if (headingComponent) {
     headingComponent!.shadowRoot!.innerHTML = heading;
   }
 
   return html`
-    <dds-cta-block ?no-border=${!border}>
-      <dds-content-block-heading>${ifNonNull(heading)}</dds-content-block-heading>
-      <dds-content-block-copy>${ifNonNull(copy)}</dds-content-block-copy>
-      ${renderCTA[cta](renderIcon, target)} ${renderItems(contentItemType, contentItemCount)}
-    </dds-cta-block>
+    <c4d-cta-block ?no-border=${!border}>
+      <c4d-content-block-heading
+        >${ifDefined(heading)}</c4d-content-block-heading
+      >
+      <c4d-content-block-copy>${ifDefined(copy)}</c4d-content-block-copy>
+      ${renderCTA[cta](renderIcon, target)}
+      ${renderItems(contentItemType, contentItemCount)}
+    </c4d-cta-block>
   `;
 };
 
@@ -142,45 +165,49 @@ WithContentItems.story = {
   },
 };
 
-export const WithLinkList = args => {
+export const WithLinkList = (args) => {
   const { border, heading, copy, renderIcon, cta } = args?.CTABlock ?? {};
   const target = renderIcon === iconMap.Launch20 ? '_blank' : '';
 
-  const headingComponent = document.querySelector('dds-content-block-heading');
+  const headingComponent = document.querySelector('c4d-content-block-heading');
 
   if (headingComponent) {
     headingComponent!.shadowRoot!.innerHTML = heading;
   }
 
   return html`
-    <dds-cta-block ?no-border=${!border}>
-      <dds-content-block-heading>${ifNonNull(heading)}</dds-content-block-heading>
-      <dds-content-block-copy>${ifNonNull(copy)}</dds-content-block-copy>
+    <c4d-cta-block ?no-border=${!border}>
+      <c4d-content-block-heading
+        >${ifDefined(heading)}</c4d-content-block-heading
+      >
+      <c4d-content-block-copy>${ifDefined(copy)}</c4d-content-block-copy>
 
       ${renderCTA[cta](renderIcon, target)}
 
-      <dds-link-list slot="link-list" type="end">
-        <dds-link-list-heading>More ways to explore DevOps</dds-link-list-heading>
-        <dds-link-list-item href="https://example.com">
+      <c4d-link-list slot="link-list" type="end">
+        <c4d-link-list-heading
+          >More ways to explore DevOps</c4d-link-list-heading
+        >
+        <c4d-link-list-item href="https://example.com">
           Events ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-        <dds-link-list-item href="https://example.com">
+        </c4d-link-list-item>
+        <c4d-link-list-item href="https://example.com">
           Blogs ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-        <dds-link-list-item href="https://example.com">
+        </c4d-link-list-item>
+        <c4d-link-list-item href="https://example.com">
           Training ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-        <dds-link-list-item href="https://example.com">
+        </c4d-link-list-item>
+        <c4d-link-list-item href="https://example.com">
           Developer resources ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-        <dds-link-list-item href="https://example.com">
+        </c4d-link-list-item>
+        <c4d-link-list-item href="https://example.com">
           Research ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-        <dds-link-list-item href="https://example.com">
+        </c4d-link-list-item>
+        <c4d-link-list-item href="https://example.com">
           News ${ArrowRight20({ slot: 'icon' })}
-        </dds-link-list-item>
-      </dds-link-list>
-    </dds-cta-block>
+        </c4d-link-list-item>
+      </c4d-link-list>
+    </c4d-cta-block>
   `;
 };
 
@@ -188,30 +215,30 @@ WithLinkList.story = {
   name: 'With link list',
 };
 
-export const WithinTabs = args => {
+export const WithinTabs = (args) => {
   const { contentItemType, contentItemCount } = args?.WithinTabs ?? {};
 
   return html`
-    <dds-tabs-extended orientation="horizontal">
-      <dds-tab label="Tab 1" selected>
-        <dds-cta-block>
-          <dds-content-block-heading>Tab 1</dds-content-block-heading>
+    <c4d-tabs-extended orientation="horizontal">
+      <c4d-tab label="Tab 1" selected>
+        <c4d-cta-block>
+          <c4d-content-block-heading>Tab 1</c4d-content-block-heading>
           ${renderItems(contentItemType, contentItemCount)}
-        </dds-cta-block>
-      </dds-tab>
-      <dds-tab label="Tab 2">
-        <dds-cta-block>
-          <dds-content-block-heading>Tab 2</dds-content-block-heading>
+        </c4d-cta-block>
+      </c4d-tab>
+      <c4d-tab label="Tab 2">
+        <c4d-cta-block>
+          <c4d-content-block-heading>Tab 2</c4d-content-block-heading>
           ${renderItems(contentItemType, contentItemCount)}
-        </dds-cta-block>
-      </dds-tab>
-      <dds-tab label="Tab 3">
-        <dds-cta-block>
-          <dds-content-block-heading>Tab 3</dds-content-block-heading>
+        </c4d-cta-block>
+      </c4d-tab>
+      <c4d-tab label="Tab 3">
+        <c4d-cta-block>
+          <c4d-content-block-heading>Tab 3</c4d-content-block-heading>
           ${renderItems(contentItemType, contentItemCount)}
-        </dds-cta-block>
-      </dds-tab>
-    </dds-tabs-extended>
+        </c4d-cta-block>
+      </c4d-tab>
+    </c4d-tabs-extended>
   `;
 };
 
@@ -241,15 +268,13 @@ WithinTabs.story = {
 export default {
   title: 'Components/CTA block',
   decorators: [
-    story => html`
+    (story) => html`
       <style>
         ${styles}
       </style>
-      <div class="bx--grid">
-        <div class="bx--row">
-          <div class="bx--col-lg-12 bx--no-gutter">
-            ${story()}
-          </div>
+      <div class="cds--grid">
+        <div class="cds--row">
+          <div class="cds--col-lg-12 cds--no-gutter">${story()}</div>
         </div>
       </div>
     `,
@@ -261,7 +286,8 @@ export default {
         border: boolean('Border', false),
         copy: 'Want to discuss your options with a DevOps expert? Contact our sales team to evaluate your needs.',
         cta: select('CTA type', ctaTypeOptions, ctaTypeOptions['Button group']),
-        renderIcon: iconMap[select(`Icon`, iconOptions, iconOptions['Arrow Right']) ?? 0],
+        renderIcon:
+          iconMap[select(`Icon`, iconOptions, iconOptions['Arrow Right']) ?? 0],
       }),
     },
     ...readme.parameters,

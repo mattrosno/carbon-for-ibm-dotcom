@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ import { createTests, createTestsMobile, selectors } from './_tests';
  * @type {string}
  * @private
  */
-const path = '/iframe.html?id=components-pricing-table--with-subheaders';
+const path = '/iframe.html?id=experimental-pricing-table--with-subheaders';
 
 /**
  * Time to wait for header to transition between sticky/static
@@ -41,8 +41,11 @@ const _tests = (path = path) => [
         });
     });
   },
+  /**
+   * Disabled while exploring potential sticky-header solutions.
+   */
   () => {
-    it('should have stick & unstick on header on scroll', () => {
+    xit('should have stick & unstick on header on scroll', () => {
       let table, header, body;
       cy.visit(path)
         .get(selectors.table)
@@ -81,7 +84,7 @@ const _tests = (path = path) => [
     });
   },
   () => {
-    it('should hide header scroll description when stuck', () => {
+    xit('should hide header scroll description when stuck', () => {
       cy.visit(path)
         .get(selectors.headerCellDescription)
         .should('be.visible')
@@ -97,7 +100,7 @@ const _tests = (path = path) => [
   },
 ];
 
-describe('dds-pricing-table | with subheaders (desktop)', () => {
+describe('cds-pricing-table | with subheaders (desktop)', () => {
   beforeEach(() => {
     cy.viewport(1280, 780);
   });
@@ -105,7 +108,7 @@ describe('dds-pricing-table | with subheaders (desktop)', () => {
   [...createTests(path), ..._tests(path)].forEach(test => test());
 });
 
-describe('dds-pricing-table | with subheaders (mobile)', () => {
+describe('cds-pricing-table | with subheaders (mobile)', () => {
   beforeEach(() => {
     cy.viewport(320, 720);
   });

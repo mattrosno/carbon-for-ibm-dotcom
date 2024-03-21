@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,21 +18,24 @@ const { transformAsync } = require('@babel/core');
 const babelPluginCreateReactCustomElementType = require('../../tools/babel-plugin-create-react-custom-element-type');
 const deepReplace = require('../../../../tasks/deep-replace');
 
-const regexComponentsReactPath = /(@carbon[\\/]ibmdotcom-web-components[\\/]es|packages[\\/]web-components[\\/](es|src))[\\/]components-react[\\/](?!(.*-(composite|container)))(.*?)(\.[jt]sx?)?$/;
+const regexComponentsReactPath =
+  /(@carbon[\\/]ibmdotcom-web-components[\\/]es|packages[\\/]web-components[\\/](es|src))[\\/]components-react[\\/](?!(.*-(composite|container)))(.*?)(\.[jt]sx?)?$/;
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
 const mkdirpAsync = promisify(mkdirp);
 
-const arrayify = value => (Array.isArray(value) ? value : value != null ? [value] : []); // eslint-disable-line no-nested-ternary
-const testMatches = (test, s) => arrayify(test).some(item => item.test && item.test(s));
+const arrayify = (value) =>
+  Array.isArray(value) ? value : value != null ? [value] : []; // eslint-disable-line no-nested-ternary
+const testMatches = (test, s) =>
+  arrayify(test).some((item) => item.test && item.test(s));
 
 const buildCreateReactCustomElementTypeBabelOpts = {
   babelrc: false,
   plugins: [
     ['@babel/plugin-syntax-decorators', { decoratorsBeforeExport: true }],
     '@babel/plugin-syntax-typescript',
-    '@babel/plugin-proposal-nullish-coalescing-operator',
-    '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-transform-nullish-coalescing-operator',
+    '@babel/plugin-transform-optional-chaining',
     babelPluginCreateReactCustomElementType,
   ],
 };
@@ -55,7 +58,7 @@ class CreateReactCustomElementTypeProxyPlugin {
   /**
    * A WebPack resolver plugin that proxies module request for:
    *
-   * * `carbon-web-components/es/components-react/**` to the corresponsing local path in this project
+   * * `@carbon/web-components/es/components-react/**` to the corresponsing local path in this project
    * * `es/components`/`es/globals` to the corresponding source code, given the former may not have been built yet
    * * `{es,src}/components-react/componentname/{defs,*-connect}` to `src/components/componentname/{defs,*-connect}`,
    *   given the former may not have been built yet
@@ -85,9 +88,20 @@ class CreateReactCustomElementTypeProxyPlugin {
         callback();
         return;
       }
-      const src = path.resolve(__dirname, '../../src/components', `${tokens[5]}.ts`);
-      const dst = path.resolve(__dirname, '../../es/components-react', `${tokens[5]}.js`);
-      (process.env.NODE_ENV === 'production' ? Promise.resolve() : buildReactCustomElementTypeOnTheFly(dst, src)).then(() => {
+      const src = path.resolve(
+        __dirname,
+        '../../src/components',
+        `${tokens[5]}.ts`
+      );
+      const dst = path.resolve(
+        __dirname,
+        '../../es/components-react',
+        `${tokens[5]}.js`
+      );
+      (process.env.NODE_ENV === 'production'
+        ? Promise.resolve()
+        : buildReactCustomElementTypeOnTheFly(dst, src)
+      ).then(() => {
         request.path = dst;
         callback();
       }, callback);
@@ -96,9 +110,16 @@ class CreateReactCustomElementTypeProxyPlugin {
 }
 
 module.exports = {
-  stories: ['../../docs/*.mdx', '../../src/**/*.stories.react.tsx', '../../src/**/*.stories.react.mdx'],
+  stories: [
+    '../../docs/*.mdx',
+    '../../src/**/*.stories.react.tsx',
+    '../../src/**/*.stories.react.mdx',
+  ],
   addons,
   framework: '@storybook/react',
+  typescript: {
+    reactDocgen: 'react-docgen-typescript-plugin',
+  },
   managerWebpack,
   webpackFinal(config, mode) {
     const massagedConfig = webpackFinal(config, mode);
@@ -111,18 +132,24 @@ module.exports = {
     if (!massagedConfig.resolve.plugins) {
       massagedConfig.resolve.plugins = [];
     }
-    massagedConfig.resolve.plugins.push(new CreateReactCustomElementTypeProxyPlugin());
-    massagedConfig.module.rules = deepReplace(
-      massagedConfig.module.rules,
-      (value, key) =>
-        key === 'test' && testMatches(value, 'button.stories.mdx') && !testMatches(value, 'button.stories.react.mdx'),
-      value => [...arrayify(value), /\.stories\.react.mdx$/]
+    massagedConfig.resolve.plugins.push(
+      new CreateReactCustomElementTypeProxyPlugin()
     );
     massagedConfig.module.rules = deepReplace(
       massagedConfig.module.rules,
       (value, key) =>
-        key === 'exclude' && testMatches(value, 'button.stories.mdx') && !testMatches(value, 'button.stories.react.mdx'),
-      value => [...arrayify(value), /\.stories\.react.mdx$/]
+        key === 'test' &&
+        testMatches(value, 'button.stories.mdx') &&
+        !testMatches(value, 'button.stories.react.mdx'),
+      (value) => [...arrayify(value), /\.stories\.react.mdx$/]
+    );
+    massagedConfig.module.rules = deepReplace(
+      massagedConfig.module.rules,
+      (value, key) =>
+        key === 'exclude' &&
+        testMatches(value, 'button.stories.mdx') &&
+        !testMatches(value, 'button.stories.react.mdx'),
+      (value) => [...arrayify(value), /\.stories\.react.mdx$/]
     );
     massagedConfig.module.rules.unshift({
       test: /components-react/i,
@@ -133,8 +160,8 @@ module.exports = {
           options: {
             presets: ['@babel/preset-modules', '@babel/preset-react'],
             plugins: [
-              '@babel/plugin-proposal-object-rest-spread',
-              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-object-rest-spread',
+              '@babel/plugin-transform-class-properties',
               [
                 'babel-plugin-react-docgen',
                 {
@@ -155,8 +182,8 @@ module.exports = {
           options: {
             presets: ['@babel/preset-modules', '@babel/preset-react'],
             plugins: [
-              '@babel/plugin-proposal-object-rest-spread',
-              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-object-rest-spread',
+              '@babel/plugin-transform-class-properties',
               [
                 'babel-plugin-react-docgen',
                 {

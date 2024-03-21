@@ -1,43 +1,50 @@
 /**
- * Copyright IBM Corp. 2016, 2022
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import 'carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/themes/mixins';
-@import '../../globals/vars';
-@import '../../globals/imports';
-@import '../../components/image/image';
-@import '../../components/card/index';
-@import '../../globals/utils/aspect-ratio';
-@import '../../globals/utils/hang';
+@use 'sass:map';
+
+@use '@carbon/styles/scss/breakpoint' as *;
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/grid' as *;
+@use '@carbon/styles/scss/motion' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/themes' as *;
+@use '@carbon/styles/scss/type' as *;
+@use '../../globals/utils/flex-grid' as *;
+@use '../../globals/vars' as *;
+@use '../../components/image';
+@use '../../components/card';
+@use '../../globals/utils/aspect-ratio' as *;
+@use '../../globals/utils/hang' as *;
+@use '../../../../web-components/src/components/card/card' as *;
 
 $fcb-large-custom-bp-copy: 992px;
 $fcb-large-custom-bp-nocopy: 752px;
-$fcb-breakpoint-up--lg: map-get(
-    map-get($carbon--grid-breakpoints, 'lg'),
-    'width'
-  ) - carbon--rem(1px);
+$fcb-breakpoint-up--lg: map.get(map.get($grid-breakpoints, 'lg'), 'width') -
+  to-rem(1px);
+
+$feature-flags: (
+  enable-experimental-tile-contrast: true,
+);
 
 @mixin card {
-  @include carbon--breakpoint-down('md') {
-    position: absolute;
-    padding-top: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  @include breakpoint-down(md) {
+    inset: 0;
+    padding-block-start: 0;
   }
 
-  @include carbon--breakpoint('md') {
+  @include breakpoint(md) {
     flex-direction: row;
   }
 
   .#{$prefix}--card__heading,
-  ::slotted(#{$dds-prefix}-card-heading) {
-    margin-bottom: $layout-03;
-    color: $inverse-01;
+  ::slotted(#{$c4d-prefix}-card-heading) {
+    margin-block-end: $spacing-07;
   }
 
   &:focus-within {
@@ -45,20 +52,17 @@ $fcb-breakpoint-up--lg: map-get(
     outline-offset: 0;
 
     &::before {
-      content: '';
-      display: block;
       position: absolute;
       z-index: 1;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border: 2px solid $focus;
-      outline: 1px solid #ffffff;
+      display: block;
+      border: $spacing-01 solid $focus;
+      content: '';
+      inset: -1px;
+      outline: 1px solid $focus-inset;
       outline-offset: -3px;
 
-      @include carbon--breakpoint-down('md') {
-        min-height: 292px;
+      @include breakpoint-down(md) {
+        min-block-size: 292px;
       }
     }
   }
@@ -66,93 +70,126 @@ $fcb-breakpoint-up--lg: map-get(
 
 @mixin feature-card {
   // all feature cards
-  :host(#{$dds-prefix}-feature-card),
-  :host(#{$dds-prefix}-feature-cta),
+  :host(#{$c4d-prefix}-feature-card),
+  :host(#{$c4d-prefix}-feature-cta),
   .#{$prefix}--feature-card-large,
   .#{$prefix}--feature-card {
     position: relative;
+    // breaks on Firefox with `rem` function
+    border-width: 1px;
+    border-style: solid;
+    // avoid shorthand for border to render correctly
+    border-color: $border-subtle-selected;
 
     &:hover {
       ::slotted([slot='image']),
-      #{$dds-prefix}-image,
+      #{$c4d-prefix}-image,
       .#{$prefix}--image {
         &::before {
           opacity: 0.08;
         }
       }
-
-      .#{$prefix}--card__wrapper {
-        background-color: $inverse-hover-ui;
-      }
     }
 
-    @include carbon--breakpoint-down('md') {
-      @include carbon--make-row;
+    &:focus-within {
+      border-color: transparent;
+    }
+
+    @include breakpoint-down(md) {
+      @include make-row;
     }
 
     .#{$prefix}--card__content {
-      transition: background-color $duration--moderate-01
+      transition: background-color $duration-moderate-01
         motion(standard, productive);
     }
 
     ::slotted([slot='image']),
-    #{$dds-prefix}-image,
+    #{$c4d-prefix}-image,
     .#{$prefix}--image {
-      width: 100%;
-      height: aspect-ratio(2, 1);
+      block-size: aspect-ratio(2, 1);
+      inline-size: 100%;
+      @media screen and (prefers-reduced-motion: reduce) {
+        &::before {
+          position: absolute;
+          z-index: 1;
+          block-size: 100%;
+          content: '';
+          inline-size: 100%;
+          inset-block-start: 0;
+          inset-inline-start: 0;
+          opacity: 0;
+          transition: none;
+        }
+      }
 
       &::before {
-        content: '';
         position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        opacity: 0;
         z-index: 1;
-        background-color: $inverse-01;
-        transition: opacity $duration--moderate-01 motion(standard, productive);
+        block-size: 100%;
+        content: '';
+        inline-size: 100%;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        opacity: 0;
+        transition: opacity $duration-moderate-01 motion(standard, productive);
       }
     }
   }
 
-  :host(#{$dds-prefix}-feature-card),
-  :host(#{$dds-prefix}-feature-cta) {
-    @include carbon--breakpoint-down('md') {
+  :host(#{$c4d-prefix}-feature-card),
+  :host(#{$c4d-prefix}-feature-cta) {
+    display: block;
+    outline: none;
+
+    @include breakpoint-down(md) {
       display: flex;
+
+      .#{$prefix}--card__wrapper {
+        display: flex;
+        block-size: auto;
+        min-block-size: 0;
+
+        .#{$prefix}--card__content {
+          padding: $spacing-05;
+          block-size: 100%;
+        }
+      }
+
+      .#{$prefix}--card--link {
+        display: block;
+      }
     }
   }
 
   // feature cards that are not size large
   .#{$prefix}--feature-card,
-  :host(#{$dds-prefix}-feature-card:not([size='large'])),
-  :host(#{$dds-prefix}-feature-cta:not([size='large'])) {
-    @include carbon--breakpoint-down('md') {
-      padding-top: aspect-ratio(1, 1);
-
+  :host(#{$c4d-prefix}-feature-card:not([size='large'])),
+  :host(#{$c4d-prefix}-feature-cta:not([size='large'])) {
+    @include breakpoint-down(md) {
       .#{$prefix}--card__content {
-        height: 100%;
-        padding: carbon--mini-units(2);
         justify-content: space-between;
+        padding: carbon--mini-units(2);
+        block-size: 100%;
       }
 
       #{$prefix}--card__heading {
-        margin: 0;
-        width: 100%;
         padding: carbon--mini-units(2);
-        padding-right: 10%;
-        padding-bottom: $layout-03;
+        margin: 0;
+        inline-size: 100%;
+        padding-block-end: $spacing-07;
+        padding-inline-end: 10%;
       }
 
       .#{$prefix}--card__footer {
-        padding-top: 0;
-        margin-top: carbon--mini-units(-4);
+        margin-block-start: carbon--mini-units(-4);
+        padding-block-start: 0;
       }
 
       .#{$prefix}--card__wrapper {
-        display: block;
-        min-height: 0;
-        height: auto;
+        display: flex;
+        block-size: auto;
+        min-block-size: 0;
       }
       .#{$prefix}--card {
         display: block;
@@ -166,40 +203,35 @@ $fcb-breakpoint-up--lg: map-get(
     }
 
     .#{$prefix}--card__heading {
-      margin-bottom: $layout-03;
-      color: $inverse-01;
+      margin-block-end: $spacing-07;
     }
 
     .#{$prefix}--card__wrapper {
-      background-color: $inverse-02;
-      width: 100%;
-      height: aspect-ratio(2, 1);
+      block-size: aspect-ratio(2, 1);
+      inline-size: 100%;
 
-      @include carbon--breakpoint('md') {
-        width: 50%;
-        height: auto;
+      @include breakpoint(md) {
+        block-size: auto;
+        inline-size: 50%;
       }
 
       .#{$prefix}--card__content {
-        height: auto;
-        min-height: 100%;
-      }
-    }
-
-    &:hover {
-      .#{$prefix}--card__wrapper {
-        background-color: $inverse-hover-ui;
+        block-size: auto;
+        min-block-size: 100%;
       }
     }
 
     // image
 
     ::slotted([slot='image']),
-    #{$dds-prefix}-image,
+    #{$c4d-prefix}-image,
     .#{$prefix}--image {
-      @include carbon--breakpoint('md') {
-        width: 50%;
-        height: 100%;
+      z-index: 0;
+
+      @include breakpoint(md) {
+        block-size: 100%;
+        inline-size: 50%;
+        padding-block-start: aspect-ratio(2, 1);
       }
     }
 
@@ -207,83 +239,98 @@ $fcb-breakpoint-up--lg: map-get(
 
     .#{$prefix}--feature-card__card .#{$prefix}--card__footer {
       flex-direction: row-reverse;
-      @include carbon--breakpoint-down('md') {
+      @include breakpoint-down(md) {
         flex-direction: row;
       }
 
       svg {
-        fill: $inverse-link;
-
-        @include carbon--breakpoint('sm') {
-          width: carbon--rem(20px);
-          height: carbon--rem(20px);
+        @include breakpoint(sm) {
+          block-size: to-rem(20px);
+          inline-size: to-rem(20px);
         }
 
-        @include carbon--breakpoint('md') {
-          width: $carbon--spacing-06;
-          height: $carbon--spacing-06;
+        @include breakpoint(md) {
+          block-size: $spacing-06;
+          inline-size: $spacing-06;
         }
 
-        @include carbon--breakpoint('max') {
-          width: $carbon--spacing-07;
-          height: $carbon--spacing-07;
+        @include breakpoint(max) {
+          block-size: $spacing-07;
+          inline-size: $spacing-07;
         }
       }
     }
 
     ::slotted(svg[slot='footer']) {
-      margin-top: auto;
-      margin-left: auto;
+      margin-block-start: auto;
+      margin-inline-start: auto;
     }
   }
 
   // feature cards that are size large
-  :host(#{$dds-prefix}-feature-card[size='large']),
-  :host(#{$dds-prefix}-feature-cta[size='large']),
-  .#{$prefix}--feature-card-large {
-    margin-bottom: $carbon--layout-03;
-    color: $text-01;
-    background: $ui-background;
+  :host(#{$c4d-prefix}-feature-card[size='large']),
+  :host(#{$c4d-prefix}-feature-cta[size='large']) {
     position: relative;
+    background-color: $layer-01;
+    color: $text-primary;
+    margin-block-end: $spacing-07;
     @include hang;
 
-    @include carbon--breakpoint('md') {
-      margin-bottom: $carbon--layout-05;
+    @include breakpoint(md) {
+      margin-block-end: $spacing-10;
+      padding-block-start: aspect-ratio(2, 1);
     }
 
-    @include carbon--breakpoint('lg') {
-      margin-bottom: $carbon--layout-06;
+    @include breakpoint(lg) {
+      margin-block-end: $spacing-12;
     }
 
-    @include carbon--breakpoint('xlg') {
-      padding-top: aspect-ratio(2, 1);
+    @include breakpoint(xlg) {
+      padding-block-start: aspect-ratio(2, 1);
     }
 
     .#{$prefix}--card {
-      background: none;
-      height: 100%;
+      block-size: 100%;
 
       &:focus-within {
-        outline-width: 3px;
-        outline-offset: 1px;
+        outline: none;
+        outline-offset: 0;
+
+        &::before {
+          position: absolute;
+          z-index: 1;
+          display: block;
+          border: $spacing-01 solid $focus;
+          content: '';
+          inset: -1px;
+          outline: 1px solid $focus-inset;
+          outline-offset: -3px;
+
+          @include breakpoint-down(md) {
+            min-block-size: 292px;
+          }
+        }
       }
 
-      @include carbon--breakpoint('xlg') {
+      @include breakpoint(md) {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         flex-direction: row;
+        inset: 0;
       }
 
       ::slotted([slot='image']),
-      #{$dds-prefix}-image,
-      &__wrapper,
+      #{$c4d-prefix}-image,
       .#{$prefix}--image {
-        @include carbon--breakpoint('xlg') {
-          width: 50%;
-          height: 100%;
+        z-index: 0;
+
+        @include breakpoint(md) {
+          block-size: 100%;
+          inline-size: 50%;
+          padding-block-start: aspect-ratio(2, 1);
+        }
+
+        @include breakpoint(xlg) {
+          block-size: 100%;
         }
       }
 
@@ -293,100 +340,122 @@ $fcb-breakpoint-up--lg: map-get(
     }
 
     .#{$prefix}--card__wrapper {
-      background-color: $inverse-02;
-      min-height: 50%;
-      height: auto;
+      block-size: auto;
+      min-block-size: 50%;
 
       &::before {
-        padding-top: 0;
+        padding-block-start: 0;
 
-        @include carbon--breakpoint('md') {
-          padding-top: 50%;
+        @include breakpoint(md) {
+          padding-block-start: 50%;
         }
       }
 
       .#{$prefix}--card__eyebrow,
       .#{$prefix}--card__heading,
       .#{$prefix}--card__copy,
-      ::slotted(#{$dds-prefix}-card-eyebrow),
-      ::slotted(#{$dds-prefix}-card-heading) {
-        width: 100%;
-        color: $inverse-01;
-        max-width: carbon--rem(480px);
+      ::slotted(#{$c4d-prefix}-card-eyebrow),
+      ::slotted(#{$c4d-prefix}-card-heading) {
+        inline-size: 100%;
+        max-inline-size: to-rem(480px);
 
-        @include carbon--breakpoint('md') {
-          width: 90%;
+        @include breakpoint(md) {
+          inline-size: 90%;
         }
       }
 
       .#{$prefix}--card__content {
-        padding: $spacing-07 $spacing-05;
+        padding: $spacing-07 $spacing-05 $spacing-05;
 
-        @include carbon--breakpoint('md') {
-          padding: $layout-03;
+        @include breakpoint(md) {
+          padding: $spacing-05;
         }
 
-        @include carbon--breakpoint('max') {
-          padding: $layout-05;
+        @include breakpoint(xlg) {
+          padding: $spacing-07;
         }
       }
 
       .#{$prefix}--card__eyebrow,
-      ::slotted(#{$dds-prefix}-card-eyebrow) {
-        margin: 0 0 $spacing-05 0;
-        color: $inverse-01;
+      ::slotted(#{$c4d-prefix}-card-eyebrow) {
+        margin: 0 0 $spacing-03 0;
       }
 
       .#{$prefix}--card__heading,
-      ::slotted(#{$dds-prefix}-card-heading) {
-        color: $inverse-01;
-        margin-bottom: $spacing-07;
-        @include carbon--type-style('expressive-heading-04', true);
+      ::slotted(#{$c4d-prefix}-card-heading) {
+        margin-block-end: $spacing-07;
+
+        @include breakpoint(sm) {
+          @include type-style('heading-03');
+        }
+
+        @include breakpoint(lg) {
+          @include type-style('heading-04');
+        }
       }
 
       .#{$prefix}--card__copy {
-        @include carbon--type-style('body-long-02');
-        @include carbon--breakpoint-down('md') {
-          margin-bottom: $spacing-07;
+        @include type-style('body-02');
+
+        @include breakpoint(md) {
+          @include type-style('body-01');
         }
+
+        @include breakpoint(lg) {
+          @include type-style('body-02');
+        }
+
+        @include breakpoint-down(md) {
+          margin-block-end: $spacing-07;
+        }
+
+        /* stylelint-disable value-no-vendor-prefix, property-no-vendor-prefix */
+        @include breakpoint-between(md, lg) {
+          ::slotted(*) {
+            display: -webkit-box;
+            block-size: 100%;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 8;
+            white-space: normal;
+            word-break: break-word;
+          }
+        }
+        /* stylelint-enable value-no-vendor-prefix, property-no-vendor-prefix */
       }
     }
 
     .#{$prefix}--card__footer {
       flex-direction: row;
 
-      @include carbon--breakpoint('xlg') {
+      @include breakpoint(xlg) {
         flex-direction: row-reverse;
       }
     }
 
     // special breakpoint for no copy present
     &.#{$prefix}--feature-card-large_no-copy-text {
-      @include carbon--breakpoint($fcb-large-custom-bp-nocopy) {
-        padding-top: aspect-ratio(2, 1);
+      @include breakpoint($fcb-large-custom-bp-nocopy) {
+        padding-block-start: aspect-ratio(2, 1);
       }
 
       .#{$prefix}--card {
-        @include carbon--breakpoint($fcb-large-custom-bp-nocopy) {
+        @include breakpoint($fcb-large-custom-bp-nocopy) {
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
           flex-direction: row;
+          inset: 0;
 
           &__wrapper,
           .#{$prefix}--image {
-            width: 50%;
-            height: 100%;
+            block-size: 100%;
+            inline-size: 50%;
           }
         }
       }
     }
   }
 
-  :host(#{$dds-prefix}-feature-card-footer)
-    .#{$dds-prefix}-ce--card__footer
+  :host(#{$c4d-prefix}-feature-card-footer)
+    .#{$c4d-prefix}-ce--card__footer
     ::slotted(svg[slot='icon']),
   .#{$prefix}--feature-card-large
     .#{$prefix}--feature-card-large__card.#{$prefix}--tile
@@ -394,29 +463,142 @@ $fcb-breakpoint-up--lg: map-get(
   .#{$prefix}--feature-card-large
     .#{$prefix}--feature-card-large__card.#{$prefix}--tile
     .#{$prefix}--card__cta:visited {
-    margin-top: auto;
     float: none;
-    fill: $inverse-link;
+    margin-block-start: auto;
 
-    @include carbon--breakpoint('sm') {
-      width: carbon--rem(20px);
-      height: carbon--rem(20px);
+    @include breakpoint(sm) {
+      block-size: to-rem(20px);
+      inline-size: to-rem(20px);
     }
 
-    @include carbon--breakpoint('md') {
-      width: $carbon--spacing-06;
-      height: $carbon--spacing-06;
+    @include breakpoint(md) {
+      block-size: $spacing-06;
+      inline-size: $spacing-06;
     }
 
-    @include carbon--breakpoint('max') {
-      width: $carbon--spacing-07;
-      height: $carbon--spacing-07;
+    @include breakpoint(max) {
+      block-size: $spacing-07;
+      inline-size: $spacing-07;
     }
 
-    @include carbon--type-style('productive-heading-05');
+    @include type-style('productive-heading-05');
   }
-}
 
-@include exports('feature-card') {
-  @include feature-card;
+  // inverse color scheme
+  :host(#{$c4d-prefix}-feature-card)[color-scheme='inverse'],
+  :host(#{$c4d-prefix}-feature-cta)[color-scheme='inverse'] {
+    border-color: $border-inverse;
+
+    .#{$prefix}--card__heading,
+    ::slotted(#{$c4d-prefix}-card-heading) {
+      color: $icon-inverse;
+    }
+
+    ::slotted(#{$c4d-prefix}-card-heading) {
+      color: $focus-inset;
+    }
+
+    &:hover .#{$prefix}--card__wrapper {
+      background-color: $background-inverse-hover;
+    }
+
+    ::slotted([slot='image']),
+    #{$c4d-prefix}-image,
+    .#{$prefix}--image {
+      &::before {
+        background-color: $icon-inverse;
+      }
+    }
+  }
+
+  // feature cards that are not size large
+  :host(
+      #{$c4d-prefix}-feature-card:not([size='large'])
+    )[color-scheme='inverse'],
+  :host(
+      #{$c4d-prefix}-feature-cta:not([size='large'])
+    )[color-scheme='inverse'] {
+    .#{$prefix}--card__heading {
+      color: $icon-inverse;
+    }
+
+    .#{$prefix}--card__wrapper {
+      background-color: $background-inverse;
+    }
+
+    &:hover .#{$prefix}--card__wrapper {
+      background-color: $background-inverse-hover;
+    }
+
+    // footer
+    .#{$prefix}--feature-card__card .#{$prefix}--card__footer svg {
+      fill: $link-inverse;
+    }
+  }
+
+  // feature cards that are size large
+  :host(#{$c4d-prefix}-feature-card[size='large'])[color-scheme='inverse'],
+  :host(#{$c4d-prefix}-feature-cta[size='large'])[color-scheme='inverse'] {
+    .#{$prefix}--card__wrapper {
+      background-color: $background-inverse;
+
+      .#{$prefix}--card__eyebrow,
+      .#{$prefix}--card__heading,
+      .#{$prefix}--card__copy,
+      ::slotted(#{$c4d-prefix}-card-eyebrow),
+      ::slotted(#{$c4d-prefix}-card-heading) {
+        color: $icon-inverse;
+      }
+      .#{$prefix}--card__eyebrow,
+      ::slotted(#{$c4d-prefix}-card-eyebrow) {
+        color: $icon-inverse;
+      }
+
+      .#{$prefix}--card__heading,
+      ::slotted(#{$c4d-prefix}-card-heading) {
+        color: $icon-inverse;
+      }
+    }
+  }
+
+  :host(#{$c4d-prefix}-feature-card-footer)[color-scheme='inverse']
+    .#{$c4d-prefix}-ce--card__footer
+    ::slotted(svg[slot='icon']) {
+    fill: $link-inverse;
+  }
+
+  :host(#{$c4d-prefix}-feature-card[size='large']) {
+    ::slotted(#{$c4d-prefix}-feature-card-footer) {
+      display: flex;
+      justify-content: flex-end;
+
+      @include breakpoint(xlg) {
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  :host(#{$c4d-prefix}-feature-card-footer),
+  :host(#{$c4d-prefix}-feature-cta-footer) {
+    display: flex;
+    justify-content: flex-end;
+
+    @include breakpoint(md) {
+      justify-content: flex-end;
+    }
+
+    &[size='large'] {
+      .dds-ce--card__footer ::slotted(svg[slot='icon']) {
+        @include breakpoint(max) {
+          block-size: $spacing-10;
+          inline-size: $spacing-10;
+        }
+      }
+    }
+  }
+
+  :host(#{$c4d-prefix}-feature-card[size='large'])[color-scheme='inverse']:hover
+    .#{$prefix}--card__wrapper {
+    background-color: $background-inverse-hover;
+  }
 }

@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,15 +9,15 @@
 
 import '../index';
 import '../../cta/index';
-import { html } from 'lit-element';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { select } from '@storybook/addon-knobs';
 // eslint-disable-next-line sort-imports
 import { CTA_TYPE } from '../../cta/defs';
 import { MEDIA_TYPE } from '../defs';
-import imgLg16x9 from '../../../../../storybook-images/assets/720/fpo--16x9--720x405--004.jpg';
-import imgMd16x9 from '../../../../../storybook-images/assets/480/fpo--16x9--480x270--004.jpg';
-import imgSm16x9 from '../../../../../storybook-images/assets/320/fpo--16x9--320x180--004.jpg';
+import imgLg16x9 from '../../../../.storybook/storybook-images/assets/720/fpo--16x9--720x405--004.jpg';
+import imgMd16x9 from '../../../../.storybook/storybook-images/assets/480/fpo--16x9--480x270--004.jpg';
+import imgSm16x9 from '../../../../.storybook/storybook-images/assets/320/fpo--16x9--320x180--004.jpg';
 import readme from './README.stories.mdx';
 import textNullable from '../../../../.storybook/knob-text-nullable';
 
@@ -26,8 +26,9 @@ const hrefsForType = {
   [CTA_TYPE.LOCAL]: 'https://www.example.com',
   [CTA_TYPE.JUMP]: '#example',
   [CTA_TYPE.EXTERNAL]: 'https://www.example.com',
-  [CTA_TYPE.DOWNLOAD]: 'https://www.ibm.com/annualreport/assets/downloads/IBM_Annual_Report_2019.pdf',
-  [CTA_TYPE.VIDEO]: '1_9h94wo6b',
+  [CTA_TYPE.DOWNLOAD]:
+    'https://www.ibm.com/annualreport/assets/downloads/IBM_Annual_Report_2019.pdf',
+  [CTA_TYPE.VIDEO]: '0_ibuqxqbe',
 };
 
 const knobNamesForType = {
@@ -96,52 +97,66 @@ const items = [
 ];
 
 const image = ({ heading: imageHeading } = { heading: undefined }) => html`
-  <dds-image slot="media" alt="Image alt text" default-src="${imgLg16x9}" heading="${ifNonNull(imageHeading)}">
-    <dds-image-item media="(min-width: 672px)" srcset="${imgLg16x9}"> </dds-image-item>
-    <dds-image-item media="(min-width: 400px)" srcset="${imgMd16x9}"> </dds-image-item>
-    <dds-image-item media="(min-width: 320px)" srcset="${imgSm16x9}"> </dds-image-item>
-  </dds-image>
+  <c4d-image
+    slot="media"
+    alt="Image alt text"
+    default-src="${imgLg16x9}"
+    heading="${ifDefined(imageHeading)}">
+    <c4d-image-item media="(min-width: 672px)" srcset="${imgLg16x9}">
+    </c4d-image-item>
+    <c4d-image-item media="(min-width: 400px)" srcset="${imgMd16x9}">
+    </c4d-image-item>
+    <c4d-image-item media="(min-width: 320px)" srcset="${imgSm16x9}">
+    </c4d-image-item>
+  </c4d-image>
 `;
 
-export const Default = args => {
-  const { copy: groupCopy, heading: groupHeading, mediaType } = args?.ContentGroupSimple ?? {};
+export const Default = (args) => {
+  const {
+    copy: groupCopy,
+    heading: groupHeading,
+    mediaType,
+  } = args?.ContentGroupSimple ?? {};
   const { copy: ctaCopy, ctaType, href } = args?.CardCTA ?? {};
   return html`
-    <dds-content-group-simple>
-      <dds-content-group-heading>${groupHeading}</dds-content-group-heading>
-      <dds-content-group-copy>${groupCopy}</dds-content-group-copy>
+    <c4d-content-group-simple>
+      <c4d-content-group-heading>${groupHeading}</c4d-content-group-heading>
+      <c4d-content-group-copy>${groupCopy}</c4d-content-group-copy>
       ${mediaType === 'Image' ? image({ heading: groupHeading }) : ``}
       ${mediaType === 'Video'
         ? html`
-            <dds-video-player-container slot="media" video-id="1_9h94wo6b"></dds-video-player-container>
+            <c4d-video-player-container
+              slot="media"
+              video-id="0_ibuqxqbe"></c4d-video-player-container>
           `
         : ``}
       ${items.map(
         ({ heading: itemHeading, copy: itemCopy }) => html`
-          <dds-content-item>
-            <dds-content-item-heading>${itemHeading}</dds-content-item-heading>
-            <dds-content-item-copy>${itemCopy}</dds-content-item-copy>
-          </dds-content-item>
+          <c4d-content-item>
+            <c4d-content-item-heading>${itemHeading}</c4d-content-item-heading>
+            <c4d-content-item-copy>${itemCopy}</c4d-content-item-copy>
+          </c4d-content-item>
         `
       )}
-      <dds-card-link-cta slot="footer" cta-type="${ifNonNull(ctaType)}" href="${ifNonNull(href)}">
-        <dds-card-link-heading>${ctaCopy}</dds-card-link-heading>
-        <dds-card-cta-footer></dds-card-cta-footer>
-      </dds-card-link-cta>
-    </dds-content-group-simple>
+      <c4d-card-link-cta
+        slot="footer"
+        cta-type="${ifDefined(ctaType)}"
+        href="${ifDefined(href)}">
+        <c4d-card-link-heading>${ctaCopy}</c4d-card-link-heading>
+        <c4d-card-cta-footer></c4d-card-cta-footer>
+      </c4d-card-link-cta>
+    </c4d-content-group-simple>
   `;
 };
 
 export default {
   title: 'Components/Content group simple',
   decorators: [
-    story => html`
-      <div class="bx--grid">
-        <div class="bx--row">
-          <div class="bx--col-lg-12 bx--no-gutter">
-            <dds-video-cta-container>
-              ${story()}
-            </dds-video-cta-container>
+    (story) => html`
+      <div class="cds--grid">
+        <div class="cds--row">
+          <div class="cds--col-lg-12 cds--no-gutter">
+            <c4d-video-cta-container> ${story()} </c4d-video-cta-container>
           </div>
         </div>
       </div>
@@ -153,7 +168,10 @@ export default {
     knobs: {
       ContentGroupSimple: () => ({
         copy: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum non porttitor libero, in venenatis magna.',
-        heading: textNullable('Heading (heading)', 'Curabitur malesuada varius mi eu posuere'),
+        heading: textNullable(
+          'Heading (heading)',
+          'Curabitur malesuada varius mi eu posuere'
+        ),
         mediaType: select('With media', mediaTypes, MEDIA_TYPE.IMAGE),
       }),
       CardCTA: () => {
@@ -161,7 +179,10 @@ export default {
         return {
           copy: textNullable('Copy text (copy)', 'Lorem ipsum dolor sit amet'),
           ctaType,
-          href: textNullable(knobNamesForType[ctaType ?? CTA_TYPE.LOCAL], hrefsForType[ctaType ?? CTA_TYPE.LOCAL]),
+          href: textNullable(
+            knobNamesForType[ctaType ?? CTA_TYPE.LOCAL],
+            hrefsForType[ctaType ?? CTA_TYPE.LOCAL]
+          ),
         };
       },
     },

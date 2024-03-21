@@ -1,29 +1,24 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { classMap } from 'lit-html/directives/class-map.js';
-import { html, state, property, customElement, LitElement } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import { baseFontSize, breakpoints } from '@carbon/layout';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import { LitElement, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import sameHeight from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/sameHeight/sameHeight';
 import { GRID_MODE } from './defs';
 import styles from './card-group.scss';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
 export { GRID_MODE };
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
-
-const gridLgBreakpoint = parseFloat(breakpoints.lg.width) * baseFontSize;
-const gridMdBreakpoint = parseFloat(breakpoints.md.width) * baseFontSize;
+const { stablePrefix: c4dPrefix } = settings;
 
 // tag constants used for same height calculations
 const headingBottomMargin = 64;
@@ -31,10 +26,10 @@ const headingBottomMargin = 64;
 /**
  * Card Group.
  *
- * @element dds-card-group
+ * @element c4d-card-group
  */
-@customElement(`${ddsPrefix}-card-group`)
-class DDSCardGroup extends StableSelectorMixin(LitElement) {
+@customElement(`${c4dPrefix}-card-group`)
+class C4DCardGroup extends StableSelectorMixin(LitElement) {
   /**
    * Array to hold the card-heading elements within child items.
    */
@@ -97,31 +92,51 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
   private _handleSlotChange(event: Event) {
     this._childItems = (event.target as HTMLSlotElement)
       .assignedNodes()
-      .filter(elem => (elem as HTMLElement).matches?.((this.constructor as typeof DDSCardGroup).selectorItem));
+      .filter((elem) =>
+        (elem as HTMLElement).matches?.(
+          (this.constructor as typeof C4DCardGroup).selectorItem
+        )
+      );
 
     // retrieve item heading, eyebrows, and footers to set same height
     if (this._childItems) {
-      this._childItems.forEach(e => {
+      this._childItems.forEach((e) => {
+        if (!e.hasAttribute('href') && this.gridMode === GRID_MODE.CONDENSED) {
+          this.gridMode = GRID_MODE.DEFAULT;
+        }
         this._childItemEyebrows.push(
-          (e as HTMLElement).querySelector((this.constructor as typeof DDSCardGroup).selectorItemEyebrow)
+          (e as HTMLElement).querySelector(
+            (this.constructor as typeof C4DCardGroup).selectorItemEyebrow
+          )
         );
         this._childItemParagraphs.push(
-          (e as HTMLElement).querySelector((this.constructor as typeof DDSCardGroup).selectorItemParagraph)
+          (e as HTMLElement).querySelector(
+            (this.constructor as typeof C4DCardGroup).selectorItemParagraph
+          )
         );
         this._childItemTagGroup.push(
-          (e as HTMLElement).querySelector((this.constructor as typeof DDSCardGroup).selectorItemTagGroup)
+          (e as HTMLElement).querySelector(
+            (this.constructor as typeof C4DCardGroup).selectorItemTagGroup
+          )
         );
         this._childItemHeadings.push(
-          (e as HTMLElement).querySelector((this.constructor as typeof DDSCardGroup).selectorItemHeading)
+          (e as HTMLElement).querySelector(
+            (this.constructor as typeof C4DCardGroup).selectorItemHeading
+          )
         );
         this._childItemFooters.push(
-          (e as HTMLElement).querySelector((this.constructor as typeof DDSCardGroup).selectorItemFooter)
+          (e as HTMLElement).querySelector(
+            (this.constructor as typeof C4DCardGroup).selectorItemFooter
+          )
         );
-        e.toggleAttribute('border', this.gridMode === 'border');
       });
 
-      const { customPropertyCardsPerRow } = this.constructor as typeof DDSCardGroup;
-      this.style.setProperty(customPropertyCardsPerRow, String(this.cardsPerRow));
+      const { customPropertyCardsPerRow } = this
+        .constructor as typeof C4DCardGroup;
+      this.style.setProperty(
+        customPropertyCardsPerRow,
+        String(this.cardsPerRow)
+      );
 
       if (this.gridMode !== GRID_MODE.NARROW) {
         this._resizeHandler();
@@ -133,56 +148,37 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
    * The observer for the resize of the viewport, calls sameHeight utility function
    */
   private _resizeHandler = () => {
-    window.requestAnimationFrame(() => {
-      const documentWidth = this.ownerDocument!.documentElement.clientWidth;
-      let columnCount;
-      switch (true) {
-        case documentWidth < gridMdBreakpoint:
-          columnCount = 1;
-          break;
-        case documentWidth < gridLgBreakpoint:
-          columnCount = 2;
-          break;
-        default:
-          columnCount = this.cardsPerRow;
-      }
-      if (!this.pictograms) {
+    if (!this.pictograms) {
+      window.requestAnimationFrame(() => {
         this._setSameHeight();
-      }
-      if (this.gridMode !== GRID_MODE.NARROW) {
-        this._fillLastRowWithEmptyCards(columnCount);
-        this._borderAdjustments(columnCount);
-      } else {
-        this._removeEmptyCards();
-        this._resetBorders();
-      }
-    });
+      });
+    }
   };
 
   private _setSameHeight = () => {
     // check if items are not null before using sameHeight
 
     sameHeight(
-      this._childItemEyebrows.filter(item => item !== null),
+      this._childItemEyebrows.filter((item) => item !== null),
       'md'
     );
     sameHeight(
-      this._childItemHeadings.filter(item => item !== null),
+      this._childItemHeadings.filter((item) => item !== null),
       'md'
     );
     sameHeight(
-      this._childItemParagraphs.filter(item => item !== null),
+      this._childItemParagraphs.filter((item) => item !== null),
       'md'
     );
     sameHeight(
-      this._childItemFooters.filter(item => item !== null),
+      this._childItemFooters.filter((item) => item !== null),
       'md'
     );
 
-    let tagGroupHeight: number = 0;
+    let tagGroupHeight = 0;
 
     // get tallest height of tag groups
-    this._childItemTagGroup.forEach(item => {
+    this._childItemTagGroup.forEach((item) => {
       if (item) {
         const groupHeight = (item as HTMLElement).offsetHeight;
         if (groupHeight > tagGroupHeight) {
@@ -191,105 +187,18 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
       }
     });
 
-    this._childItemHeadings.forEach(e => {
+    this._childItemHeadings.forEach((e) => {
       // add tag group height to heading to the cards lacking tag group
-      if (e && !e.nextElementSibling?.matches((this.constructor as typeof DDSCardGroup).selectorItemTagGroup)) {
+      if (
+        e &&
+        !e.parentElement.hasAttribute('link') &&
+        !e.nextElementSibling?.matches(
+          (this.constructor as typeof C4DCardGroup).selectorItemTagGroup
+        )
+      ) {
         e.style.marginBottom = `${tagGroupHeight + headingBottomMargin}px`;
       }
     });
-  };
-
-  private _borderAdjustments = columnCount => {
-    const isEmpty = element => element.hasAttribute('empty');
-    const inFirstColumn = index => (index + 1) % columnCount === 1;
-    const inLastColumn = index => (index + 1) % columnCount === 0;
-    const inFirstRow = index => index < columnCount;
-    const inLastRow = index => Math.floor(index / columnCount) === Math.floor((this._childItems.length - 1) / columnCount);
-
-    this._childItems.forEach((e, index) => {
-      const { gridMode } = this;
-      if (gridMode === GRID_MODE.COLLAPSED) {
-        e.toggleAttribute('border', false);
-        if (isEmpty(e)) {
-          e.style.paddingBottom = '0';
-          e.style.paddingRight = '0';
-        } else {
-          if (inFirstColumn(index)) {
-            e.style.paddingLeft = '0';
-          }
-          if (inLastColumn(index)) {
-            e.style.paddingRight = '0';
-            e.style.borderRight = `1px solid var(--cds-ui-background)`;
-          } else {
-            e.style.paddingRight = '1px';
-            e.style.borderRight = 'none';
-          }
-          if (inFirstRow(index)) {
-            e.style.paddingTop = '0';
-          }
-          if (inLastRow(index)) {
-            e.style.paddingBottom = '0';
-          } else {
-            e.style.paddingBottom = '1px';
-          }
-        }
-      }
-      if (gridMode === GRID_MODE.BORDER) {
-        e.toggleAttribute('border', true);
-        if (isEmpty(e)) {
-          e.style.paddingBottom = '1px';
-          e.style.paddingRight = '1px';
-        } else {
-          e.style.paddingTop = '0';
-          if (inFirstRow(index)) {
-            e.style.paddingTop = '1px';
-          }
-          if (inLastRow(index)) {
-            e.style.paddingBottom = '1px';
-          }
-          if (inFirstColumn(index)) {
-            e.style.paddingLeft = '1px';
-          } else {
-            e.style.paddingLeft = '0';
-          }
-          if (inLastColumn(index)) {
-            e.style.paddingRight = '1px';
-          }
-        }
-        // if one column and first item is empty then set top border for second item
-        if (columnCount === 1 && isEmpty(this._childItems[0]) && index === 1) {
-          e.style.paddingTop = '1px';
-        }
-      }
-    });
-  };
-
-  private _resetBorders = () => {
-    this._childItems.forEach(elem => {
-      elem.toggleAttribute('border', false);
-      elem.style.paddingTop = '';
-      elem.style.paddingRight = '';
-      elem.style.paddingBottom = '';
-      elem.style.paddingLeft = '';
-    });
-  };
-
-  private _fillLastRowWithEmptyCards = columnCount => {
-    // remove all empty cards
-    this._removeEmptyCards();
-
-    // add empty cards
-    const emptyNeeded =
-      this.childElementCount % columnCount > 0 && columnCount > 1 ? columnCount - (this.childElementCount % columnCount) : 0;
-    for (let i = 0; i < emptyNeeded; i++) {
-      const card = document.createElement('dds-card-group-item');
-      card.setAttribute('empty', '');
-      this.shadowRoot?.appendChild(card);
-    }
-  };
-
-  private _removeEmptyCards = () => {
-    this.shadowRoot?.querySelectorAll('[empty]').forEach(e => e.remove());
   };
 
   /**
@@ -306,11 +215,12 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
 
   /**
    * Number of cards per column.
-   * If `--dds--card-group--cards-in-row` CSS custom property is set to `<dds-card-group>`.
+   * If `--c4d--card-group--cards-in-row` CSS custom property is set to `<c4d-card-group>`.
    */
   @property({ type: Number, attribute: 'cards-per-row' })
   get cardsPerRow() {
-    const { _cardsPerRow: cardsPerRow, _cardsPerRowAuto: cardsPerRowAuto } = this;
+    const { _cardsPerRow: cardsPerRow, _cardsPerRowAuto: cardsPerRowAuto } =
+      this;
     return cardsPerRow ?? cardsPerRowAuto;
   }
 
@@ -321,10 +231,10 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
 
   /**
    * The Grid Mode for the component layout.
-   * Collapsed/1px (default) | Narrow/16px).
+   * Condensed (1px) | Narrow (16px) | Default(32px).
    */
   @property({ attribute: 'grid-mode', reflect: true })
-  gridMode = GRID_MODE.COLLAPSED;
+  gridMode = GRID_MODE.DEFAULT;
 
   /**
    * If using cards with pictogram.
@@ -345,6 +255,14 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
 
   firstUpdated() {
     super.connectedCallback();
+
+    if (
+      this.previousElementSibling?.matches?.(
+        (this.constructor as typeof C4DCardGroup).selectorCardInCard
+      )
+    ) {
+      this.setAttribute('with-card-in-card', '');
+    }
     this._cleanAndCreateObserverResize({ create: true });
   }
 
@@ -353,47 +271,46 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
   }
 
   render() {
-    const slotClasses = classMap({
-      [`${prefix}--card-group--narrow`]: this.gridMode === GRID_MODE.NARROW,
-      [`${prefix}--card-group--collapsed`]: this.gridMode === GRID_MODE.COLLAPSED,
-      [`${prefix}--card-group--border`]: this.gridMode === GRID_MODE.BORDER,
-    });
-
-    return html`
-      <slot @slotchange="${this._handleSlotChange}" class="${slotClasses}"></slot>
-    `;
+    return html` <slot @slotchange="${this._handleSlotChange}"></slot> `;
   }
 
   /**
    * The CSS custom property name for the live button group item cout.
    */
   static get customPropertyCardsPerRow() {
-    return `--${ddsPrefix}--card-group--cards-in-row`;
+    return `--${c4dPrefix}--card-group--cards-in-row`;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--card-group`;
+    return `${c4dPrefix}--card-group`;
+  }
+
+  /**
+   * A selector that will return the card-in-card selector
+   */
+  static get selectorCardInCard() {
+    return `${c4dPrefix}-card-in-card`;
   }
 
   /**
    * A selector that will return the card item.
    */
   static get selectorItem() {
-    return `${ddsPrefix}-card-group-item`;
+    return `${c4dPrefix}-card-group-item`;
   }
 
   /**
    * A selector that will return the card item's eyebrow
    */
   static get selectorItemEyebrow() {
-    return `${ddsPrefix}-card-eyebrow`;
+    return `${c4dPrefix}-card-eyebrow`;
   }
 
   /**
    * A selector that will return the card item's tag group
    */
   static get selectorItemTagGroup() {
-    return `${ddsPrefix}-tag-group`;
+    return `div`;
   }
 
   /**
@@ -407,18 +324,18 @@ class DDSCardGroup extends StableSelectorMixin(LitElement) {
    * A selector that will return the card item's heading
    */
   static get selectorItemHeading() {
-    return `${ddsPrefix}-card-heading`;
+    return `${c4dPrefix}-card-heading`;
   }
 
   /**
    * A selector that will return the card item's footer
    */
   static get selectorItemFooter() {
-    return `${ddsPrefix}-card-cta-footer`;
+    return `${c4dPrefix}-card-cta-footer`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSCardGroup;
+export default C4DCardGroup;

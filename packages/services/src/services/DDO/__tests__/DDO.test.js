@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,12 +12,12 @@ import root from 'window-or-global';
 jest.mock(
   '../../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings',
   () => ({
-    version: 'dds.v1.0.0',
+    version: 'cds.v1.0.0',
   })
 );
 
 describe('DDOAPI', () => {
-  beforeEach(function() {
+  beforeEach(function () {
     root.digitalData = digitalDataResponse;
   });
 
@@ -36,7 +36,13 @@ describe('DDOAPI', () => {
   it('should set the version in the DDO', async () => {
     await DDOAPI.setVersion();
 
-    expect(root.digitalData.page.pageInfo.version).toEqual('dds.v1.0.0');
+    expect(root.digitalData.page.pageInfo.version).toEqual('cds.v1.0.0');
+  });
+
+  it('should return the country location', async () => {
+    await DDOAPI.getLocation();
+
+    expect(root.digitalData.user.location.country).toEqual('US');
   });
 
   it('should set a loop if the data layer is not ready', async () => {

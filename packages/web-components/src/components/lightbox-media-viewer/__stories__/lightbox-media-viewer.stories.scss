@@ -1,16 +1,16 @@
 //
-// Copyright IBM Corp. 2020, 2021
+// Copyright IBM Corp. 2020, 2023
 //
 // This source code is licensed under the Apache-2.0 license found in the
 // LICENSE file in the root directory of this source tree.
 //
 
 /* stylelint-disable-next-line selector-type-no-unknown */
-.sbdocs-preview dds-expressive-modal {
-  width: 100%;
-  height: 100%;
+.sbdocs-preview cds-expressive-modal {
+  block-size: 100%;
+  inline-size: 100%;
 }
 
-.dds-ce-demo-devenv--grid--stretch {
-  width: 100%;
+.cds-ce-demo-devenv--grid--stretch {
+  inline-size: 100%;
 }

@@ -1,52 +1,52 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement } from 'lit-element';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
-import DDSLightboxMediaViewerBody from './lightbox-media-viewer-body';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import C4DLightboxMediaViewerBody from './lightbox-media-viewer-body';
 import '../expressive-modal/expressive-modal';
 import '../expressive-modal/expressive-modal-close-button';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * The image content of lightbox media viewer.
  *
- * @element dds-lightbox-image-viewer
+ * @element c4d-lightbox-image-viewer
  * @slot title - The title content.
  * @slot description - The description content.
  */
-@customElement(`${ddsPrefix}-lightbox-image-viewer`)
-class DDSLightboxImageViewer extends DDSLightboxMediaViewerBody {
+@customElement(`${c4dPrefix}-lightbox-image-viewer`)
+class C4DLightboxImageViewer extends C4DLightboxMediaViewerBody {
   _renderDescription() {
     const { description } = this;
-    return html`
-      <slot name="description">${description}</slot>
-    `;
+    return html` <slot name="description">${description}</slot> `;
   }
 
   // eslint-disable-next-line class-methods-use-this
   _renderMedia() {
     const { alt, defaultSrc } = this;
     return html`
-      <img class="${prefix}--image__img" alt="${ifNonNull(alt)}" src="${ifNonNull(defaultSrc)}" loading="lazy" />
+      <img
+        class="${c4dPrefix}--image__img"
+        alt="${ifDefined(alt)}"
+        src="${ifDefined(defaultSrc)}"
+        loading="lazy" />
     `;
   }
 
   _renderTitle() {
     const { title } = this;
-    return html`
-      <slot name="title">${title}</slot>
-    `;
+    return html` <slot name="title">${title}</slot> `;
   }
 
   /**
@@ -75,4 +75,4 @@ class DDSLightboxImageViewer extends DDSLightboxMediaViewerBody {
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSLightboxImageViewer;
+export default C4DLightboxImageViewer;

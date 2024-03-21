@@ -1,43 +1,46 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { html, property, customElement, LitElement } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map.js';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import ifNonNull from 'carbon-web-components/es/globals/directives/if-non-null.js';
-import FocusMixin from 'carbon-web-components/es/globals/mixins/focus.js';
-import PlayVideo from '@carbon/ibmdotcom-styles/icons/svg/play-video.svg';
+import { LitElement, html } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import FocusMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/focus.js';
+import PlayVideo from '../../../es/icons/play-video.js';
 import {
   formatVideoCaption,
   formatVideoDuration,
 } from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/formatVideoCaption/formatVideoCaption.js';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import KalturaPlayerAPI from '../../internal/vendor/@carbon/ibmdotcom-services/services/KalturaPlayer/KalturaPlayer';
 import { VIDEO_PLAYER_CONTENT_STATE, VIDEO_PLAYER_PLAYING_MODE } from './defs';
 import '../image/image';
 import styles from './video-player.scss';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
-import DDSVideoPlayerContainer from './video-player-container';
+import C4DVideoPlayerContainer from './video-player-container';
+import ParentVisibilityMixin from '../../component-mixins/parent-visibility/parent-visibility';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
 
 export { VIDEO_PLAYER_CONTENT_STATE };
 export { VIDEO_PLAYER_PLAYING_MODE };
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
 /**
  * Video player.
  *
- * @element dds-video-player
+ * @element c4d-video-player
  */
-@customElement(`${ddsPrefix}-video-player`)
-class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
+@customElement(`${c4dPrefix}-video-player`)
+class C4DVideoPlayer extends FocusMixin(
+  StableSelectorMixin(ParentVisibilityMixin(LitElement))
+) {
   /**
    * The video player's mode showing Inline or Lightbox.
    */
@@ -52,7 +55,8 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
       this.contentState = VIDEO_PLAYER_CONTENT_STATE.VIDEO;
     }
     const { videoId, name, customVideoDescription } = this;
-    const { eventContentStateChange } = this.constructor as typeof DDSVideoPlayer;
+    const { eventContentStateChange } = this
+      .constructor as typeof C4DVideoPlayer;
     this.dispatchEvent(
       new CustomEvent(eventContentStateChange, {
         bubbles: true,
@@ -73,29 +77,40 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
    */
   private _renderContent() {
     const { contentState, name, thumbnailUrl, backgroundMode } = this;
-    return contentState === VIDEO_PLAYER_CONTENT_STATE.THUMBNAIL && !backgroundMode
+    return contentState === VIDEO_PLAYER_CONTENT_STATE.THUMBNAIL &&
+      !backgroundMode
       ? html`
-          <div class="${prefix}--video-player__video">
-            <button class="${prefix}--video-player__image-overlay" @click="${this._handleClickOverlay}">
-              <dds-image default-src="${thumbnailUrl}" alt="${ifNonNull(name)}">
-                ${PlayVideo({ slot: 'icon' })}
-              </dds-image>
+          <div class="${c4dPrefix}--video-player__video">
+            <button
+              class="${c4dPrefix}--video-player__image-overlay"
+              @click="${this._handleClickOverlay}">
+              <c4d-image default-src="${thumbnailUrl}" alt="${ifDefined(name)}">
+                ${PlayVideo()}
+              </c4d-image>
             </button>
           </div>
         `
-      : html`
-          <slot></slot>
-        `;
+      : html` <slot></slot> `;
   }
 
   /**
    * Updates video thumbnail url to match video width
    */
   private _updateThumbnailUrl() {
-    const thumbnailSrc = new URL(this.thumbnailUrl || '');
+    let thumbnailSrc: false | URL = false;
+
+    try {
+      thumbnailSrc = new URL(this.thumbnailUrl);
+    } catch (error) {
+      // Do nothing.
+    }
 
     // If current thumbnail is from Kaltura and includes this video's ID we should be able to safely update it.
-    if (thumbnailSrc.host.toLowerCase().includes('kaltura') && thumbnailSrc.pathname.includes(this.videoId!)) {
+    if (
+      thumbnailSrc &&
+      thumbnailSrc.host.toLowerCase().includes('kaltura') &&
+      thumbnailSrc.pathname.includes(this.videoId!)
+    ) {
       this.thumbnailUrl = KalturaPlayerAPI.getThumbnailUrl({
         mediaId: this.videoId,
         width: String(this.offsetWidth),
@@ -103,12 +118,17 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
     }
   }
 
+  public _onParentVisible() {
+    this._updateThumbnailUrl();
+  }
+
   /**
    * userInitiatedTogglePlaybackState
    */
   public userInitiatedTogglePlaybackState() {
     const { videoId } = this;
-    const { eventPlaybackStateChange } = this.constructor as typeof DDSVideoPlayer;
+    const { eventPlaybackStateChange } = this
+      .constructor as typeof C4DVideoPlayer;
     this.dispatchEvent(
       new CustomEvent(eventPlaybackStateChange, {
         bubbles: true,
@@ -163,7 +183,7 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
    * `true` to autoplay, mute video, and hide UI
    */
   @property({ attribute: 'background-mode', reflect: true })
-  backgroundMode: boolean = false;
+  backgroundMode = false;
 
   /**
    * Custom video description. This property should only be set when using `playing-mode="lightbox"`
@@ -192,30 +212,34 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
   @property({ attribute: 'aspect-ratio' })
   aspectRatio?: string;
 
-  createRenderRoot() {
-    return this.attachShadow({
-      mode: 'open',
-      delegatesFocus: Number((/Safari\/(\d+)/.exec(navigator.userAgent) ?? ['', 0])[1]) <= 537,
-    });
-  }
-
   render() {
-    const { aspectRatio, duration, formatCaption, formatDuration, hideCaption, name } = this;
+    const {
+      aspectRatio,
+      duration,
+      formatCaption,
+      formatDuration,
+      hideCaption,
+      name,
+    } = this;
 
     const aspectRatioClass = classMap({
-      [`${prefix}--video-player__video-container`]: true,
-      [`${prefix}--video-player__aspect-ratio--${aspectRatio}`]: !!aspectRatio,
+      [`${c4dPrefix}--video-player__video-container`]: true,
+      [`${c4dPrefix}--video-player__aspect-ratio--${aspectRatio}`]:
+        !!aspectRatio,
     });
 
     return html`
-      <div class="${aspectRatioClass}">
-        ${this._renderContent()}
-      </div>
+      <div class="${aspectRatioClass}">${this._renderContent()}</div>
       ${hideCaption
         ? undefined
         : html`
-            <div class="${prefix}--video-player__video-caption">
-              ${formatCaption({ duration: formatDuration({ duration: !duration ? duration : duration * 1000 }), name })}
+            <div class="${c4dPrefix}--video-player__video-caption">
+              ${formatCaption({
+                duration: formatDuration({
+                  duration: !duration ? duration : duration * 1000,
+                }),
+                name,
+              })}
             </div>
           `}
     `;
@@ -229,43 +253,59 @@ class DDSVideoPlayer extends FocusMixin(StableSelectorMixin(LitElement)) {
       changedProperties.has('backgroundMode')
     ) {
       const { duration, formatCaption, formatDuration, name } = this;
-      const caption = formatCaption({ duration: formatDuration({ duration: !duration ? duration : duration * 1000 }), name });
+      const caption = formatCaption({
+        duration: formatDuration({
+          duration: !duration ? duration : duration * 1000,
+        }),
+        name,
+      });
       if (caption) {
         this.setAttribute('aria-label', caption);
       }
     }
 
-    if (this.offsetWidth > 0) {
-      this._updateThumbnailUrl();
-    }
+    // Move measurement & API call to callback queue & wait for update to complete.
+    setTimeout(async () => {
+      await this.updateComplete;
+      if (!this.thumbnailUrl.endsWith(`${this.offsetWidth}`)) {
+        this._updateThumbnailUrl();
+      }
+    }, 0);
   }
 
   firstUpdated() {
     this.tabIndex = 0;
+    const parentIsBackground = Boolean(
+      (this.parentElement as C4DVideoPlayerContainer)?.backgroundMode
+    );
 
-    this.backgroundMode = (this.parentElement as DDSVideoPlayerContainer).backgroundMode;
+    this.backgroundMode = parentIsBackground;
   }
 
   /**
    * The name of the custom event fired after video content state is changed upon a user gesture.
    */
   static get eventContentStateChange() {
-    return `${ddsPrefix}-video-player-content-state-changed`;
+    return `${c4dPrefix}-video-player-content-state-changed`;
   }
 
   /**
    * The name of the custom event fired requesting playback state change.
    */
   static get eventPlaybackStateChange() {
-    return `${ddsPrefix}-video-player-playback-state-changed`;
+    return `${c4dPrefix}-video-player-playback-state-changed`;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--video-player`;
+    return `${c4dPrefix}--video-player`;
   }
 
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSVideoPlayer;
+export default C4DVideoPlayer;

@@ -1,37 +1,36 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { nothing } from 'lit-html';
-import { classMap } from 'lit-html/directives/class-map.js';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { html, property, state, query, queryAll, customElement, LitElement } from 'lit-element';
-import CaretLeft20 from 'carbon-web-components/es/icons/caret--left/20.js';
-import CaretRight20 from 'carbon-web-components/es/icons/caret--right/20.js';
-import settings from 'carbon-components/es/globals/js/settings.js';
-import { baseFontSize, breakpoints } from '@carbon/layout';
-import HostListener from 'carbon-web-components/es/globals/decorators/host-listener.js';
-import HostListenerMixin from 'carbon-web-components/es/globals/mixins/host-listener.js';
-import TableOfContents20 from 'carbon-web-components/es/icons/table-of-contents/20.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, LitElement } from 'lit';
+import { property, query, queryAll, state } from 'lit/decorators.js';
+import ChevronLeft20 from '../../internal/vendor/@carbon/web-components/icons/chevron--left/20.js';
+import ChevronRight20 from '../../internal/vendor/@carbon/web-components/icons/chevron--right/20.js';
+import HostListener from '../../internal/vendor/@carbon/web-components/globals/decorators/host-listener.js';
+import HostListenerMixin from '../../internal/vendor/@carbon/web-components/globals/mixins/host-listener.js';
 import throttle from 'lodash-es/throttle.js';
 import StickyHeader from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/StickyHeader/StickyHeader';
-import ddsSettings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
+import settings from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/settings/settings';
 import styles from './table-of-contents.scss';
 import { TOC_TYPES } from './defs';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element.js';
+import MediaQueryMixin, {
+  MQBreakpoints,
+  MQDirs,
+} from '../../component-mixins/media-query/media-query';
 
-const { prefix } = settings;
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { prefix, stablePrefix: c4dPrefix } = settings;
 
 // total button width - grid offset
 const buttonWidthOffset = 32;
-
-const gridLgBreakpoint = parseFloat(breakpoints.lg.width) * baseFontSize;
 
 interface Cancelable {
   cancel(): void;
@@ -43,7 +42,11 @@ interface Cancelable {
  * @param [thisObject] The context object for the given callback function.
  * @returns The index of the last item in the given array where `predicate` returns `true`. `-1` if no such item is found.
  */
-function findLastIndex<T>(a: T[], predicate: (search: T, index?: number, thisObject?: any) => boolean, thisObject?: any): number {
+function findLastIndex<T>(
+  a: T[],
+  predicate: (search: T, index?: number, thisObject?: any) => boolean,
+  thisObject?: any
+): number {
   for (let i = a.length - 1; i >= 0; --i) {
     if (predicate(a[i], i, thisObject)) {
       return i;
@@ -55,20 +58,16 @@ function findLastIndex<T>(a: T[], predicate: (search: T, index?: number, thisObj
 /**
  * Table of contents.
  *
- * @element dds-table-of-contents
+ * @element c4d-table-of-contents
  * @csspart table - The table UI.
  * @slot heading - The heading content.
  * @slot menu-rule - The menu rule.
  */
-@customElement(`${ddsPrefix}-table-of-contents`)
-class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElement)) {
-  /**
-   * The formatter for the aria label text for the mobile ToC.
-   * Should be changed upon the locale the component is rendered with.
-   */
-  @property({ attribute: false })
-  ariaLabelFormatter = 'Table of contents';
-
+@customElement(`${c4dPrefix}-table-of-contents`)
+class C4DTableOfContents extends MediaQueryMixin(
+  HostListenerMixin(StableSelectorMixin(LitElement)),
+  { [MQBreakpoints.LG]: MQDirs.MAX }
+) {
   /**
    * Defines TOC type, "" for default, `horizontal` for horizontal variant.
    */
@@ -108,12 +107,6 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   private _hasHeading = false;
 
   /**
-   * `true` if mobile container is visible.
-   */
-  @state()
-  private _hasMobileContainerVisible = false;
-
-  /**
    * The observer for the intersection of left-side content edge.
    */
   private _observerIntersection: IntersectionObserver | null = null;
@@ -121,7 +114,7 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   /**
    * The scrolling content.
    */
-  @query(`.${prefix}--tableofcontents__desktop`)
+  @query(`.${prefix}--tableofcontents`)
   private _contentNode?: HTMLElement;
 
   /**
@@ -137,29 +130,20 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    */
   @query(`.${prefix}--sub-content-right`)
   private _intersectionRightSentinelNode?: HTMLElement;
-
-  @queryAll(`.${prefix}--tableofcontents__desktop__item`)
+  @queryAll(`.${prefix}--tableofcontents__item`)
   private _itemNodes?: HTMLElement[] = [];
+
+  @query(`.${prefix}--tableofcontents__content`)
+  private _contentDiv?: HTMLElement;
 
   @query(`.${prefix}--tableofcontents__navbar`)
   private _navBar?: HTMLElement;
 
   /**
-   * The container for the mobile UI.
+   * Whether we're viewing smaller or larger window.
    */
-  @query(`.${prefix}--tableofcontents__mobile`)
-  private _mobileContainerNode?: HTMLElement;
-
-  /**
-   * The `<select>` for the mobile UI.
-   */
-  @query(`.${prefix}--tableofcontents__mobile__select`)
-  private _mobileSelectNode?: HTMLSelectElement;
-
-  /**
-   * The observer for the resize of the mobile container.
-   */
-  private _observerResizeMobileContainer: any | null = null; // TODO: Wait for `.d.ts` update to support `ResizeObserver`
+  @state()
+  _isMobile = this.carbonBreakpoints.lg.matches;
 
   /**
    * The target elements matching `[name]` harvested from the document.
@@ -171,49 +155,26 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    * The Element.tagName values that should never be used as a TOC target.
    * Typically added here because these elements have their own `[name]` attribute.
    */
-  private _tagNamesToAvoid = [`${ddsPrefix}-video-player`];
+  private _tagNamesToAvoid = [`${c4dPrefix}-video-player`];
+
+  /**
+   * The name of an attribute that will prevent the DOM element and any elements
+   * in its subtree from being added to the ToC.
+   */
+  private _disableTargetAttribute = 'no-toc';
 
   /**
    * Boolean checking if page is RTL
    */
   @state()
-  private _pageIsRTL: Boolean = this.ownerDocument!.documentElement.dir === 'rtl';
+  private _pageIsRTL: boolean =
+    this.ownerDocument!.documentElement.dir === 'rtl';
 
   /**
    * The handler for throttled scrolling
    */
-  private _throttleScroll: (((event: Event) => void) & Cancelable) | null = null;
-
-  /**
-   * Cleans-up and creats the resize observer for the mobile container.
-   *
-   * @param [options] The options.
-   * @param [options.create] `true` to create the new resize observer.
-   */
-  private _cleanAndCreateObserverResizeMobileContainer({ create }: { create?: boolean } = {}) {
-    const { _mobileContainerNode: mobileContainerNode } = this;
-    if (mobileContainerNode) {
-      if (this._observerResizeMobileContainer) {
-        this._observerResizeMobileContainer.disconnect();
-        this._observerResizeMobileContainer = null;
-      }
-      if (create) {
-        // TODO: Wait for `.d.ts` update to support `ResizeObserver`
-        // @ts-ignore
-        this._observerResizeMobileContainer = new ResizeObserver(this._observeResizeMobileContainer);
-        this._observerResizeMobileContainer.observe(mobileContainerNode);
-      }
-    }
-  }
-
-  /**
-   * Handles `change` event on mobile `<select>`.
-   *
-   * @param event The event.
-   */
-  private _handleChangeSelect(event: Event) {
-    this._handleUserInitiatedJump((event.target as HTMLSelectElement).value);
-  }
+  private _throttleScroll: (((event: Event) => void) & Cancelable) | null =
+    null;
 
   /**
    * Handles `click` event on a menu item.
@@ -221,57 +182,88 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    * @param event The event.
    */
   private _handleClickItem(event: MouseEvent) {
-    const { selectorDesktopItem } = this.constructor as typeof DDSTableOfContents;
+    const { selectorItem } = this.constructor as typeof C4DTableOfContents;
     const target = event.target as HTMLAnchorElement;
-    if (target.matches?.(selectorDesktopItem)) {
+    if (target.matches?.(selectorItem)) {
       this._handleUserInitiatedJump(target.dataset.target!);
       event.preventDefault();
     }
   }
 
   /**
-   * Handles `click` event on a TOC navigation item.
+   * Handles `keyboard` event on a TOC navigation item.
    *
    * @param event The event.
    */
   private _handleOnKeyDown(event: KeyboardEvent) {
-    const { selectorDesktopItem } = this.constructor as typeof DDSTableOfContents;
+    const { selectorItem } = this.constructor as typeof C4DTableOfContents;
     const target = event.target as HTMLAnchorElement;
     const { _pageIsRTL: pageIsRTL } = this;
-    if (target.matches?.(selectorDesktopItem)) {
+    const paginateAccessibile =
+      this.layout === TOC_TYPES.HORIZONTAL || this._isMobile;
+
+    if (target.matches?.(selectorItem)) {
       if (pageIsRTL) {
-        if (event.key === 'Tab') {
-          if (event.shiftKey) {
-            if (
-              target.parentElement?.previousElementSibling &&
-              target.parentElement?.previousElementSibling.getBoundingClientRect().right >
-                this._navBar!.getBoundingClientRect().right - buttonWidthOffset
-            ) {
-              this._paginateLeft();
-            }
-          } else if (
+        if (event.key === 'ArrowLeft') {
+          (
+            target.parentElement?.nextElementSibling
+              ?.children[0] as HTMLAnchorElement
+          )?.focus();
+          if (
+            paginateAccessibile &&
+            target.parentElement?.previousElementSibling &&
+            target.parentElement?.previousElementSibling.getBoundingClientRect()
+              .right >
+              this._navBar!.getBoundingClientRect().right - buttonWidthOffset
+          ) {
+            this._paginateLeft();
+          }
+        }
+        if (event.key === 'ArrowRight') {
+          (
+            target.parentElement?.previousElementSibling
+              ?.children[0] as HTMLAnchorElement
+          )?.focus();
+          if (
+            paginateAccessibile &&
             target.parentElement?.nextElementSibling &&
-            target.parentElement?.nextElementSibling.getBoundingClientRect().left <
+            target.parentElement?.nextElementSibling.getBoundingClientRect()
+              .left <
               this._navBar!.getBoundingClientRect().left + buttonWidthOffset
           ) {
             this._paginateRight();
           }
         }
-      } else if (event.key === 'Tab') {
-        if (event.shiftKey) {
+      } else {
+        if (event.key === 'ArrowLeft') {
+          (
+            target.parentElement?.previousElementSibling
+              ?.children[0] as HTMLAnchorElement
+          )?.focus();
           if (
+            paginateAccessibile &&
             target.parentElement?.previousElementSibling &&
-            target.parentElement?.previousElementSibling!.getBoundingClientRect().left <
+            target.parentElement?.previousElementSibling!.getBoundingClientRect()
+              .left <
               this._navBar!.getBoundingClientRect().left + buttonWidthOffset
           ) {
             this._paginateLeft();
           }
-        } else if (
-          target.parentElement?.nextElementSibling &&
-          target.parentElement?.nextElementSibling!.getBoundingClientRect().right >
-            this._navBar!.getBoundingClientRect().right - buttonWidthOffset
-        ) {
-          this._paginateRight();
+        }
+        if (event.key === 'ArrowRight') {
+          (
+            target.parentElement?.nextElementSibling
+              ?.children[0] as HTMLAnchorElement
+          )?.focus();
+          if (
+            paginateAccessibile &&
+            target.parentElement?.nextElementSibling &&
+            target.parentElement?.nextElementSibling!.getBoundingClientRect()
+              .right >
+              this._navBar!.getBoundingClientRect().right - buttonWidthOffset
+          ) {
+            this._paginateRight();
+          }
         }
       }
     }
@@ -288,7 +280,10 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
         const items = this._targets
           .map((elem, index, arr) => ({
             elem,
-            height: arr[index + 1] ? arr[index + 1].getBoundingClientRect().y - elem.getBoundingClientRect().y : null,
+            height: arr[index + 1]
+              ? arr[index + 1].getBoundingClientRect().y -
+                elem.getBoundingClientRect().y
+              : null,
             position: elem.getBoundingClientRect().y,
           }))
           .filter((elem, index, arr) =>
@@ -299,7 +294,8 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
 
         // Sets last section as active at the end of page in case there is not enough height for it to dynamically activate
         const bottomReached =
-          this.ownerDocument!.scrollingElement!.scrollTop + this.ownerDocument!.scrollingElement!.clientHeight ===
+          this.ownerDocument!.scrollingElement!.scrollTop +
+            this.ownerDocument!.scrollingElement!.clientHeight ===
           this.ownerDocument!.scrollingElement!.scrollHeight;
         if (items && items[0] && items[items.length - 1]) {
           this._currentTarget = !bottomReached
@@ -313,31 +309,45 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   /**
    * Watches for changes to content in the default slot.
    */
-  private _contentMutationObserver = new MutationObserver(this._contentObserverCallback.bind(this));
+  private _contentMutationObserver = new MutationObserver(
+    this._contentObserverCallback.bind(this)
+  );
 
   /**
    * Sets table of contents targets whenever any node tree mutation is observed.
    */
   private _contentObserverCallback() {
     const shadowRoot = this.shadowRoot as ShadowRoot;
-    const defaultSlot = shadowRoot.querySelector(`.${prefix}--tableofcontents__content slot`) as HTMLSlotElement;
-    this._setTargets(Array.from(defaultSlot.assignedNodes()));
+    const allSlots = Array.from(
+      shadowRoot.querySelectorAll(`slot`)
+    ) as HTMLSlotElement[];
+    const allSlottedNodes = allSlots.flatMap((slot) => slot.assignedNodes());
+    this._setTargets(allSlottedNodes);
   }
 
   /**
    * Sets targets used for generating the table of contents.
    */
   private _setTargets(nodes: Node[]) {
-    const { _tagNamesToAvoid: tagNamesToAvoid } = this;
-    const { selectorTarget } = this.constructor as typeof DDSTableOfContents;
+    const {
+      _tagNamesToAvoid: tagNamesToAvoid,
+      _disableTargetAttribute: disableTargetAttribute,
+    } = this;
+    const { selectorTarget } = this.constructor as typeof C4DTableOfContents;
     this._targets = nodes.reduce((acc, node) => {
       if (node instanceof HTMLElement) {
-        const descendants = node.querySelectorAll(selectorTarget) as NodeListOf<HTMLElement>;
-        const elems = [node, ...descendants].filter(elem => {
+        const descendants = node.querySelectorAll(
+          selectorTarget
+        ) as NodeListOf<HTMLElement>;
+        const elems = [node, ...descendants].filter((elem) => {
           const notWhiteSpace = /[^\s\n\r]/g;
-          const hasTitle = elem.innerText.match(notWhiteSpace) || elem.dataset.title?.match(notWhiteSpace);
+          const hasTitle =
+            elem.innerText.match(notWhiteSpace) ||
+            elem.dataset.title?.match(notWhiteSpace);
           const hasNameAttr = elem.matches(selectorTarget);
-          const notExcluded = !tagNamesToAvoid.includes(elem.tagName.toLowerCase());
+          const notExcluded =
+            !tagNamesToAvoid.includes(elem.tagName.toLowerCase()) &&
+            !elem.closest(`[${disableTargetAttribute}]`);
 
           return hasTitle && hasNameAttr && notExcluded;
         });
@@ -356,14 +366,20 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    */
   private _handleSlotChange(event: Event) {
     // Handle changes to immediate slotted children.
-    const slottedElements = (event.target as HTMLSlotElement).assignedNodes().filter(node => node instanceof HTMLElement);
+    const slottedElements = (event.target as HTMLSlotElement)
+      .assignedNodes()
+      .filter((node) => node instanceof HTMLElement);
     this._setTargets(slottedElements as HTMLElement[]);
 
     // Handle changes to slotted contents' children.
     this._contentMutationObserver.disconnect();
-    (event.target as HTMLSlotElement).assignedNodes().forEach(node => {
+    (event.target as HTMLSlotElement).assignedNodes().forEach((node) => {
       if (node instanceof HTMLElement) {
-        this._contentMutationObserver.observe(node, { subtree: true, childList: true });
+        this._contentMutationObserver.observe(node, {
+          subtree: true,
+          childList: true,
+          attributeFilter: ['name', 'data-title'],
+        });
       }
     });
   }
@@ -372,8 +388,10 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    * Handles `slotchange` event on `<slot name="heading">`.
    */
   private _handleSlotChangeHeading() {
-    this._hasHeading = Array.from(this.querySelectorAll('[slot="heading"]')).some(
-      node => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim()
+    this._hasHeading = Array.from(
+      this.querySelectorAll('[slot="heading"]')
+    ).some(
+      (node) => node.nodeType !== Node.TEXT_NODE || node!.textContent!.trim()
     );
   }
 
@@ -384,8 +402,9 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    */
   private _handleUserInitiatedJump(target: string) {
     const elem = this.querySelector(`[name="${target}"]`);
-    const masthead: HTMLElement | null = this.ownerDocument.querySelector(`${ddsPrefix}-masthead`);
-    const mobilePadding = window.innerWidth < gridLgBreakpoint ? this._mobileContainerNode?.offsetHeight : 0;
+    const masthead: HTMLElement | null = this.ownerDocument.querySelector(
+      `${c4dPrefix}-masthead`
+    );
 
     if (elem instanceof HTMLElement) {
       const currentY = window.scrollY;
@@ -394,10 +413,23 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
       if (currentY > elem.offsetTop && masthead) {
         targetY = elem.offsetTop - masthead.offsetHeight;
       } else {
-        targetY = elem.offsetTop - mobilePadding!;
+        targetY =
+          elem.offsetTop -
+          parseInt(
+            window.getComputedStyle(elem).getPropertyValue('padding-top')
+          ) -
+          parseInt(
+            window
+              .getComputedStyle(this._contentDiv!)
+              .getPropertyValue('padding-top')
+          );
       }
 
-      window.scrollTo(0, targetY);
+      window.scrollTo({
+        top: targetY,
+        left: 0,
+        behavior: 'smooth',
+      });
 
       elem.setAttribute('tabindex', '0');
       (elem as HTMLElement).focus({ preventScroll: true });
@@ -419,7 +451,9 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    * @param [options] The options.
    * @param [options.create] `true` to create the new intersection observer.
    */
-  private _cleanAndCreateIntersectionObserverContainer({ create }: { create?: boolean } = {}) {
+  private _cleanAndCreateIntersectionObserverContainer({
+    create,
+  }: { create?: boolean } = {}) {
     const {
       _intersectionLeftSentinelNode: intersectionLeftSentinelNode,
       _intersectionRightSentinelNode: intersectionRightSentinelNode,
@@ -429,10 +463,13 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
       this._observerIntersection = null;
     }
     if (create) {
-      this._observerIntersection = new IntersectionObserver(this._observeIntersectionContainer, {
-        root: this._navBar,
-        threshold: 0,
-      });
+      this._observerIntersection = new IntersectionObserver(
+        this._observeIntersectionContainer,
+        {
+          root: this._navBar,
+          threshold: 0,
+        }
+      );
       if (intersectionLeftSentinelNode) {
         this._observerIntersection.observe(intersectionLeftSentinelNode);
       }
@@ -447,7 +484,7 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    *
    * @param records The intersection observer records.
    */
-  private _observeIntersectionContainer = records => {
+  private _observeIntersectionContainer = (records) => {
     const {
       _intersectionLeftSentinelNode: intersectionLeftSentinelNode,
       _intersectionRightSentinelNode: intersectionRightSentinelNode,
@@ -466,8 +503,13 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
    * Handles `click` event on the left-hand paginator button.
    */
   private _paginateLeft() {
-    const { _currentScrollPosition: currentScrollPosition, _navBar: navBar, _itemNodes: itemNodes, _pageIsRTL: pageIsRTL } = this;
-    // If the right-side intersection sentinel is in the view, it means that right-side caret button is hidden.
+    const {
+      _currentScrollPosition: currentScrollPosition,
+      _navBar: navBar,
+      _itemNodes: itemNodes,
+      _pageIsRTL: pageIsRTL,
+    } = this;
+    // If the right-side intersection sentinel is in the view, it means that right-side chevron button is hidden.
     // Given scrolling to left makes it shown,
     // `contentContainerNode!.offsetWidth` will shrink as we scroll and we need to adjust for it.
     const elems = Array.prototype.slice.call(itemNodes);
@@ -476,27 +518,38 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
         const interimLeft = navBar!.getBoundingClientRect().right;
         const lastVisibleElementIndex = findLastIndex(
           elems,
-          elem => elem.getBoundingClientRect().right > interimLeft - buttonWidthOffset
+          (elem) =>
+            elem.getBoundingClientRect().right > interimLeft - buttonWidthOffset
         );
         if (lastVisibleElementIndex >= 0) {
-          const lastVisibleElementRight = elems[lastVisibleElementIndex].getBoundingClientRect().left;
+          const lastVisibleElementRight =
+            elems[lastVisibleElementIndex].getBoundingClientRect().left;
           // 48 = button width - button gradient
-          const newScrollPosition = currentScrollPosition - lastVisibleElementRight + 48;
-          this._currentScrollPosition = newScrollPosition <= 0 ? 0 : newScrollPosition;
+          const newScrollPosition =
+            currentScrollPosition - lastVisibleElementRight + 48;
+          this._currentScrollPosition =
+            newScrollPosition <= 0 ? 0 : newScrollPosition;
         }
       } else {
         const lastVisibleElementIndex = findLastIndex(
           elems,
-          elem => elem.getBoundingClientRect().left < buttonWidthOffset + navBar!.getBoundingClientRect().left
+          (elem) =>
+            elem.getBoundingClientRect().left <
+            buttonWidthOffset + navBar!.getBoundingClientRect().left
         );
         if (lastVisibleElementIndex >= 0) {
-          const lastVisibleElementRight = elems[lastVisibleElementIndex].getBoundingClientRect().right;
+          const lastVisibleElementRight =
+            elems[lastVisibleElementIndex].getBoundingClientRect().right;
           const newScrollPosition =
-            lastVisibleElementRight + currentScrollPosition - navBar!.getBoundingClientRect().right + buttonWidthOffset;
-          // If the new scroll position is less than the width of the left caret button,
-          // it means that hiding the left caret button reveals the whole of the left-most nav item.
+            lastVisibleElementRight +
+            currentScrollPosition -
+            navBar!.getBoundingClientRect().right +
+            buttonWidthOffset;
+          // If the new scroll position is less than the width of the left chevron button,
+          // it means that hiding the left chevron button reveals the whole of the left-most nav item.
           // Snaps the left-most nav item to the left edge of nav container in this case.
-          this._currentScrollPosition = newScrollPosition <= 0 ? 0 : newScrollPosition;
+          this._currentScrollPosition =
+            newScrollPosition <= 0 ? 0 : newScrollPosition;
         }
       }
     }
@@ -519,7 +572,8 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
       if (pageIsRTL) {
         const interimLeft = navBar!.getBoundingClientRect().left;
         const firstVisibleElementIndex = elems.findIndex(
-          elem => elem.getBoundingClientRect().left < interimLeft + buttonWidthOffset
+          (elem) =>
+            elem.getBoundingClientRect().left < interimLeft + buttonWidthOffset
         );
         if (firstVisibleElementIndex > 0) {
           const firstVisibleElementLeft = Math.abs(
@@ -528,12 +582,17 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
               navBar!.getBoundingClientRect().right
           );
           const maxLeft = contentNode!.scrollWidth - navBar!.offsetWidth;
-          this._currentScrollPosition = Math.min(firstVisibleElementLeft + currentScrollPosition, maxLeft);
+          this._currentScrollPosition = Math.min(
+            firstVisibleElementLeft + currentScrollPosition,
+            maxLeft
+          );
         }
       } else {
         const interimRight = navBar!.getBoundingClientRect().right;
         const firstVisibleElementIndex = elems.findIndex(
-          elem => elem.getBoundingClientRect().right > interimRight - buttonWidthOffset
+          (elem) =>
+            elem.getBoundingClientRect().right >
+            interimRight - buttonWidthOffset
         );
         if (firstVisibleElementIndex > 0) {
           const firstVisibleElementLeft =
@@ -543,22 +602,18 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
           // Ensures that is there is no blank area at the right hand side in scroll area
           // if we see the right remainder nav items can be contained in a page
           const maxLeft = contentNode!.scrollWidth - navBar!.offsetWidth;
-          this._currentScrollPosition = Math.min(firstVisibleElementLeft + currentScrollPosition, maxLeft);
+          this._currentScrollPosition = Math.min(
+            firstVisibleElementLeft + currentScrollPosition,
+            maxLeft
+          );
         }
       }
     }
   }
 
-  /**
-   * Handles resize of mobile container.
-   *
-   * @param records The resize records.
-   */
-  private _observeResizeMobileContainer = records => {
-    const entry = records[records.length - 1];
-    const { height } = entry.contentRect;
-    this._hasMobileContainerVisible = height > 0;
-  };
+  mediaQueryCallbackMaxLG() {
+    this._isMobile = this.carbonBreakpoints.lg.matches;
+  }
 
   /**
    * The current 0px offset from the top of page.
@@ -580,7 +635,7 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   /**
    * The trigger reharvest listener.
    */
-  @HostListener(`document:${ddsPrefix}-table-of-contents-reharvest`)
+  @HostListener(`document:${c4dPrefix}-table-of-contents-reharvest`)
   // @ts-ignore: The decorator refers to this method but TS thinks this method is not referred to
   private _retriggerHarvest = () => {
     this._targets = Array.from(this.querySelectorAll('[name]'));
@@ -588,7 +643,6 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
 
   connectedCallback() {
     super.connectedCallback();
-    this._cleanAndCreateObserverResizeMobileContainer({ create: true });
     this._cleanAndCreateIntersectionObserverContainer({ create: true });
     if (!this._throttleScroll) {
       this._throttleScroll = throttle(this._handleOnScroll, 250);
@@ -597,7 +651,6 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   }
 
   disconnectedCallback() {
-    this._cleanAndCreateObserverResizeMobileContainer();
     this._cleanAndCreateIntersectionObserverContainer();
     this._contentMutationObserver.disconnect();
     if (this._throttleScroll) {
@@ -608,32 +661,23 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   }
 
   firstUpdated() {
-    this._cleanAndCreateObserverResizeMobileContainer({ create: true });
+    super.firstUpdated();
     this._cleanAndCreateIntersectionObserverContainer({ create: true });
 
     StickyHeader.global.tableOfContents = this;
   }
 
-  updated(changedProperties) {
-    if (changedProperties.has('_currentTarget')) {
-      const { _currentTarget: currentTarget, _mobileSelectNode: mobileSelectNode } = this;
-      // Ensures setting the `value` after rendering child `<option>`s when there is a change in `value`,
-      // given reflecting `value` requires child `<option>`s being there beforehand
-      mobileSelectNode!.value = currentTarget?.getAttribute('name') ?? '';
-    }
-  }
-
   render() {
     const {
+      layout,
       stickyOffset,
       _currentTarget: currentTarget,
       _currentScrollPosition: currentScrollPosition,
       _hasHeading: hasHeading,
-      _hasMobileContainerVisible: hasMobileContainerVisible,
       _isIntersectionLeftTrackerInContent: isIntersectionLeftTrackerInContent,
       _isIntersectionRightTrackerInContent: isIntersectionRightTrackerInContent,
+      _isMobile: isMobile,
       _targets: targets,
-      _handleChangeSelect: handleChangeSelect,
       _handleClickItem: handleClickItem,
       _handleOnKeyDown: handleOnKeyDown,
       _handleSlotChange: handleSlotChange,
@@ -644,40 +688,58 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
     } = this;
 
     const containerClasses = classMap({
-      [`${ddsPrefix}-ce--table-of-contents__container`]: this.layout === TOC_TYPES.DEFAULT,
-      [`${ddsPrefix}-ce--table-of-contents-horizontal__container`]: this.layout === TOC_TYPES.HORIZONTAL,
+      [`${c4dPrefix}-ce--table-of-contents__container`]:
+        layout === TOC_TYPES.DEFAULT && !isMobile,
+      [`${c4dPrefix}-ce--table-of-contents-horizontal__container`]:
+        layout === TOC_TYPES.HORIZONTAL || isMobile,
     });
 
     const navigationClasses = classMap({
-      [`${prefix}--tableofcontents__sidebar`]: this.layout === TOC_TYPES.DEFAULT,
-      [`${prefix}--tableofcontents__navbar`]: this.layout === TOC_TYPES.HORIZONTAL,
+      [`${prefix}--tableofcontents__sidebar`]:
+        layout === TOC_TYPES.DEFAULT && !isMobile,
+      [`${prefix}--tableofcontents__navbar`]:
+        layout === TOC_TYPES.HORIZONTAL || isMobile,
     });
 
-    const caretLeftContainerClasses = classMap({
-      [`${prefix}--toc__navbar-caret-left-container`]: true,
-      [`${ddsPrefix}-ce--toc__navbar-caret-container--hidden`]: isIntersectionLeftTrackerInContent,
+    const chevronLeftContainerClasses = classMap({
+      [`${prefix}--toc__navbar-chevron-left-container`]: true,
+      [`${c4dPrefix}-ce--toc__navbar-chevron-container--hidden`]:
+        isIntersectionLeftTrackerInContent,
     });
 
-    const caretRightContainerClasses = classMap({
-      [`${prefix}--toc__navbar-caret-right-container`]: true,
-      [`${ddsPrefix}-ce--toc__navbar-caret-container--hidden`]: isIntersectionRightTrackerInContent,
+    const chevronRightContainerClasses = classMap({
+      [`${prefix}--toc__navbar-chevron-right-container`]: true,
+      [`${c4dPrefix}-ce--toc__navbar-chevron-container--hidden`]:
+        isIntersectionRightTrackerInContent,
     });
 
     return html`
       ${this.layout === 'horizontal'
         ? html`
             <ul class="${prefix}--toc__print-styles">
-              ${targets.map(item => {
+              ${targets.map((item) => {
                 const name = item.getAttribute('name');
-                const title = (item.dataset.title ?? item.textContent ?? '').trim();
+                const title = (
+                  item.dataset.title ??
+                  item.textContent ??
+                  ''
+                ).trim();
                 const selected = item === currentTarget;
                 const itemClasses = classMap({
-                  [`${prefix}--tableofcontents__desktop__item`]: true,
-                  [`${prefix}--tableofcontents__desktop__item--active`]: selected,
+                  [`${prefix}--tableofcontents__item`]: true,
+                  [`${prefix}--tableofcontents__item--active`]: selected,
                 });
                 return html`
-                  <li class="${itemClasses}" @click="${handleClickItem}" @keydown="${handleOnKeyDown}">
-                    <a aria-current="${ifDefined(!selected ? undefined : 'location')}" data-target="${name!}" href="#${name}">
+                  <li
+                    class="${itemClasses}"
+                    @click="${handleClickItem}"
+                    @keydown="${handleOnKeyDown}">
+                    <a
+                      aria-current="${ifDefined(
+                        !selected ? undefined : 'location'
+                      )}"
+                      data-target="${name!}"
+                      href="#${name}">
                       ${title}
                     </a>
                   </li>
@@ -687,81 +749,84 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
           `
         : ``}
       <div class="${containerClasses}">
-        <div
-          part="table"
-          class="${navigationClasses}"
-          style="top: ${this.layout === TOC_TYPES.HORIZONTAL && stickyOffset ? `${stickyOffset}px` : 0}"
-        >
-          ${hasMobileContainerVisible
-            ? nothing
+        <div part="table" class="${navigationClasses}">
+          ${isMobile
+            ? ''
             : html`
-                <div ?hidden="${!hasHeading}" class="${prefix}--tableofcontents__desktop__children">
-                  <slot name="heading" @slotchange="${handleSlotChangeHeading}"></slot>
+                <div
+                  ?hidden="${!hasHeading}"
+                  class="${prefix}--tableofcontents__children">
+                  <slot
+                    name="heading"
+                    @slotchange="${handleSlotChangeHeading}"></slot>
                   <slot name="menu-rule"></slot>
                 </div>
               `}
-          <div class="${prefix}--tableofcontents__mobile-top"></div>
-          ${this.layout === 'horizontal'
+          ${layout === 'horizontal' || isMobile
             ? html`
                 ${pageIsRTL
                   ? html`
-                      <div class="${caretRightContainerClasses}">
-                        <div class="${prefix}--toc__navbar-caret-right-gradient"></div>
-                        <button
-                          part="next-button"
-                          tabindex="-1"
-                          aria-hidden="true"
-                          class="${prefix}--toc__navbar-caret-right"
-                          @click="${paginateRight}"
-                        >
-                          ${CaretLeft20()}
-                        </button>
-                      </div>
+                      <button
+                        part="prev-button"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        class="${chevronRightContainerClasses}"
+                        @click="${paginateLeft}">
+                        ${ChevronLeft20()}
+                      </button>
                     `
                   : html`
-                      <div class="${caretLeftContainerClasses}">
-                        <button
-                          part="prev-button"
-                          tabindex="-1"
-                          aria-hidden="true"
-                          class="${prefix}--toc__navbar-caret-left"
-                          @click="${paginateLeft}"
-                        >
-                          ${CaretLeft20()}
-                        </button>
-                        <div class="${prefix}--toc__navbar-caret-left-gradient"></div>
-                      </div>
+                      <button
+                        part="prev-button"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        class="${chevronLeftContainerClasses}"
+                        @click="${paginateLeft}">
+                        ${ChevronLeft20()}
+                      </button>
                     `}
               `
             : ``}
           <div
-            class="${ddsPrefix}-ce--table-of-contents__items-container"
-            style="position: sticky; top: ${stickyOffset && this.layout !== TOC_TYPES.HORIZONTAL ? `${stickyOffset}px` : 0}"
-          >
-            <div class="${prefix}--tableofcontents__desktop-container">
+            class="${c4dPrefix}-ce--table-of-contents__items-container"
+            style="position: sticky; top: ${stickyOffset &&
+            this.layout !== TOC_TYPES.HORIZONTAL
+              ? `${stickyOffset}px`
+              : 0}">
+            <div class="${prefix}--tableofcontents-container">
               <div
-                class="${prefix}--tableofcontents__desktop"
-                style="${pageIsRTL ? 'right' : 'left'}: -${currentScrollPosition}px"
-              >
+                class="${prefix}--tableofcontents"
+                style="${pageIsRTL
+                  ? 'right'
+                  : 'left'}: -${currentScrollPosition}px">
                 ${pageIsRTL
-                  ? html`
-                      <div class="${prefix}--sub-content-right"></div>
-                    `
-                  : html`
-                      <div class="${prefix}--sub-content-left"></div>
-                    `}
+                  ? html` <div class="${prefix}--sub-content-right"></div> `
+                  : html` <div class="${prefix}--sub-content-left"></div> `}
                 <ul>
-                  ${targets.map(item => {
+                  ${targets.map((item) => {
                     const name = item.getAttribute('name');
-                    const title = (item.dataset.title ?? item.textContent ?? '').trim();
+                    const title = (
+                      item.dataset.title ??
+                      item.textContent ??
+                      ''
+                    ).trim();
                     const selected = item === currentTarget;
                     const itemClasses = classMap({
-                      [`${prefix}--tableofcontents__desktop__item`]: true,
-                      [`${prefix}--tableofcontents__desktop__item--active`]: selected,
+                      [`${prefix}--tableofcontents__item`]: true,
+                      [`${prefix}--tableofcontents__item--active`]: selected,
                     });
                     return html`
-                      <li class="${itemClasses}" @click="${handleClickItem}" @keydown="${handleOnKeyDown}">
-                        <a aria-current="${ifDefined(!selected ? undefined : 'location')}" data-target="${name!}" href="#${name}">
+                      <li
+                        class="${itemClasses}"
+                        @click="${handleClickItem}"
+                        @keydown="${handleOnKeyDown}">
+                        <a
+                          aria-current="${ifDefined(
+                            !selected ? undefined : 'location'
+                          )}"
+                          data-target="${name!}"
+                          href="#${name}"
+                          tabindex="${selected ? 0 : -1}">
                           ${title}
                         </a>
                       </li>
@@ -769,78 +834,51 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
                   })}
                 </ul>
                 ${pageIsRTL
-                  ? html`
-                      <div class="${prefix}--sub-content-left"></div>
-                    `
-                  : html`
-                      <div class="${prefix}--sub-content-right"></div>
-                    `}
-              </div>
-            </div>
-            <div class="${prefix}--tableofcontents__mobile">
-              <div class="${prefix}--tableofcontents__mobile__select__wrapper">
-                <select
-                  aria-label="${this.ariaLabelFormatter}"
-                  class="${prefix}--tableofcontents__mobile__select"
-                  @change="${handleChangeSelect}"
-                >
-                  ${targets.map(item => {
-                    const name = item.getAttribute('name');
-                    const title = (item.dataset.title ?? item.textContent ?? '').trim();
-                    return html`
-                      <option class="${prefix}--tableofcontents__mobile__select__option" value="${name!}">
-                        ${title}
-                      </option>
-                    `;
-                  })}
-                </select>
-                ${TableOfContents20({
-                  class: `${prefix}--tableofcontents__mobile__select__icon`,
-                })}
+                  ? html` <div class="${prefix}--sub-content-left"></div> `
+                  : html` <div class="${prefix}--sub-content-right"></div> `}
               </div>
             </div>
           </div>
-          ${this.layout === 'horizontal'
+
+          ${this.layout === 'horizontal' || isMobile
             ? html`
                 ${pageIsRTL
                   ? html`
-                      <div class="${caretLeftContainerClasses}">
-                        <button
-                          part="prev-button"
-                          tabindex="-1"
-                          aria-hidden="true"
-                          class="${prefix}--toc__navbar-caret-left"
-                          @click="${paginateLeft}"
-                        >
-                          ${CaretRight20()}
-                        </button>
-                        <div class="${prefix}--toc__navbar-caret-left-gradient"></div>
-                      </div>
+                      <button
+                        part="next-button"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        class="${chevronLeftContainerClasses}"
+                        @click="${paginateRight}">
+                        ${ChevronRight20()}
+                      </button>
                     `
                   : html`
-                      <div class="${caretRightContainerClasses}">
-                        <div class="${prefix}--toc__navbar-caret-right-gradient"></div>
-                        <button
-                          part="next-button"
-                          tabindex="-1"
-                          aria-hidden="true"
-                          class="${prefix}--toc__navbar-caret-right"
-                          @click="${paginateRight}"
-                        >
-                          ${CaretRight20()}
-                        </button>
-                      </div>
+                      <button
+                        part="next-button"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        class="${chevronRightContainerClasses}"
+                        @click="${paginateRight}">
+                        ${ChevronRight20()}
+                      </button>
                     `}
               `
             : ``}
         </div>
+
         <div class="${prefix}--tableofcontents__content">
           <div class="${prefix}--tableofcontents__content-wrapper">
-            ${!hasMobileContainerVisible
-              ? undefined
+            ${!isMobile
+              ? ''
               : html`
-                  <div ?hidden="${!hasHeading}" class="${prefix}--tableofcontents__children__mobile">
-                    <slot name="heading" @slotchange="${handleSlotChangeHeading}"></slot>
+                  <div
+                    ?hidden="${!hasHeading}"
+                    class="${prefix}--tableofcontents__children">
+                    <slot
+                      name="heading"
+                      @slotchange="${handleSlotChangeHeading}"></slot>
+                    <slot name="menu-rule"></slot>
                   </div>
                 `}
             <slot @slotchange="${handleSlotChange}"></slot>
@@ -851,10 +889,10 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   }
 
   /**
-   * The selector that selects the desktop link items.
+   * The selector that selects the link items.
    */
-  static get selectorDesktopItem() {
-    return `.${prefix}--tableofcontents__desktop__item a`;
+  static get selectorItem() {
+    return `.${prefix}--tableofcontents__item a`;
   }
 
   /**
@@ -863,11 +901,11 @@ class DDSTableOfContents extends HostListenerMixin(StableSelectorMixin(LitElemen
   static selectorTarget = '[name]';
 
   static get stableSelector() {
-    return `${ddsPrefix}--table-of-contents`;
+    return `${c4dPrefix}--table-of-contents`;
   }
 
   static styles = styles; // `styles` here is a `CSSResult` generated by custom WebPack loader
 }
 
 /* @__GENERATE_REACT_CUSTOM_ELEMENT_TYPE__ */
-export default DDSTableOfContents;
+export default C4DTableOfContents;

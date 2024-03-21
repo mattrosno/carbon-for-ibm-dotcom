@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2020, 2022
+ * Copyright IBM Corp. 2020, 2024
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,8 +12,7 @@
 /* eslint-disable global-require */
 
 const path = require('path');
-/* eslint-disable import/no-extraneous-dependencies */
-const sass = require('node-sass');
+const sass = require('sass');
 const webpack = require('webpack');
 
 function normalizeBrowser(browser) {
@@ -28,40 +27,55 @@ function normalizeBrowser(browser) {
 }
 
 const serviceMocks = {
-  '@carbon/ibmdotcom-services/es/services/Locale/Locale': path.resolve(__dirname, 'mocks/LocaleAPI'),
-  '@carbon/ibmdotcom-services/es/services/Translation/Translation': path.resolve(__dirname, 'mocks/TranslationAPI'),
-  '@carbon/ibmdotcom-services/es/services/KalturaPlayer/KalturaPlayer': path.resolve(__dirname, 'mocks/KalturaPlayerAPI'),
+  '@carbon/ibmdotcom-services/es/services/Locale/Locale': path.resolve(
+    __dirname,
+    'mocks/LocaleAPI'
+  ),
+  '@carbon/ibmdotcom-services/es/services/Translation/Translation':
+    path.resolve(__dirname, 'mocks/TranslationAPI'),
+  '@carbon/ibmdotcom-services/es/services/KalturaPlayer/KalturaPlayer':
+    path.resolve(__dirname, 'mocks/KalturaPlayerAPI'),
 };
 
 const reServices = /^@carbon\/ibmdotcom-services/i;
 
 module.exports = function setupKarma(config) {
-  const { browsers, collectCoverage, noPruneShapshot, specs, random, updateSnapshot, verbose } = config.customConfig;
+  const {
+    browsers,
+    collectCoverage,
+    noPruneShapshot,
+    specs,
+    random,
+    updateSnapshot,
+    verbose,
+  } = config.customConfig;
 
   config.set({
     basePath: '..',
-
-    browsers: (browsers.length > 0 ? browsers : ['ChromeHeadless']).map(normalizeBrowser),
-
+    browsers: (browsers.length > 0 ? browsers : ['ChromeHeadless']).map(
+      normalizeBrowser
+    ),
     frameworks: ['jasmine', 'snapshot'],
-
     client: {
       jasmine: {
         random: !!random,
       },
     },
-
-    files: ['src/polyfills/index.ts', 'tests/utils/snapshot.js', 'tests/snapshots/**/*.md'].concat(
-      specs.length > 0 ? specs : ['tests/karma-test-shim.js']
-    ),
-
+    files: [
+      {
+        pattern: 'tests/utils/snapshot.js',
+      },
+      {
+        pattern: 'tests/snapshots/**/*.md',
+        type: 'html',
+      },
+    ].concat(specs.length > 0 ? specs : ['tests/karma-test-shim.js']),
     preprocessors: {
       'src/**/*.[jt]s': ['webpack', 'sourcemap'], // For generatoring coverage report for untested files
       'tests/karma-test-shim.js': ['webpack', 'sourcemap'],
       'tests/utils/**/*.js': ['webpack', 'sourcemap'],
       'tests/snapshots/**/*.md': ['snapshot'],
     },
-
     webpack: {
       mode: 'development',
       devtool: 'inline-source-maps',
@@ -75,8 +89,8 @@ module.exports = function setupKarma(config) {
             use: 'null-loader',
           },
           {
-            test: /[\\/]styles[\\/]icons[\\/]/i,
-            use: [require.resolve('../tools/svg-result-ibmdotcom-icon-loader')],
+            test: /\.svg$/,
+            use: [{ loader: 'raw-loader' }],
           },
           {
             test: /\.ts$/,
@@ -95,7 +109,11 @@ module.exports = function setupKarma(config) {
             ? {}
             : {
                 test: /\.[jt]s$/,
-                exclude: [__dirname, /__tests__/, path.resolve(__dirname, '../node_modules')],
+                exclude: [
+                  __dirname,
+                  /__tests__/,
+                  path.resolve(__dirname, '../node_modules'),
+                ],
                 enforce: 'post',
                 use: {
                   loader: 'istanbul-instrumenter-loader',
@@ -106,7 +124,7 @@ module.exports = function setupKarma(config) {
               },
           {
             test: /\.js$/,
-            include: [__dirname, path.dirname(require.resolve('lit-html')), path.dirname(require.resolve('lit-element'))],
+            include: [__dirname, path.dirname(require.resolve('lit'))],
             use: {
               loader: 'babel-loader',
               options: {
@@ -124,7 +142,12 @@ module.exports = function setupKarma(config) {
                 options: {
                   plugins: () => [
                     require('autoprefixer')({
-                      overrideBrowsersList: ['last 1 version', 'ie >= 11'],
+                      overrideBrowsersList: [
+                        '> 0.5%',
+                        'last 2 versions',
+                        'Firefox ESR',
+                        'not dead',
+                      ],
                     }),
                   ],
                 },
@@ -154,30 +177,26 @@ module.exports = function setupKarma(config) {
           },
         ],
       },
-
       plugins: [
         new webpack.DefinePlugin({
           'process.env.NODE_ENV': JSON.stringify('test'),
-          'process.env.DDS_CLOUD_MASTHEAD': JSON.stringify('true'),
+          'process.env.C4D_CLOUD_MASTHEAD': JSON.stringify('true'),
         }),
-        new webpack.NormalModuleReplacementPlugin(reServices, resource => {
+        new webpack.NormalModuleReplacementPlugin(reServices, (resource) => {
           const { request } = resource;
           resource.request = serviceMocks[request] || request;
         }),
       ],
     },
-
     webpackMiddleware: {
       noInfo: !verbose,
     },
-
     customLaunchers: {
       Chrome_Travis: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox'],
       },
     },
-
     plugins: [
       require('karma-jasmine'),
       require('karma-spec-reporter'),
@@ -187,12 +206,8 @@ module.exports = function setupKarma(config) {
       require('karma-snapshot'),
       require('karma-chrome-launcher'),
       require('karma-firefox-launcher'),
-      require('karma-safari-launcher'),
-      require('karma-ie-launcher'),
     ],
-
     reporters: ['spec', ...(!collectCoverage ? [] : ['coverage-istanbul'])],
-
     coverageIstanbulReporter: {
       reports: ['html', 'text'],
       dir: path.join(__dirname, 'coverage'),
@@ -200,7 +215,6 @@ module.exports = function setupKarma(config) {
       fixWebpackSourcePaths: true,
       verbose,
     },
-
     snapshot: {
       prune: !noPruneShapshot,
       update: updateSnapshot,
@@ -208,18 +222,12 @@ module.exports = function setupKarma(config) {
         return path.resolve(basePath, `tests/snapshots/${suiteName}.md`);
       },
     },
-
     port: 9876,
-
     colors: true,
-
     browserNoActivityTimeout: 60000,
-
     autoWatch: true,
     autoWatchBatchDelay: 400,
-
     logLevel: verbose ? config.LOG_DEBUG : config.LOG_INFO,
-
     concurrency: Infinity,
   });
 };

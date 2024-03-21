@@ -1,64 +1,33 @@
 /**
  * @license
  *
- * Copyright IBM Corp. 2022
+ * Copyright IBM Corp. 2022, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import { customElement, html } from 'lit-element';
-import ddsSettings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
+import { html } from 'lit';
+import settings from '@carbon/ibmdotcom-utilities/es/utilities/settings/settings.js';
 import StableSelectorMixin from '../../globals/mixins/stable-selector';
 import sameHeight from '../../internal/vendor/@carbon/ibmdotcom-utilities/utilities/sameHeight/sameHeight';
-import DDSStructuredListHeaderRow from '../structured-list/structured-list-header-row';
-import DDSPricingTableHeaderCell from './pricing-table-header-cell';
+import C4DStructuredListHeaderRow from '../structured-list/structured-list-header-row';
+import C4DPricingTableHeaderCell from './pricing-table-header-cell';
 import styles from './pricing-table.scss';
 import { setColumnWidth } from './utils';
 import { PRICING_TABLE_HEADER_CELL_TYPES } from './defs';
-import DDSPricingTable from './pricing-table';
+import { carbonElement as customElement } from '../../internal/vendor/@carbon/web-components/globals/decorators/carbon-element';
 
-const { stablePrefix: ddsPrefix } = ddsSettings;
+const { stablePrefix: c4dPrefix } = settings;
 
-@customElement(`${ddsPrefix}-pricing-table-header-row`)
-class DDSPricingTableHeaderRow extends StableSelectorMixin(DDSStructuredListHeaderRow) {
+@customElement(`${c4dPrefix}-pricing-table-header-row`)
+class C4DPricingTableHeaderRow extends StableSelectorMixin(
+  C4DStructuredListHeaderRow
+) {
   /**
    * Array full of tag wrapper elements within header cells.
    */
   private _tagWrappers: any[] = [];
-
-  /**
-   * Observer that watches for viewport resizes.
-   */
-  // TODO: Wait for `.d.ts` update to support `ResizeObserver`
-  // @ts-ignore
-  private _resizeObserver: ResizeObserver | null = null;
-
-  /**
-   * Takes actions whenever the viewport is resized.
-   */
-  private _createResizeObserver() {
-    // TODO: Wait for `.d.ts` update to support `ResizeObserver`
-    // @ts-ignore
-    this._resizeObserver = new ResizeObserver(() => {
-      if (!(this.closest(`${ddsPrefix}-pricing-table`) as DDSPricingTable)?.isSticky) {
-        this._setSameHeight();
-      }
-    });
-    this._resizeObserver.observe(this.ownerDocument!.documentElement);
-  }
-
-  /**
-   * Safely disconnects and removes the resize observer.
-   */
-  private _cleanResizeObserver() {
-    // TODO: Wait for `.d.ts` update to support `ResizeObserver`
-    // @ts-ignore
-    if (this._resizeObserver instanceof ResizeObserver) {
-      this._resizeObserver.disconnect();
-    }
-    this._resizeObserver = null;
-  }
 
   private _setSameHeight() {
     window.requestAnimationFrame(() => {
@@ -70,8 +39,8 @@ class DDSPricingTableHeaderRow extends StableSelectorMixin(DDSStructuredListHead
     setColumnWidth(this);
 
     // Find cells that are eligible to have tags within them.
-    const validCells = e.target.assignedNodes().filter(node => {
-      if (node instanceof DDSPricingTableHeaderCell) {
+    const validCells = e.target.assignedNodes().filter((node) => {
+      if (node instanceof C4DPricingTableHeaderCell) {
         return node.type === PRICING_TABLE_HEADER_CELL_TYPES.COMPLEX;
       }
       return false;
@@ -81,15 +50,20 @@ class DDSPricingTableHeaderRow extends StableSelectorMixin(DDSStructuredListHead
     // the presence of a tag.
     this._tagWrappers = validCells.reduce((acc, cell) => {
       if (cell.length !== 0) {
-        const tag = cell.shadowRoot.querySelector(`.${DDSPricingTableHeaderCell.tagWrapperSelector}`);
-        if (tag) acc.push(tag);
+        const tag = cell.shadowRoot.querySelector(
+          `.${C4DPricingTableHeaderCell.tagWrapperSelector}`
+        );
+        if (tag) {
+          acc.push(tag);
+        }
       }
       return acc;
     }, []);
 
     this._setSameHeight();
 
-    const { eventSlotChange } = this.constructor as typeof DDSPricingTableHeaderRow;
+    const { eventSlotChange } = this
+      .constructor as typeof C4DPricingTableHeaderRow;
     this.dispatchEvent(
       new CustomEvent(eventSlotChange, {
         bubbles: true,
@@ -101,29 +75,25 @@ class DDSPricingTableHeaderRow extends StableSelectorMixin(DDSStructuredListHead
 
   connectedCallback() {
     super.connectedCallback();
-    this._createResizeObserver();
   }
 
   disconnectedCallback() {
-    this._cleanResizeObserver();
     super.disconnectedCallback();
   }
 
   render() {
-    return html`
-      <slot @slotchange=${this._handleSlotChange}></slot>
-    `;
+    return html` <slot @slotchange=${this._handleSlotChange}></slot> `;
   }
 
   static get stableSelector() {
-    return `${ddsPrefix}--pricing-table-header-row`;
+    return `${c4dPrefix}--pricing-table-header-row`;
   }
 
   static get eventSlotChange() {
-    return `${ddsPrefix}-pricing-table-header-row-slot-change`;
+    return `${c4dPrefix}-pricing-table-header-row-slot-change`;
   }
 
   static styles = styles;
 }
 
-export default DDSPricingTableHeaderRow;
+export default C4DPricingTableHeaderRow;

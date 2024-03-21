@@ -1,36 +1,38 @@
 /**
- * Copyright IBM Corp. 2016, 2022
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import '../../globals/vars';
-@import '../../globals/imports';
-@import '../footer/index';
-@import '../masthead/index';
+@use '@carbon/styles/scss/config' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '../../globals/vars' as *;
+@use '../footer';
+@use '../masthead';
 
 @mixin dotcom-shell {
-  :host(#{$dds-prefix}-dotcom-shell),
+  :host(#{$c4d-prefix}-dotcom-shell),
   .#{$prefix}--dotcom-shell {
     display: flex;
     flex-direction: column;
-    padding-top: $carbon--layout-04;
-    width: 100%;
+    inline-size: 100%;
+    padding-block-start: $spacing-09;
 
     .#{$prefix}--tableofcontents__sidebar {
-      top: 48px;
+      inset-block-start: $spacing-09;
     }
   }
 
   .#{$prefix}--dotcom-shell__content {
     flex: 1;
     margin: auto;
-    max-width: 99rem;
-    width: 100%;
+    inline-size: 100%;
+    max-inline-size: 99rem;
   }
-}
 
-@include exports('dotcom-shell') {
-  @include dotcom-shell;
+  :host(#{$c4d-prefix}-dotcom-shell-container),
+  :host(#{$c4d-prefix}-dotcom-shell-composite) {
+    display: contents;
+  }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2016, 2021
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,10 +12,10 @@ export * from './deprecate';
 export * from './escaperegexp';
 export * from './featureflag';
 export * from './formatVideoCaption';
-export * from './geolocation';
 export * from './ipcinfoCookie';
 export * from './loadNonLatinPlex';
 export * from './markdownToHtml';
+export * from './on';
 export * from './removeHtmlTagEntities';
 export * from './sameHeight';
 export * from './serialize';

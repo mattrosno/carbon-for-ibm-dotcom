@@ -1,11 +1,11 @@
 /**
- * Copyright IBM Corp. 2016, 2020
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-@import 'carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/layout/convert';
+@use '@carbon/styles/scss/utilities/convert' as *;
 
 //-----------------------------
 // Text Area (expressive)
@@ -16,7 +16,7 @@
 /// @group text-area-expressive
 @mixin text-area-expressive {
   .#{$prefix}--text-area__invalid-icon {
-    height: 1.25rem;
-    width: 1.25rem;
+    block-size: 1.25rem;
+    inline-size: 1.25rem;
   }
 }

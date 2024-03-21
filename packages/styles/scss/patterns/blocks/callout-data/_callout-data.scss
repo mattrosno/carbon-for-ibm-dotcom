@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2016, 2020
+ * Copyright IBM Corp. 2016, 2023
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,73 +10,71 @@
     .#{$prefix}--callout {
       &-data {
         &__data {
-          @include carbon--type-style('display-03', true);
+          @include type-style('display-03', true);
 
-          color: $inverse-01;
-          padding-top: $layout-01;
-          padding-bottom: $layout-05;
+          color: $icon-inverse;
+
+          padding-block: $layout-01 $layout-05;
         }
 
         &__copy {
-          @include carbon--type-style('expressive-heading-03', true);
+          @include type-style('fluid-heading-03', true);
 
-          color: $inverse-01;
-          margin-top: auto;
-          padding-bottom: $layout-01;
+          color: $icon-inverse;
+          margin-block-start: auto;
+
+          padding-block-end: $layout-01;
         }
 
         &__source {
-          @include carbon--type-style('body-short-01', true);
+          @include type-style('body-compact-01', true);
 
-          width: 90%;
-          max-width: carbon--mini-units(80);
-          padding-bottom: $layout-03;
+          color: $text-helper;
 
-          @include carbon--breakpoint('md') {
-            padding-bottom: $layout-05;
+          inline-size: 90%;
+          max-inline-size: carbon--mini-units(80);
+
+          padding-block: $spacing-03 $layout-03;
+
+          @include breakpoint(md) {
+            padding-block-end: $layout-05;
           }
 
-          @include carbon--breakpoint('lg') {
-            padding-bottom: $layout-06;
+          @include breakpoint(lg) {
+            padding-block-end: $layout-06;
           }
-
-          padding-top: $spacing-03;
-          color: $text-05;
         }
       }
 
       &__column {
-        height: auto;
+        block-size: auto;
 
-        @include carbon--breakpoint('md') {
-          height: carbon--mini-units(40);
+        @include breakpoint(md) {
+          block-size: carbon--mini-units(40);
         }
 
-        @include carbon--breakpoint('lg') {
-          height: carbon--mini-units(50);
+        @include breakpoint(lg) {
+          block-size: carbon--mini-units(50);
         }
 
-        @include carbon--breakpoint('xlg') {
-          height: carbon--mini-units(60);
+        @include breakpoint(xlg) {
+          block-size: carbon--mini-units(60);
         }
 
-        @include carbon--breakpoint('max') {
-          height: carbon--mini-units(70);
+        @include breakpoint(max) {
+          block-size: carbon--mini-units(70);
         }
       }
 
       &__content {
-        padding-left: 0;
-        margin-left: 0;
         display: flex;
-        height: 100%;
         flex-direction: column;
-        width: 90%;
-        max-width: 640px;
+        block-size: 100%;
+        inline-size: 90%;
+        margin-inline-start: 0;
+        max-inline-size: 640px;
+        padding-inline-start: 0;
       }
     }
   }
-}
-@include exports('callout-data') {
-  @include callout-data;
 }

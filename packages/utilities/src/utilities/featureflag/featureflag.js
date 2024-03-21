@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020
+ * Copyright IBM Corp. 2020, 2022
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,8 +13,7 @@
  * @private
  * @returns {object} JSX object
  *
- * return featureFlag(DDS_FEATURE_NAME, <div>hello world</div>);
- *
+ * return featureFlag(C4D_FEATURE_NAME, <div>hello world</div>);
  */
 function featureFlag(flag, jsx) {
   return flag ? jsx : null;
